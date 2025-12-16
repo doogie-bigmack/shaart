@@ -22,8 +22,8 @@ import { join } from 'path';
  * @returns {string} Full path to the saved file
  */
 export function saveDeliverableFile(filename, content) {
-  // Use target directory from global context (set by createShannonHelperServer)
-  const targetDir = global.__SHANNON_TARGET_DIR || process.cwd();
+  // Use target directory from global context (set by createShaartHelperServer)
+  const targetDir = global.__SHAART_TARGET_DIR || process.cwd();
   const deliverablesDir = join(targetDir, 'deliverables');
   const filepath = join(deliverablesDir, filename);
 

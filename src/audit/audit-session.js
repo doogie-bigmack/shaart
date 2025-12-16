@@ -24,7 +24,7 @@ const sessionMutex = new SessionMutex();
  */
 export class AuditSession {
   /**
-   * @param {Object} sessionMetadata - Session metadata from Shannon store
+   * @param {Object} sessionMetadata - Session metadata from Shaart store
    * @param {string} sessionMetadata.id - Session UUID
    * @param {string} sessionMetadata.webUrl - Target web URL
    * @param {string} [sessionMetadata.repoPath] - Target repository path

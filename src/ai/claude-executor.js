@@ -19,7 +19,7 @@ import { AGENT_VALIDATORS, MCP_AGENT_MAPPING } from '../constants.js';
 import { filterJsonToolCalls, getAgentPrefix } from '../utils/output-formatter.js';
 import { generateSessionLogPath } from '../session-manager.js';
 import { AuditSession } from '../audit/index.js';
-import { createShannonHelperServer } from '../../mcp-server/src/index.js';
+import { createShaartHelperServer } from '../../mcp-server/src/index.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -117,7 +117,7 @@ async function runClaudePrompt(prompt, sourceDir, allowedTools = 'Read', context
 
   // Setup progress indicator for clean output agents (unless disabled via flag)
   let progressIndicator = null;
-  if (useCleanOutput && !global.SHANNON_DISABLE_LOADER) {
+  if (useCleanOutput && !global.SHAART_DISABLE_LOADER) {
     const agentType = description.includes('Pre-recon') ? 'pre-reconnaissance' :
                      description.includes('Recon') ? 'reconnaissance' :
                      description.includes('Report') ? 'report generation' : 'analysis';
@@ -141,7 +141,7 @@ async function runClaudePrompt(prompt, sourceDir, allowedTools = 'Read', context
 
   try {
     // Create MCP server with target directory context
-    const shannonHelperServer = createShannonHelperServer(sourceDir);
+    const shaartHelperServer = createShaartHelperServer(sourceDir);
 
     // Look up agent's assigned Playwright MCP server
     // Convert agent name (e.g., 'xss-vuln') to prompt name (e.g., 'vuln-xss')
@@ -155,9 +155,9 @@ async function runClaudePrompt(prompt, sourceDir, allowedTools = 'Read', context
       }
     }
 
-    // Configure MCP servers: shannon-helper (SDK) + playwright-agentN (stdio)
+    // Configure MCP servers: shaart-helper (SDK) + playwright-agentN (stdio)
     const mcpServers = {
-      'shannon-helper': shannonHelperServer,
+      'shaart-helper': shaartHelperServer,
     };
 
     // Add Playwright MCP server if this agent needs browser automation
@@ -165,7 +165,7 @@ async function runClaudePrompt(prompt, sourceDir, allowedTools = 'Read', context
       const userDataDir = `/tmp/${playwrightMcpName}`;
 
       // Detect if running in Docker via explicit environment variable
-      const isDocker = process.env.SHANNON_DOCKER === 'true';
+      const isDocker = process.env.SHAART_DOCKER === 'true';
 
       // Build args array - conditionally add --executable-path for Docker
       const mcpArgs = [
@@ -225,7 +225,7 @@ async function runClaudePrompt(prompt, sourceDir, allowedTools = 'Read', context
 
         // Periodic heartbeat for long-running agents (only when loader is disabled)
         const now = Date.now();
-        if (global.SHANNON_DISABLE_LOADER && now - lastHeartbeat > HEARTBEAT_INTERVAL) {
+        if (global.SHAART_DISABLE_LOADER && now - lastHeartbeat > HEARTBEAT_INTERVAL) {
           console.log(chalk.blue(`    ⏱️  [${Math.floor((now - timer.startTime) / 1000)}s] ${description} running... (Turn ${turnCount})`));
           lastHeartbeat = now;
         }

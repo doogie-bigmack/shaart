@@ -8,12 +8,12 @@ This is an AI-powered penetration testing agent designed for defensive security 
 
 ## Important Disclaimers
 
-**DO NOT run Shannon on production environments.** This is an active exploitation tool that can have mutative effects including:
+**DO NOT run Shaart on production environments.** This is an active exploitation tool that can have mutative effects including:
 - Creating new users and accounts
 - Modifying or deleting data
 - Triggering unintended side effects from injection attacks
 
-**Authorization Required**: You must have explicit written permission from the system owner before running Shannon. Unauthorized testing is illegal.
+**Authorization Required**: You must have explicit written permission from the system owner before running Shaart. Unauthorized testing is illegal.
 
 **Cost & Time**: A full test run typically takes 1-1.5 hours and costs approximately $50 USD using Claude Sonnet.
 
@@ -30,7 +30,7 @@ npm install
 
 Build the container:
 ```bash
-docker build -t shannon:latest .
+docker build -t shaart:latest .
 ```
 
 Run with OAuth token:
@@ -43,7 +43,7 @@ docker run --rm -it \
   -e CLAUDE_CODE_MAX_OUTPUT_TOKENS=64000 \
   -v "$(pwd)/repos:/app/repos" \
   -v "$(pwd)/configs:/app/configs" \
-  shannon:latest \
+  shaart:latest \
   "https://target-app.com/" \
   "/app/repos/target-app" \
   --config /app/configs/my-config.yaml
@@ -58,7 +58,7 @@ docker run --rm -it \
   -e ANTHROPIC_API_KEY="$ANTHROPIC_API_KEY" \
   -e CLAUDE_CODE_MAX_OUTPUT_TOKENS=64000 \
   -v "$(pwd)/repos:/app/repos" \
-  shannon:latest \
+  shaart:latest \
   "https://target-app.com/" "/app/repos/target-app"
 ```
 
@@ -69,7 +69,7 @@ docker run --rm -it \
   --cap-add=NET_RAW \
   --cap-add=NET_ADMIN \
   -e CLAUDE_CODE_OAUTH_TOKEN="$CLAUDE_CODE_OAUTH_TOKEN" \
-  shannon:latest \
+  shaart:latest \
   "http://host.docker.internal:3000" "/app/repos/my-app"
 ```
 
@@ -80,13 +80,13 @@ docker run --rm -it \
 
 ### Running the Penetration Testing Agent
 ```bash
-./shannon.mjs <WEB_URL> <REPO_PATH> --config <CONFIG_FILE>
+./shaart.mjs <WEB_URL> <REPO_PATH> --config <CONFIG_FILE>
 ```
 
 Example:
 ```bash
-./shannon.mjs "https://example.com" "/path/to/local/repo"
-./shannon.mjs "https://juice-shop.herokuapp.com" "/home/user/juice-shop" --config juice-shop-config.yaml
+./shaart.mjs "https://example.com" "/path/to/local/repo"
+./shaart.mjs "https://juice-shop.herokuapp.com" "/home/user/juice-shop" --config juice-shop-config.yaml
 ```
 
 ### Alternative Execution
@@ -97,7 +97,7 @@ npm start <WEB_URL> <REPO_PATH> --config <CONFIG_FILE>
 ### Configuration Validation
 ```bash
 # Configuration validation is built into the main script
-./shannon.mjs --help  # Shows usage and validates config on execution
+./shaart.mjs --help  # Shows usage and validates config on execution
 ```
 
 ### Generate TOTP for Authentication
@@ -107,58 +107,58 @@ TOTP generation is now handled automatically via the `generate_totp` MCP tool du
 ```bash
 # No linting or testing commands available in this project
 # Development is done by running the agent in pipeline-testing mode
-./shannon.mjs <commands> --pipeline-testing
+./shaart.mjs <commands> --pipeline-testing
 ```
 
 ### Session Management Commands
 ```bash
 # Setup session without running
-./shannon.mjs --setup-only <WEB_URL> <REPO_PATH> --config <CONFIG_FILE>
+./shaart.mjs --setup-only <WEB_URL> <REPO_PATH> --config <CONFIG_FILE>
 
 # Check session status (shows progress, timing, costs)
-./shannon.mjs --status
+./shaart.mjs --status
 
 # List all available agents by phase
-./shannon.mjs --list-agents
+./shaart.mjs --list-agents
 
 # Show help
-./shannon.mjs --help
+./shaart.mjs --help
 ```
 
 ### Execution Commands
 ```bash
 # Run all remaining agents to completion
-./shannon.mjs --run-all [--pipeline-testing]
+./shaart.mjs --run-all [--pipeline-testing]
 
 # Run a specific agent
-./shannon.mjs --run-agent <agent-name> [--pipeline-testing]
+./shaart.mjs --run-agent <agent-name> [--pipeline-testing]
 
 # Run a range of agents
-./shannon.mjs --run-agents <start-agent>:<end-agent> [--pipeline-testing]
+./shaart.mjs --run-agents <start-agent>:<end-agent> [--pipeline-testing]
 
 # Run a specific phase
-./shannon.mjs --run-phase <phase-name> [--pipeline-testing]
+./shaart.mjs --run-phase <phase-name> [--pipeline-testing]
 
 # Pipeline testing mode (minimal prompts for fast testing)
-./shannon.mjs <command> --pipeline-testing
+./shaart.mjs <command> --pipeline-testing
 ```
 
 ### Rollback & Recovery Commands
 ```bash
 # Rollback to specific checkpoint
-./shannon.mjs --rollback-to <agent-name>
+./shaart.mjs --rollback-to <agent-name>
 
 # Rollback and re-execute specific agent
-./shannon.mjs --rerun <agent-name> [--pipeline-testing]
+./shaart.mjs --rerun <agent-name> [--pipeline-testing]
 ```
 
 ### Session Cleanup Commands
 ```bash
 # Delete all sessions (with confirmation)
-./shannon.mjs --cleanup
+./shaart.mjs --cleanup
 
 # Delete specific session by ID
-./shannon.mjs --cleanup <session-id>
+./shaart.mjs --cleanup <session-id>
 ```
 
 ## Environment Variables
@@ -169,13 +169,13 @@ TOTP generation is now handled automatically via the `generate_totp` MCP tool du
 | `ANTHROPIC_API_KEY` | Anthropic API key authentication | Alternative to OAuth |
 | `CLAUDE_CODE_MAX_OUTPUT_TOKENS` | Max output tokens per request (recommend: 64000) | No |
 | `PENTEST_MAX_RETRIES` | Number of AI retry attempts (default: 3) | No |
-| `SHANNON_DOCKER` | Set automatically in Docker container | Auto |
+| `SHAART_DOCKER` | Set automatically in Docker container | Auto |
 | `DEBUG` | Enable debug logging | No |
 
 ## Architecture & Components
 
 ### Main Entry Point
-- `shannon.mjs` - Main orchestration script that coordinates the entire penetration testing workflow
+- `shaart.mjs` - Main orchestration script that coordinates the entire penetration testing workflow
 
 ### Core Modules
 - `src/config-parser.js` - Handles YAML configuration parsing, validation, and distribution to agents
@@ -183,7 +183,7 @@ TOTP generation is now handled automatically via the `generate_totp` MCP tool du
 - `src/tool-checker.js` - Validates availability of external security tools before execution
 - `src/session-manager.js` - Manages persistent session state and agent lifecycle
 - `src/checkpoint-manager.js` - Git-based checkpointing system for rollback capabilities
-- Pipeline orchestration is built into the main `shannon.mjs` script
+- Pipeline orchestration is built into the main `shaart.mjs` script
 - `src/queue-validation.js` - Validates deliverables and agent prerequisites
 
 ### MCP Server (Helper Tools)
@@ -275,7 +275,7 @@ The agent implements a sophisticated checkpoint system using git:
 - Rollback to any previous agent state using `--rollback-to` or `--rerun`
 - Failed agents don't affect completed work
 - Rolled-back agents marked in audit system with status: "rolled-back"
-- Reconciliation automatically syncs Shannon store with audit logs after rollback
+- Reconciliation automatically syncs Shaart store with audit logs after rollback
 - Fail-fast safety prevents accidental re-execution of completed agents
 
 ### Unified Audit & Metrics System
@@ -286,12 +286,12 @@ The agent implements a crash-safe, self-healing audit system (v3.0) with the fol
   - `{hostname}_{sessionId}/session.json` - Comprehensive metrics with attempt-level detail
   - `{hostname}_{sessionId}/prompts/` - Exact prompts used for reproducibility
   - `{hostname}_{sessionId}/agents/` - Turn-by-turn execution logs
-- **.shannon-store.json**: Minimal orchestration state (completedAgents, checkpoints) - can be safely deleted to reset
+- **.shaart-store.json**: Minimal orchestration state (completedAgents, checkpoints) - can be safely deleted to reset
 
 **Session State Reconciliation:**
-- On every CLI command, Shannon reconciles `.shannon-store.json` with `audit-logs/`
+- On every CLI command, Shaart reconciles `.shaart-store.json` with `audit-logs/`
 - Audit logs are the source of truth; the store file follows
-- If store is corrupted, delete it and Shannon will rebuild from audit logs
+- If store is corrupted, delete it and Shaart will rebuild from audit logs
 
 **Crash Safety:**
 - Append-only logging with immediate flush (survives kill -9)
@@ -301,7 +301,7 @@ The agent implements a crash-safe, self-healing audit system (v3.0) with the fol
 **Self-Healing:**
 - Automatic reconciliation before every CLI command
 - Recovers from crashes during rollback
-- Audit logs are source of truth; Shannon store follows
+- Audit logs are source of truth; Shaart store follows
 
 **Forensic Completeness:**
 - All retry attempts logged with errors, costs, durations
@@ -352,9 +352,9 @@ The tool should only be used on systems you own or have explicit permission to t
 ## File Structure
 
 ```
-shannon.mjs                      # Main orchestration script
+shaart.mjs                      # Main orchestration script
 package.json                     # Node.js dependencies
-.shannon-store.json              # Orchestration state (minimal)
+.shaart-store.json              # Orchestration state (minimal)
 src/                             # Core modules
 ├── audit/                       # Unified audit system (v3.0)
 │   ├── index.js                 # Public API
@@ -432,4 +432,4 @@ Missing tools can be skipped using `--pipeline-testing` mode during development:
 ./scripts/export-metrics.js --session-id <id> --output metrics.csv
 ```
 
-Note: For recovery from corrupted state, simply delete `.shannon-store.json` or edit JSON files directly.
+Note: For recovery from corrupted state, simply delete `.shaart-store.json` or edit JSON files directly.

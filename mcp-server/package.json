@@ -1,5 +1,5 @@
 {
-  "name": "@shannon/mcp-server",
+  "name": "@shaart/mcp-server",
   "version": "1.0.0",
   "type": "module",
   "main": "./src/index.js",

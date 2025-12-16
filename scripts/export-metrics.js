@@ -14,7 +14,7 @@
  * DATA SOURCE:
  * - Reads from: audit-logs/{hostname}_{sessionId}/session.json
  * - Source of truth for all metrics, timing, and cost data
- * - Automatically created by Shannon during agent execution
+ * - Automatically created by Shaart during agent execution
  *
  * CSV OUTPUT:
  * - One row per agent with: agent, phase, status, attempts, duration_ms, cost_usd
@@ -35,8 +35,8 @@
  * # Export to file
  * ./scripts/export-metrics.js --session-id abc123 --output metrics.csv
  *
- * # Find session ID from Shannon store
- * cat .shannon-store.json | jq '.sessions | keys'
+ * # Find session ID from Shaart store
+ * cat .shaart-store.json | jq '.sessions | keys'
  * ```
  *
  * NOTE: For raw metrics, just read audit-logs/.../session.json directly.

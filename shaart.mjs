@@ -68,7 +68,7 @@ process.on('SIGTERM', async () => {
 // Main orchestration function
 async function main(webUrl, repoPath, configPath = null, pipelineTestingMode = false, disableLoader = false) {
   // Set global flag for loader control
-  global.SHANNON_DISABLE_LOADER = disableLoader;
+  global.SHAART_DISABLE_LOADER = disableLoader;
 
   const totalTimer = new Timer('total-execution');
   timingResults.total = totalTimer;
@@ -140,8 +140,8 @@ async function main(webUrl, repoPath, configPath = null, pipelineTestingMode = f
   if (process.argv.includes('--setup-only')) {
     console.log(chalk.green('✅ Setup complete! Local repository setup and session created.'));
     console.log(chalk.gray('Use developer commands to run individual agents:'));
-    console.log(chalk.gray('  ./shannon.mjs --run-agent pre-recon'));
-    console.log(chalk.gray('  ./shannon.mjs --status'));
+    console.log(chalk.gray('  ./shaart.mjs --run-agent pre-recon'));
+    console.log(chalk.gray('  ./shaart.mjs --status'));
     process.exit(0);
   }
 
@@ -363,7 +363,7 @@ async function main(webUrl, repoPath, configPath = null, pipelineTestingMode = f
 // Entry point - handle both direct node execution and shebang execution
 let args = process.argv.slice(2);
 // If first arg is the script name (from shebang), remove it
-if (args[0] && args[0].includes('shannon.mjs')) {
+if (args[0] && args[0].includes('shaart.mjs')) {
   args = args.slice(1);
 }
 
@@ -420,7 +420,7 @@ if (args.includes('--help') || args.includes('-h') || args.includes('help')) {
 // Handle developer commands
 if (developerCommand) {
   // Set global flag for loader control in developer mode too
-  global.SHANNON_DISABLE_LOADER = disableLoader;
+  global.SHAART_DISABLE_LOADER = disableLoader;
 
   await handleDeveloperCommand(developerCommand, nonFlagArgs, pipelineTestingMode, runClaudePromptWithRetry, loadPrompt);
 
@@ -437,8 +437,8 @@ if (nonFlagArgs.length === 0) {
 // Handle insufficient arguments
 if (nonFlagArgs.length < 2) {
   console.log(chalk.red('❌ Both WEB_URL and REPO_PATH are required'));
-  console.log(chalk.gray('Usage: ./shannon.mjs <WEB_URL> <REPO_PATH> [--config config.yaml]'));
-  console.log(chalk.gray('Help:  ./shannon.mjs --help'));
+  console.log(chalk.gray('Usage: ./shaart.mjs <WEB_URL> <REPO_PATH> [--config config.yaml]'));
+  console.log(chalk.gray('Help:  ./shaart.mjs --help'));
   process.exit(1);
 }
 

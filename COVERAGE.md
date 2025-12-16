@@ -2,22 +2,22 @@
 
 A Web Security Testing (WST) checklist is a comprehensive guide that systematically outlines security tests for web applications, covering areas like information gathering, authentication, session management, input validation, and error handling to identify and mitigate vulnerabilities.
 
-The checklist below highlights the specific WST categories and items that our product consistently and reliably addresses. While Shannon's dynamic detection often extends to other areas, we believe in transparency and have only checked the vulnerabilities we are designed to consistently catch. **Our coverage is strategically focused on the WST controls that are applicable to today's Web App technology stacks.**
+The checklist below highlights the specific WST categories and items that our product consistently and reliably addresses. While Shaart's dynamic detection often extends to other areas, we believe in transparency and have only checked the vulnerabilities we are designed to consistently catch. **Our coverage is strategically focused on the WST controls that are applicable to today's Web App technology stacks.**
 
 We are actively working to expand this coverage to provide an even more comprehensive security solution for modern web applications.
 
 ## Current Coverage
 
-Shannon currently targets the following classes of *exploitable* vulnerabilities:
+Shaart currently targets the following classes of *exploitable* vulnerabilities:
 - Broken Authentication & Authorization
 - SQL Injection (SQLi)
 - Command Injection
 - Cross-Site Scripting (XSS)
 - Server-Side Request Forgery (SSRF)
 
-## What Shannon Does Not Cover
+## What Shaart Does Not Cover
 
-This list is not exhaustive of all potential security risks. Shannon does not, for example, report on issues that it cannot actively exploit, such as the use of vulnerable third-party libraries, weak encryption algorithms, or insecure configurations. These types of static-analysis findings are the focus of our upcoming **Keygraph Code Security (SAST)** product.
+This list is not exhaustive of all potential security risks. Shaart does not, for example, report on issues that it cannot actively exploit, such as the use of vulnerable third-party libraries, weak encryption algorithms, or insecure configurations. These types of static-analysis findings are the focus of our upcoming **Keygraph Code Security (SAST)** product.
 
 ## WST Testing Checklist
 

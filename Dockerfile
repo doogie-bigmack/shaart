@@ -124,7 +124,7 @@ COPY . .
 
 RUN mkdir -p /app/sessions /app/deliverables /app/repos && \
     chown -R pentest:pentest /app /app/repos && \
-    chmod +x /app/shannon.mjs
+    chmod +x /app/shaart.mjs
 
 
 # Switch to non-root user
@@ -136,10 +136,10 @@ RUN git config --global --add safe.directory '*'
 # Set environment variables
 ENV NODE_ENV=production
 ENV PATH="/usr/local/bin:$PATH"
-ENV SHANNON_DOCKER=true
+ENV SHAART_DOCKER=true
 ENV PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
 ENV PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium-browser
 
 
 # Set entrypoint
-ENTRYPOINT ["./shannon.mjs"]
+ENTRYPOINT ["./shaart.mjs"]

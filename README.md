@@ -1,16 +1,16 @@
 > [!NOTE]
-> **[Shannon Lite achieves a 96.15% success rate on a hint-free, source-aware XBOW benchmark. &rarr;](https://github.com/KeygraphHQ/shannon/tree/main/xben-benchmark-results/README.md)**
+> **[Shaart Lite achieves a 96.15% success rate on a hint-free, source-aware XBOW benchmark. &rarr;](https://github.com/KeygraphHQ/shaart/tree/main/xben-benchmark-results/README.md)**
 
 
 <div align="center">
 
-<img src="./assets/shannon-screen.png" alt="Shannon Screen" width="100%">
+<img src="./assets/shaart-screen.png" alt="Shaart Screen" width="100%">
 
-# Shannon is your fully autonomous AI pentester.
+# Shaart is your fully autonomous AI pentester.
 
-Shannon’s job is simple: break your web app before anyone else does. <br />
+Shaart’s job is simple: break your web app before anyone else does. <br />
 The Red Team to your vibe-coding Blue team. <br />
-Every Claude (coder) deserves their Shannon.
+Every Claude (coder) deserves their Shaart.
 
 ---
 
@@ -19,32 +19,32 @@ Every Claude (coder) deserves their Shannon.
 ---
 </div>
 
-## 🎯 What is Shannon?
+## 🎯 What is Shaart?
 
-Shannon is an AI pentester that delivers actual exploits, not just alerts.
+Shaart is an AI pentester that delivers actual exploits, not just alerts.
 
-Shannon's goal is to break your web app before someone else does. It autonomously hunts for attack vectors in your code, then uses its built-in browser to execute real exploits, such as injection attacks, and auth bypass, to prove the vulnerability is actually exploitable.
+Shaart's goal is to break your web app before someone else does. It autonomously hunts for attack vectors in your code, then uses its built-in browser to execute real exploits, such as injection attacks, and auth bypass, to prove the vulnerability is actually exploitable.
 
-**What Problem Does Shannon Solve?**
+**What Problem Does Shaart Solve?**
 
 Thanks to tools like Claude Code and Cursor, your team ships code non-stop. But your penetration test? That happens once a year. This creates a *massive* security gap. For the other 364 days, you could be unknowingly shipping vulnerabilities to production.
 
-Shannon closes this gap by acting as your on-demand whitebox pentester. It doesn't just find potential issues. It executes real exploits, providing concrete proof of vulnerabilities. This lets you ship with confidence, knowing every build can be secured.
+Shaart closes this gap by acting as your on-demand whitebox pentester. It doesn't just find potential issues. It executes real exploits, providing concrete proof of vulnerabilities. This lets you ship with confidence, knowing every build can be secured.
 
 > [!NOTE]
 > **From Autonomous Pentesting to Automated Compliance**
 >
-> Shannon is a core component of the **Keygraph Security and Compliance Platform**.
+> Shaart is a core component of the **Keygraph Security and Compliance Platform**.
 >
-> While Shannon automates the critical task of penetration testing for your application, our broader platform automates your entire compliance journey—from evidence collection to audit readiness. We're building the "Rippling for Cybersecurity," a single platform to manage your security posture and streamline compliance frameworks like SOC 2 and HIPAA.
+> While Shaart automates the critical task of penetration testing for your application, our broader platform automates your entire compliance journey—from evidence collection to audit readiness. We're building the "Rippling for Cybersecurity," a single platform to manage your security posture and streamline compliance frameworks like SOC 2 and HIPAA.
 >
 > ➡️ **[Learn more about the Keygraph Platform](https://keygraph.io)**
 
-## 🎬 See Shannon in Action
+## 🎬 See Shaart in Action
 
-**Real Results**: Shannon discovered 20+ critical vulnerabilities in OWASP Juice Shop, including complete auth bypass and database exfiltration. [See full report →](sample-reports/shannon-report-juice-shop.md)
+**Real Results**: Shaart discovered 20+ critical vulnerabilities in OWASP Juice Shop, including complete auth bypass and database exfiltration. [See full report →](sample-reports/shaart-report-juice-shop.md)
 
-![Demo](assets/shannon-action.gif)
+![Demo](assets/shaart-action.gif)
 
 ## ✨ Features
 
@@ -57,24 +57,24 @@ Shannon closes this gap by acting as your on-demand whitebox pentester. It doesn
 
 ## 📦 Product Line
 
-Shannon is available in two editions:
+Shaart is available in two editions:
 
 | Edition | License | Best For |
 |---------|---------|----------|
-| **Shannon Lite** | AGPL-3.0 | Security teams, independent researchers, testing your own applications |
-| **Shannon Pro** | Commercial | Enterprises requiring advanced features, CI/CD integration, and dedicated support |
+| **Shaart Lite** | AGPL-3.0 | Security teams, independent researchers, testing your own applications |
+| **Shaart Pro** | Commercial | Enterprises requiring advanced features, CI/CD integration, and dedicated support |
 
-> **This repository contains Shannon Lite,** which utilizes our core autonomous AI pentesting framework. **Shannon Pro** enhances this foundation with an advanced, LLM-powered data flow analysis engine (inspired by the [LLMDFA paper](https://arxiv.org/abs/2402.10754)) for enterprise-grade code analysis and deeper vulnerability detection.
+> **This repository contains Shaart Lite,** which utilizes our core autonomous AI pentesting framework. **Shaart Pro** enhances this foundation with an advanced, LLM-powered data flow analysis engine (inspired by the [LLMDFA paper](https://arxiv.org/abs/2402.10754)) for enterprise-grade code analysis and deeper vulnerability detection.
 
 > [!IMPORTANT]
-> **White-box only.** Shannon Lite is designed for **white-box (source-available)** application security testing.  
+> **White-box only.** Shaart Lite is designed for **white-box (source-available)** application security testing.  
 > It expects access to your application's source code and repository layout.
 
-[See feature comparison](./SHANNON-PRO.md)
+[See feature comparison](./SHAART-PRO.md)
 ## 📑 Table of Contents
 
-- [What is Shannon?](#-what-is-shannon)
-- [See Shannon in Action](#-see-shannon-in-action)
+- [What is Shaart?](#-what-is-shaart)
+- [See Shaart in Action](#-see-shaart-in-action)
 - [Features](#-features)
 - [Product Line](#-product-line)
 - [Setup & Usage Instructions](#-setup--usage-instructions)
@@ -103,7 +103,7 @@ Shannon is available in two editions:
 
 ### Authentication Setup
 
-You need either a **Claude Code OAuth token** or an **Anthropic API key** to run Shannon. Get your token from the [Anthropic Console](https://console.anthropic.com) and pass it to Docker via the `-e` flag.
+You need either a **Claude Code OAuth token** or an **Anthropic API key** to run Shaart. Get your token from the [Anthropic Console](https://console.anthropic.com) and pass it to Docker via the `-e` flag.
 
 ### Environment Configuration (Recommended)
 
@@ -124,12 +124,12 @@ export CLAUDE_CODE_MAX_OUTPUT_TOKENS=64000
 #### Build the Container
 
 ```bash
-docker build -t shannon:latest .
+docker build -t shaart:latest .
 ```
 
 #### Prepare Your Repository
 
-Shannon is designed for **web application security testing** and expects all application code to be available in a single directory structure. This works well for:
+Shaart is designed for **web application security testing** and expects all application code to be available in a single directory structure. This works well for:
 
 - **Monorepos** - Single repository containing all components
 - **Consolidated setups** - Multiple repositories organized in a shared folder
@@ -169,7 +169,7 @@ docker run --rm -it \
       -e CLAUDE_CODE_MAX_OUTPUT_TOKENS=64000 \
       -v "$(pwd)/repos:/app/repos" \
       -v "$(pwd)/configs:/app/configs" \
-      shannon:latest \
+      shaart:latest \
       "https://your-app.com/" \
       "/app/repos/your-app" \
       --config /app/configs/example-config.yaml
@@ -186,7 +186,7 @@ docker run --rm -it \
       -e CLAUDE_CODE_MAX_OUTPUT_TOKENS=64000 \
       -v "$(pwd)/repos:/app/repos" \
       -v "$(pwd)/configs:/app/configs" \
-      shannon:latest \
+      shaart:latest \
       "https://your-app.com/" \
       "/app/repos/your-app" \
       --config /app/configs/example-config.yaml
@@ -211,7 +211,7 @@ docker run --rm -it \
       -e CLAUDE_CODE_MAX_OUTPUT_TOKENS=64000 \
       -v "$(pwd)/repos:/app/repos" \
       -v "$(pwd)/configs:/app/configs" \
-      shannon:latest \
+      shaart:latest \
       "http://host.docker.internal:3000" \
       "/app/repos/your-app" \
       --config /app/configs/example-config.yaml
@@ -270,7 +270,7 @@ If your application uses two-factor authentication, simply add the TOTP secret t
 View progress of previous runs:
 
 ```bash
-docker run --rm shannon:latest --status
+docker run --rm shaart:latest --status
 ```
 
 ### Output and Results
@@ -286,7 +286,7 @@ All analysis results are saved to the `deliverables/` directory:
 
 ## 📊 Sample Reports & Benchmarks
 
-See Shannon's capabilities in action with real penetration test results from industry-standard vulnerable applications:
+See Shaart's capabilities in action with real penetration test results from industry-standard vulnerable applications:
 
 ### Benchmark Results
 
@@ -303,7 +303,7 @@ See Shannon's capabilities in action with real penetration test results from ind
 - **Identified and exploited systemic authorization flaws (IDOR)** to access and modify any user's private data and shopping cart
 - **Discovered a Server-Side Request Forgery (SSRF)** vulnerability, enabling internal network reconnaissance
 
-📄 **[View Complete Report →](sample-reports/shannon-report-juice-shop.md)**
+📄 **[View Complete Report →](sample-reports/shaart-report-juice-shop.md)**
 
 ---
 
@@ -320,7 +320,7 @@ See Shannon's capabilities in action with real penetration test results from ind
 - **Escalated a regular user to full administrator privileges** by exploiting a Mass Assignment vulnerability in the user profile update function
 - **Demonstrated high accuracy** by correctly confirming the application's robust XSS defenses, reporting zero false positives
 
-📄 **[View Complete Report →](sample-reports/shannon-report-capital-api.md)**
+📄 **[View Complete Report →](sample-reports/shaart-report-capital-api.md)**
 
 ---
 
@@ -337,17 +337,17 @@ See Shannon's capabilities in action with real penetration test results from ind
 - **Executed a critical Server-Side Request Forgery (SSRF) attack** that successfully forwarded internal authentication tokens to an external service
 - **Demonstrated high accuracy** by correctly identifying the application's robust XSS defenses, reporting zero false positives
 
-📄 **[View Complete Report →](sample-reports/shannon-report-crapi.md)**
+📄 **[View Complete Report →](sample-reports/shaart-report-crapi.md)**
 
 ---
 
-*These results demonstrate Shannon's ability to move beyond simple scanning, performing deep contextual exploitation with minimal false positives and actionable proof-of-concepts.*
+*These results demonstrate Shaart's ability to move beyond simple scanning, performing deep contextual exploitation with minimal false positives and actionable proof-of-concepts.*
 
 ---
 
 ## 🏗️ Architecture
 
-Shannon emulates a human penetration tester's methodology using a sophisticated multi-agent architecture. It combines white-box source code analysis with black-box dynamic exploitation across four distinct phases:
+Shaart emulates a human penetration tester's methodology using a sophisticated multi-agent architecture. It combines white-box source code analysis with black-box dynamic exploitation across four distinct phases:
 
 ```
                     ┌──────────────────────┐
@@ -379,13 +379,13 @@ Shannon emulates a human penetration tester's methodology using a sophisticated 
 
 ### Architectural Overview
 
-Shannon is engineered to emulate the methodology of a human penetration tester. It leverages Anthropic's Claude Agent SDK as its core reasoning engine, but its true strength lies in the sophisticated multi-agent architecture built around it. This architecture combines the deep context of **white-box source code analysis** with the real-world validation of **black-box dynamic exploitation**, managed by an orchestrator through four distinct phases to ensure a focus on minimal false positives and intelligent context management.
+Shaart is engineered to emulate the methodology of a human penetration tester. It leverages Anthropic's Claude Agent SDK as its core reasoning engine, but its true strength lies in the sophisticated multi-agent architecture built around it. This architecture combines the deep context of **white-box source code analysis** with the real-world validation of **black-box dynamic exploitation**, managed by an orchestrator through four distinct phases to ensure a focus on minimal false positives and intelligent context management.
 
 ---
 
 #### **Phase 1: Reconnaissance**
 
-The first phase builds a comprehensive map of the application's attack surface. Shannon analyzes the source code and integrates with tools like Nmap and Subfinder to understand the tech stack and infrastructure. Simultaneously, it performs live application exploration via browser automation to correlate code-level insights with real-world behavior, producing a detailed map of all entry points, API endpoints, and authentication mechanisms for the next phase.
+The first phase builds a comprehensive map of the application's attack surface. Shaart analyzes the source code and integrates with tools like Nmap and Subfinder to understand the tech stack and infrastructure. Simultaneously, it performs live application exploration via browser automation to correlate code-level insights with real-world behavior, producing a detailed map of all entry points, API endpoints, and authentication mechanisms for the next phase.
 
 #### **Phase 2: Vulnerability Analysis**
 
@@ -402,46 +402,46 @@ The final phase compiles all validated findings into a professional, actionable 
 
 ## 📋 Coverage and Roadmap
 
-For detailed information about Shannon's security testing coverage and development roadmap, see our [Coverage and Roadmap](./COVERAGE.md) documentation.
+For detailed information about Shaart's security testing coverage and development roadmap, see our [Coverage and Roadmap](./COVERAGE.md) documentation.
 
 ## ⚠️ Disclaimers
 
 ### Important Usage Guidelines & Disclaimers
 
-Please review the following guidelines carefully before using Shannon (Lite). As a user, you are responsible for your actions and assume all liability.
+Please review the following guidelines carefully before using Shaart (Lite). As a user, you are responsible for your actions and assume all liability.
 
 #### **1. Potential for Mutative Effects & Environment Selection**
 
 This is not a passive scanner. The exploitation agents are designed to **actively execute attacks** to confirm vulnerabilities. This process can have mutative effects on the target application and its data.
 
 > [!WARNING]
-> **⚠️ DO NOT run Shannon on production environments.**
+> **⚠️ DO NOT run Shaart on production environments.**
 >
 > - It is intended exclusively for use on sandboxed, staging, or local development environments where data integrity is not a concern.
 > - Potential mutative effects include, but are not limited to: creating new users, modifying or deleting data, compromising test accounts, and triggering unintended side effects from injection attacks.
 
 #### **2. Legal & Ethical Use**
 
-Shannon is designed for legitimate security auditing purposes only.
+Shaart is designed for legitimate security auditing purposes only.
 
 > [!CAUTION]
-> **You must have explicit, written authorization** from the owner of the target system before running Shannon.
+> **You must have explicit, written authorization** from the owner of the target system before running Shaart.
 >
-> Unauthorized scanning and exploitation of systems you do not own is illegal and can be prosecuted under laws such as the Computer Fraud and Abuse Act (CFAA). Keygraph is not responsible for any misuse of Shannon.
+> Unauthorized scanning and exploitation of systems you do not own is illegal and can be prosecuted under laws such as the Computer Fraud and Abuse Act (CFAA). Keygraph is not responsible for any misuse of Shaart.
 
 #### **3. LLM & Automation Caveats**
 
 - **Verification is Required**: While significant engineering has gone into our "proof-by-exploitation" methodology to eliminate false positives, the underlying LLMs can still generate hallucinated or weakly-supported content in the final report. **Human oversight is essential** to validate the legitimacy and severity of all reported findings.
-- **Comprehensiveness**: The analysis in Shannon Lite may not be exhaustive due to the inherent limitations of LLM context windows. For a more comprehensive, graph-based analysis of your entire codebase, **Shannon Pro** leverages its advanced data flow analysis engine to ensure deeper and more thorough coverage.
+- **Comprehensiveness**: The analysis in Shaart Lite may not be exhaustive due to the inherent limitations of LLM context windows. For a more comprehensive, graph-based analysis of your entire codebase, **Shaart Pro** leverages its advanced data flow analysis engine to ensure deeper and more thorough coverage.
 
 #### **4. Scope of Analysis**
 
-- **Targeted Vulnerabilities**: The current version of Shannon Lite specifically targets the following classes of *exploitable* vulnerabilities:
+- **Targeted Vulnerabilities**: The current version of Shaart Lite specifically targets the following classes of *exploitable* vulnerabilities:
   - Broken Authentication & Authorization
   - Injection
   - Cross-Site Scripting (XSS)
   - Server-Side Request Forgery (SSRF)
-- **What Shannon Lite Does Not Cover**: This list is not exhaustive of all potential security risks. Shannon Lite's "proof-by-exploitation" model means it will not report on issues it cannot actively exploit, such as vulnerable third-party libraries or insecure configurations. These types of deep static-analysis findings are a core focus of the advanced analysis engine in **Shannon Pro**.
+- **What Shaart Lite Does Not Cover**: This list is not exhaustive of all potential security risks. Shaart Lite's "proof-by-exploitation" model means it will not report on issues it cannot actively exploit, such as vulnerable third-party libraries or insecure configurations. These types of deep static-analysis findings are a core focus of the advanced analysis engine in **Shaart Pro**.
 
 #### **5. Cost & Performance**
 
@@ -450,26 +450,26 @@ Shannon is designed for legitimate security auditing purposes only.
 
 #### **6. Windows Antivirus False Positives**
 
-Windows Defender may flag files in `xben-benchmark-results/` or `deliverables/` as malware. These are false positives caused by exploit code in the reports. Add an exclusion for the Shannon directory in Windows Defender, or use Docker/WSL2.
+Windows Defender may flag files in `xben-benchmark-results/` or `deliverables/` as malware. These are false positives caused by exploit code in the reports. Add an exclusion for the Shaart directory in Windows Defender, or use Docker/WSL2.
 
 
 ## 📜 License
 
-Shannon Lite is released under the [GNU Affero General Public License v3.0 (AGPL-3.0)](LICENSE).
+Shaart Lite is released under the [GNU Affero General Public License v3.0 (AGPL-3.0)](LICENSE).
 
-Shannon is open source (AGPL v3). This license allows you to:
+Shaart is open source (AGPL v3). This license allows you to:
 - Use it freely for all internal security testing.
 - Modify the code privately for internal use without sharing your changes.
 
-The AGPL's sharing requirements primarily apply to organizations offering Shannon as a public or managed service (such as a SaaS platform). In those specific cases, any modifications made to the core software must be open-sourced.
+The AGPL's sharing requirements primarily apply to organizations offering Shaart as a public or managed service (such as a SaaS platform). In those specific cases, any modifications made to the core software must be open-sourced.
 
 
 ## 👥 Community & Support
 
 ### Community Resources
 
-- 🐛 **Report bugs** via [GitHub Issues](https://github.com/keygraph/shannon/issues)
-- 💡 **Suggest features** in [Discussions](https://github.com/keygraph/shannon/discussions)
+- 🐛 **Report bugs** via [GitHub Issues](https://github.com/keygraph/shaart/issues)
+- 💡 **Suggest features** in [Discussions](https://github.com/keygraph/shaart/discussions)
 - 💬 **Join our [Discord](https://discord.gg/u7DRRXrs7H)** for real-time community support
 
 ### Stay Connected
@@ -482,21 +482,21 @@ The AGPL's sharing requirements primarily apply to organizations offering Shanno
 
 ## 💬 Get in Touch
 
-### Interested in Shannon Pro?
+### Interested in Shaart Pro?
 
-Shannon Pro is designed for organizations serious about application security. It offers enterprise-grade features, dedicated support, and seamless CI/CD integration, all powered by our most advanced LLM-based analysis engine. Find and fix complex vulnerabilities deep in your codebase before they ever reach production.
+Shaart Pro is designed for organizations serious about application security. It offers enterprise-grade features, dedicated support, and seamless CI/CD integration, all powered by our most advanced LLM-based analysis engine. Find and fix complex vulnerabilities deep in your codebase before they ever reach production.
 
-For a detailed breakdown of features, technical differences, and enterprise use cases, see our [complete comparison guide](./SHANNON-PRO.md).
+For a detailed breakdown of features, technical differences, and enterprise use cases, see our [complete comparison guide](./SHAART-PRO.md).
 
 <p align="center">
   <a href="https://docs.google.com/forms/d/e/1FAIpQLSf-cPZcWjlfBJ3TCT8AaWpf8ztsw3FaHzJE4urr55KdlQs6cQ/viewform?usp=header" target="_blank">
-    <img src="https://img.shields.io/badge/📋%20Express%20Interest%20in%20Shannon%20Pro-4285F4?style=for-the-badge&logo=google&logoColor=white" alt="Express Interest">
+    <img src="https://img.shields.io/badge/📋%20Express%20Interest%20in%20Shaart%20Pro-4285F4?style=for-the-badge&logo=google&logoColor=white" alt="Express Interest">
   </a>
 </p>
 
 **Or contact us directly:**
 
-📧 **Email**: [shannon@keygraph.io](mailto:shannon@keygraph.io)
+📧 **Email**: [shaart@keygraph.io](mailto:shaart@keygraph.io)
 
 ---
 
