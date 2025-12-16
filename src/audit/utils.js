@@ -18,13 +18,13 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Get Shannon repository root
-export const SHANNON_ROOT = path.resolve(__dirname, '..', '..');
-export const AUDIT_LOGS_DIR = path.join(SHANNON_ROOT, 'audit-logs');
+// Get Shaart repository root
+export const SHAART_ROOT = path.resolve(__dirname, '..', '..');
+export const AUDIT_LOGS_DIR = path.join(SHAART_ROOT, 'audit-logs');
 
 /**
  * Generate standardized session identifier: {hostname}_{sessionId}
- * @param {Object} sessionMetadata - Session metadata from Shannon store
+ * @param {Object} sessionMetadata - Session metadata from Shaart store
  * @param {string} sessionMetadata.id - UUID session ID
  * @param {string} sessionMetadata.webUrl - Target web URL
  * @returns {string} Formatted session identifier

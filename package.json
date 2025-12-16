@@ -1,10 +1,10 @@
 {
-  "name": "shannon",
+  "name": "shaart",
   "version": "1.0.0",
   "type": "module",
-  "main": "shannon.mjs",
+  "main": "shaart.mjs",
   "scripts": {
-    "start": "./shannon.mjs"
+    "start": "./shaart.mjs"
   },
   "dependencies": {
     "@anthropic-ai/claude-agent-sdk": "^0.1.0",
@@ -20,6 +20,6 @@
     "zx": "^8.0.0"
   },
   "bin": {
-    "shannon": "./shannon.mjs"
+    "shaart": "./shaart.mjs"
   }
 }

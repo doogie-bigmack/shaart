@@ -13,17 +13,17 @@ export function showHelp() {
   console.log(chalk.gray('Automated security assessment tool\n'));
 
   console.log(chalk.yellow.bold('NORMAL MODE (Creates Sessions):'));
-  console.log('  ./shannon.mjs <WEB_URL> <REPO_PATH> [--config config.yaml] [--pipeline-testing]');
-  console.log('  ./shannon.mjs <WEB_URL> <REPO_PATH> --setup-only                     # Setup local repo and create session only\n');
+  console.log('  ./shaart.mjs <WEB_URL> <REPO_PATH> [--config config.yaml] [--pipeline-testing]');
+  console.log('  ./shaart.mjs <WEB_URL> <REPO_PATH> --setup-only                     # Setup local repo and create session only\n');
 
   console.log(chalk.yellow.bold('DEVELOPER MODE (Operates on Existing Sessions):'));
-  console.log('  ./shannon.mjs --run-phase <phase-name> [--pipeline-testing]');
-  console.log('  ./shannon.mjs --run-all [--pipeline-testing]');
-  console.log('  ./shannon.mjs --rollback-to <agent-name>');
-  console.log('  ./shannon.mjs --rerun <agent-name> [--pipeline-testing]');
-  console.log('  ./shannon.mjs --status');
-  console.log('  ./shannon.mjs --list-agents');
-  console.log('  ./shannon.mjs --cleanup [session-id]                      # Delete sessions\n');
+  console.log('  ./shaart.mjs --run-phase <phase-name> [--pipeline-testing]');
+  console.log('  ./shaart.mjs --run-all [--pipeline-testing]');
+  console.log('  ./shaart.mjs --rollback-to <agent-name>');
+  console.log('  ./shaart.mjs --rerun <agent-name> [--pipeline-testing]');
+  console.log('  ./shaart.mjs --status');
+  console.log('  ./shaart.mjs --list-agents');
+  console.log('  ./shaart.mjs --cleanup [session-id]                      # Delete sessions\n');
 
   console.log(chalk.yellow.bold('OPTIONS:'));
   console.log('  --config <file>      YAML configuration file for authentication and testing parameters');
@@ -41,17 +41,17 @@ export function showHelp() {
 
   console.log(chalk.yellow.bold('EXAMPLES:'));
   console.log('  # Normal mode - create new session');
-  console.log('  ./shannon.mjs "https://example.com" "/path/to/local/repo"');
-  console.log('  ./shannon.mjs "https://example.com" "/path/to/local/repo" --config auth.yaml');
-  console.log('  ./shannon.mjs "https://example.com" "/path/to/local/repo" --setup-only  # Setup only\n');
+  console.log('  ./shaart.mjs "https://example.com" "/path/to/local/repo"');
+  console.log('  ./shaart.mjs "https://example.com" "/path/to/local/repo" --config auth.yaml');
+  console.log('  ./shaart.mjs "https://example.com" "/path/to/local/repo" --setup-only  # Setup only\n');
 
   console.log('  # Developer mode - operate on existing session');
-  console.log('  ./shannon.mjs --status                    # Show session status');
-  console.log('  ./shannon.mjs --run-phase exploitation    # Run entire phase');
-  console.log('  ./shannon.mjs --run-all                   # Run all remaining agents');
-  console.log('  ./shannon.mjs --rerun xss-vuln           # Fix and rerun failed agent');
-  console.log('  ./shannon.mjs --cleanup                  # Delete all sessions');
-  console.log('  ./shannon.mjs --cleanup <session-id>    # Delete specific session\n');
+  console.log('  ./shaart.mjs --status                    # Show session status');
+  console.log('  ./shaart.mjs --run-phase exploitation    # Run entire phase');
+  console.log('  ./shaart.mjs --run-all                   # Run all remaining agents');
+  console.log('  ./shaart.mjs --rerun xss-vuln           # Fix and rerun failed agent');
+  console.log('  ./shaart.mjs --cleanup                  # Delete all sessions');
+  console.log('  ./shaart.mjs --cleanup <session-id>    # Delete specific session\n');
 
   console.log(chalk.yellow.bold('REQUIREMENTS:'));
   console.log('  • WEB_URL must start with http:// or https://');

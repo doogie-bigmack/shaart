@@ -25,7 +25,7 @@ import {
  */
 export class MetricsTracker {
   /**
-   * @param {Object} sessionMetadata - Session metadata from Shannon store
+   * @param {Object} sessionMetadata - Session metadata from Shaart store
    */
   constructor(sessionMetadata) {
     this.sessionMetadata = sessionMetadata;

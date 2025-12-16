@@ -38,7 +38,7 @@ export async function setupLocalRepo(repoPath) {
       // Non-fatal - continue without Git setup
     }
 
-    // MCP tools (save_deliverable, generate_totp) are now available natively via shannon-helper MCP server
+    // MCP tools (save_deliverable, generate_totp) are now available natively via shaart-helper MCP server
     // No need to copy bash scripts to target repository
 
     return sourceDir;

@@ -55,7 +55,7 @@ export async function handleDeveloperCommand(command, args, pipelineTestingMode,
     if (command === '--run-phase') {
       if (!args[0]) {
         console.log(chalk.red('❌ --run-phase requires a phase name'));
-        console.log(chalk.gray('Usage: ./shannon.mjs --run-phase <phase-name>'));
+        console.log(chalk.gray('Usage: ./shaart.mjs --run-phase <phase-name>'));
         process.exit(1);
       }
       validatePhase(args[0]); // This will throw PentestError if invalid
@@ -64,7 +64,7 @@ export async function handleDeveloperCommand(command, args, pipelineTestingMode,
     if (command === '--rollback-to' || command === '--rerun') {
       if (!args[0]) {
         console.log(chalk.red(`❌ ${command} requires an agent name`));
-        console.log(chalk.gray(`Usage: ./shannon.mjs ${command} <agent-name>`));
+        console.log(chalk.gray(`Usage: ./shaart.mjs ${command} <agent-name>`));
         process.exit(1);
       }
       validateAgent(args[0]); // This will throw PentestError if invalid
@@ -79,7 +79,7 @@ export async function handleDeveloperCommand(command, args, pipelineTestingMode,
     }
 
     // Self-healing: Reconcile session with audit logs before executing command
-    // This ensures Shannon store is consistent with audit data, even after crash recovery
+    // This ensures Shaart store is consistent with audit data, even after crash recovery
     try {
       const reconcileReport = await reconcileSession(session.id);
 

@@ -135,7 +135,7 @@ export const PHASES = Object.freeze({
 });
 
 // Session store file path
-const STORE_FILE = path.join(process.cwd(), '.shannon-store.json');
+const STORE_FILE = path.join(process.cwd(), '.shaart-store.json');
 
 // Load sessions from store file
 const loadSessions = async () => {
@@ -418,7 +418,7 @@ export const getNextAgent = (session) => {
 
 // Mark agent as completed with checkpoint
 // NOTE: Timing, cost, and validation data now managed by AuditSession (audit-logs/session.json)
-// Shannon store contains ONLY orchestration state (completedAgents, checkpoints)
+// Shaart store contains ONLY orchestration state (completedAgents, checkpoints)
 export const markAgentCompleted = async (sessionId, agentName, checkpointCommit) => {
   // Use mutex to prevent race conditions during parallel agent execution
   const unlock = await sessionMutex.lock(sessionId);
@@ -579,14 +579,14 @@ export const rollbackToAgent = async (sessionId, targetAgent) => {
 };
 
 /**
- * Reconcile Shannon store with audit logs (self-healing)
+ * Reconcile Shaart store with audit logs (self-healing)
  *
- * This function ensures the Shannon store (.shannon-store.json) is consistent with
+ * This function ensures the Shaart store (.shaart-store.json) is consistent with
  * the audit logs (audit-logs/session.json) by syncing agent completion status.
  *
  * Three-part reconciliation:
- * 1. PROMOTIONS: Agents completed/failed in audit → added to Shannon store
- * 2. DEMOTIONS: Agents rolled-back in audit → removed from Shannon store
+ * 1. PROMOTIONS: Agents completed/failed in audit → added to Shaart store
+ * 2. DEMOTIONS: Agents rolled-back in audit → removed from Shaart store
  * 3. VERIFICATION: Ensure audit state fully reflected in orchestration
  *
  * Critical for crash recovery, especially crash during rollback operations.
@@ -597,14 +597,14 @@ export const rollbackToAgent = async (sessionId, targetAgent) => {
 export const reconcileSession = async (sessionId) => {
   const { AuditSession } = await import('./audit/index.js');
 
-  // Get Shannon store session
-  const shannonSession = await getSession(sessionId);
-  if (!shannonSession) {
-    throw new PentestError(`Session ${sessionId} not found in Shannon store`, 'validation', false);
+  // Get Shaart store session
+  const shaartSession = await getSession(sessionId);
+  if (!shaartSession) {
+    throw new PentestError(`Session ${sessionId} not found in Shaart store`, 'validation', false);
   }
 
   // Get audit session data
-  const auditSession = new AuditSession(shannonSession);
+  const auditSession = new AuditSession(shaartSession);
   await auditSession.initialize();
   const auditData = await auditSession.getMetrics();
 
@@ -615,12 +615,12 @@ export const reconcileSession = async (sessionId) => {
   };
 
   // PART 1: PROMOTIONS (Additive)
-  // Find agents completed in audit but not in Shannon store
+  // Find agents completed in audit but not in Shaart store
   const auditCompleted = Object.entries(auditData.metrics.agents)
     .filter(([_, agentData]) => agentData.status === 'success')
     .map(([agentName]) => agentName);
 
-  const missing = auditCompleted.filter(agent => !shannonSession.completedAgents.includes(agent));
+  const missing = auditCompleted.filter(agent => !shaartSession.completedAgents.includes(agent));
 
   for (const agentName of missing) {
     const agentData = auditData.metrics.agents[agentName];
@@ -630,12 +630,12 @@ export const reconcileSession = async (sessionId) => {
   }
 
   // PART 2: DEMOTIONS (Subtractive) - CRITICAL FOR ROLLBACK RECOVERY
-  // Find agents rolled-back in audit but still in Shannon store
+  // Find agents rolled-back in audit but still in Shaart store
   const auditRolledBack = Object.entries(auditData.metrics.agents)
     .filter(([_, agentData]) => agentData.status === 'rolled-back')
     .map(([agentName]) => agentName);
 
-  const toRemove = shannonSession.completedAgents.filter(agent => auditRolledBack.includes(agent));
+  const toRemove = shaartSession.completedAgents.filter(agent => auditRolledBack.includes(agent));
 
   if (toRemove.length > 0) {
     // Reload session to get fresh state
@@ -653,12 +653,12 @@ export const reconcileSession = async (sessionId) => {
   }
 
   // PART 3: FAILURES
-  // Find agents failed in audit but not marked failed in Shannon store
+  // Find agents failed in audit but not marked failed in Shaart store
   const auditFailed = Object.entries(auditData.metrics.agents)
     .filter(([_, agentData]) => agentData.status === 'failed')
     .map(([agentName]) => agentName);
 
-  const failedToAdd = auditFailed.filter(agent => !shannonSession.failedAgents.includes(agent));
+  const failedToAdd = auditFailed.filter(agent => !shaartSession.failedAgents.includes(agent));
 
   for (const agentName of failedToAdd) {
     await markAgentFailed(sessionId, agentName);
