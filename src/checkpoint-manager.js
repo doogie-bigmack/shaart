@@ -83,7 +83,7 @@ const rollbackGitToCommit = async (targetRepo, commitHash) => {
 };
 
 // Run a single agent with retry logic and checkpointing
-const runSingleAgent = async (agentName, session, pipelineTestingMode, runClaudePromptWithRetry, loadPrompt, allowRerun = false, skipWorkspaceClean = false) => {
+const runSingleAgent = async (agentName, session, pipelineTestingMode, runClaudePromptWithRetry, loadPrompt, allowRerun = false, skipWorkspaceClean = false, modelConfig = null) => {
   // Validate agent first
   const agent = validateAgent(agentName);
 
@@ -198,7 +198,8 @@ const runSingleAgent = async (agentName, session, pipelineTestingMode, runClaude
       AGENTS[agentName].displayName,
       agentName,  // Pass agent name for snapshot creation
       getAgentColor(agentName),  // Pass color function for this agent
-      { id: session.id, webUrl: session.webUrl, repoPath: session.repoPath }  // Session metadata for audit logging
+      { id: session.id, webUrl: session.webUrl, repoPath: session.repoPath },  // Session metadata for audit logging
+      modelConfig  // Model configuration for cost optimization
     );
     
     if (!result.success) {
@@ -306,7 +307,7 @@ const runSingleAgent = async (agentName, session, pipelineTestingMode, runClaude
 };
 
 // Run multiple agents in sequence
-const runAgentRange = async (startAgent, endAgent, session, pipelineTestingMode, runClaudePromptWithRetry, loadPrompt) => {
+const runAgentRange = async (startAgent, endAgent, session, pipelineTestingMode, runClaudePromptWithRetry, loadPrompt, modelConfig = null) => {
   const agents = validateAgentRange(startAgent, endAgent);
   
   console.log(chalk.cyan(`\n🔄 Running agent range: ${startAgent} to ${endAgent} (${agents.length} agents)`));
@@ -319,7 +320,7 @@ const runAgentRange = async (startAgent, endAgent, session, pipelineTestingMode,
     }
     
     try {
-      await runSingleAgent(agent.name, session, pipelineTestingMode, runClaudePromptWithRetry, loadPrompt);
+      await runSingleAgent(agent.name, session, pipelineTestingMode, runClaudePromptWithRetry, loadPrompt, false, false, modelConfig);
     } catch (error) {
       console.log(chalk.red(`❌ Agent range execution stopped at '${agent.name}' due to failure`));
       throw error;
@@ -330,7 +331,7 @@ const runAgentRange = async (startAgent, endAgent, session, pipelineTestingMode,
 };
 
 // Run vulnerability agents in parallel
-const runParallelVuln = async (session, pipelineTestingMode, runClaudePromptWithRetry, loadPrompt) => {
+const runParallelVuln = async (session, pipelineTestingMode, runClaudePromptWithRetry, loadPrompt, modelConfig = null) => {
   const vulnAgents = ['injection-vuln', 'xss-vuln', 'auth-vuln', 'ssrf-vuln', 'authz-vuln'];
   const activeAgents = vulnAgents.filter(agent => !session.completedAgents.includes(agent));
 
@@ -358,7 +359,7 @@ const runParallelVuln = async (session, pipelineTestingMode, runClaudePromptWith
       while (attempts < maxAttempts) {
         attempts++;
         try {
-          const result = await runSingleAgent(agentName, session, pipelineTestingMode, runClaudePromptWithRetry, loadPrompt, false, true);
+          const result = await runSingleAgent(agentName, session, pipelineTestingMode, runClaudePromptWithRetry, loadPrompt, false, true, modelConfig);
           return { agentName, ...result, attempts };
         } catch (error) {
           lastError = error;
@@ -428,7 +429,7 @@ const runParallelVuln = async (session, pipelineTestingMode, runClaudePromptWith
 };
 
 // Run exploitation agents in parallel
-const runParallelExploit = async (session, pipelineTestingMode, runClaudePromptWithRetry, loadPrompt) => {
+const runParallelExploit = async (session, pipelineTestingMode, runClaudePromptWithRetry, loadPrompt, modelConfig = null) => {
   const exploitAgents = ['injection-exploit', 'xss-exploit', 'auth-exploit', 'ssrf-exploit', 'authz-exploit'];
 
   // Get fresh session data to ensure we have the latest vulnerability analysis results
@@ -497,7 +498,7 @@ const runParallelExploit = async (session, pipelineTestingMode, runClaudePromptW
       while (attempts < maxAttempts) {
         attempts++;
         try {
-          const result = await runSingleAgent(agentName, freshSession, pipelineTestingMode, runClaudePromptWithRetry, loadPrompt, false, true);
+          const result = await runSingleAgent(agentName, freshSession, pipelineTestingMode, runClaudePromptWithRetry, loadPrompt, false, true, modelConfig);
           return { agentName, ...result, attempts };
         } catch (error) {
           lastError = error;
@@ -567,13 +568,13 @@ const runParallelExploit = async (session, pipelineTestingMode, runClaudePromptW
 };
 
 // Run all agents in a phase
-export const runPhase = async (phaseName, session, pipelineTestingMode, runClaudePromptWithRetry, loadPrompt) => {
+export const runPhase = async (phaseName, session, pipelineTestingMode, runClaudePromptWithRetry, loadPrompt, modelConfig = null) => {
   console.log(chalk.cyan(`\n📋 Running phase: ${phaseName} (parallel execution)`));
 
   // Use parallel execution for both vulnerability-analysis and exploitation phases
   if (phaseName === 'vulnerability-analysis') {
     console.log(chalk.cyan('🚀 Using parallel execution for 5x faster vulnerability analysis'));
-    const results = await runParallelVuln(session, pipelineTestingMode, runClaudePromptWithRetry, loadPrompt);
+    const results = await runParallelVuln(session, pipelineTestingMode, runClaudePromptWithRetry, loadPrompt, modelConfig);
 
     if (results.failed.length > 0) {
       console.log(chalk.yellow(`⚠️  ${results.failed.length} agents failed, but phase continues`));
@@ -588,7 +589,7 @@ export const runPhase = async (phaseName, session, pipelineTestingMode, runClaud
 
   if (phaseName === 'exploitation') {
     console.log(chalk.cyan('🎯 Using parallel execution for 5x faster exploitation'));
-    const results = await runParallelExploit(session, pipelineTestingMode, runClaudePromptWithRetry, loadPrompt);
+    const results = await runParallelExploit(session, pipelineTestingMode, runClaudePromptWithRetry, loadPrompt, modelConfig);
 
     if (results.failed.length > 0) {
       console.log(chalk.yellow(`⚠️  ${results.failed.length} agents failed, but phase continues`));
@@ -610,7 +611,7 @@ export const runPhase = async (phaseName, session, pipelineTestingMode, runClaud
       return;
     }
 
-    await runSingleAgent(agent.name, session, pipelineTestingMode, runClaudePromptWithRetry, loadPrompt);
+    await runSingleAgent(agent.name, session, pipelineTestingMode, runClaudePromptWithRetry, loadPrompt, false, false, modelConfig);
     console.log(chalk.green(`✅ Phase '${phaseName}' completed successfully`));
   } else {
     throw new PentestError(`Phase '${phaseName}' has multiple agents but no parallel execution defined`, 'validation', false);
@@ -667,7 +668,7 @@ export const rollbackTo = async (targetAgent, session) => {
 };
 
 // Rerun specific agent (rollback to previous + run current)
-export const rerunAgent = async (agentName, session, pipelineTestingMode, runClaudePromptWithRetry, loadPrompt) => {
+export const rerunAgent = async (agentName, session, pipelineTestingMode, runClaudePromptWithRetry, loadPrompt, modelConfig = null) => {
   console.log(chalk.cyan(`🔁 Rerunning agent: ${agentName}`));
   
   const agent = validateAgent(agentName);
@@ -703,13 +704,13 @@ export const rerunAgent = async (agentName, session, pipelineTestingMode, runCla
   }
   
   // Run the target agent (allow rerun since we've explicitly rolled back)
-  await runSingleAgent(agentName, session, pipelineTestingMode, runClaudePromptWithRetry, loadPrompt, true);
-  
+  await runSingleAgent(agentName, session, pipelineTestingMode, runClaudePromptWithRetry, loadPrompt, true, false, modelConfig);
+
   console.log(chalk.green(`✅ Agent '${agentName}' rerun completed successfully`));
 };
 
 // Run all remaining agents to completion
-export const runAll = async (session, pipelineTestingMode, runClaudePromptWithRetry, loadPrompt) => {
+export const runAll = async (session, pipelineTestingMode, runClaudePromptWithRetry, loadPrompt, modelConfig = null) => {
   // Get all agents in order
   const allAgentNames = Object.keys(AGENTS);
   
@@ -731,9 +732,9 @@ export const runAll = async (session, pipelineTestingMode, runClaudePromptWithRe
   
   // Run each remaining agent in sequence
   for (const agentName of remainingAgents) {
-    await runSingleAgent(agentName, session, pipelineTestingMode, runClaudePromptWithRetry, loadPrompt);
+    await runSingleAgent(agentName, session, pipelineTestingMode, runClaudePromptWithRetry, loadPrompt, false, false, modelConfig);
   }
-  
+
   console.log(chalk.green(`\n🎉 All agents completed successfully! Session marked as completed.`));
 };
 

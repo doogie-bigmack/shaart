@@ -227,7 +227,8 @@ async function main(webUrl, repoPath, configPath = null, pipelineTestingMode = f
       AGENTS['recon'].displayName,
       'recon',  // Agent name for snapshot creation
       chalk.cyan,
-      { id: session.id, webUrl }  // Session metadata for audit logging (STANDARD: use 'id' field)
+      { id: session.id, webUrl },  // Session metadata for audit logging (STANDARD: use 'id' field)
+      distributedConfig?.models  // Model configuration for cost optimization
     );
     const reconDuration = reconTimer.stop();
     timingResults.phases['recon'] = reconDuration;
@@ -241,7 +242,7 @@ async function main(webUrl, repoPath, configPath = null, pipelineTestingMode = f
     const vulnTimer = new Timer('phase-3-vulnerability-analysis');
     console.log(chalk.red.bold('\n🚨 PHASE 3: VULNERABILITY ANALYSIS'));
 
-    await runPhase('vulnerability-analysis', session, pipelineTestingMode, runClaudePromptWithRetry, loadPrompt);
+    await runPhase('vulnerability-analysis', session, pipelineTestingMode, runClaudePromptWithRetry, loadPrompt, distributedConfig?.models);
 
     // Display vulnerability analysis summary
     const currentSession = await getSession(session.id);
@@ -261,7 +262,7 @@ async function main(webUrl, repoPath, configPath = null, pipelineTestingMode = f
 
     // Get fresh session data to ensure we have latest vulnerability analysis results
     const freshSession = await getSession(session.id);
-    await runPhase('exploitation', freshSession, pipelineTestingMode, runClaudePromptWithRetry, loadPrompt);
+    await runPhase('exploitation', freshSession, pipelineTestingMode, runClaudePromptWithRetry, loadPrompt, distributedConfig?.models);
 
     // Display exploitation summary
     const finalSession = await getSession(session.id);
@@ -303,7 +304,8 @@ async function main(webUrl, repoPath, configPath = null, pipelineTestingMode = f
       'Executive Summary and Report Cleanup',
       'report',  // Agent name for snapshot creation
       chalk.cyan,
-      { id: session.id, webUrl }  // Session metadata for audit logging (STANDARD: use 'id' field)
+      { id: session.id, webUrl },  // Session metadata for audit logging (STANDARD: use 'id' field)
+      distributedConfig?.models  // Model configuration for cost optimization
     );
 
     const reportDuration = reportTimer.stop();

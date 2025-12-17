@@ -15,7 +15,7 @@ import { ProgressIndicator } from '../progress-indicator.js';
 import { timingResults, costResults, Timer } from '../utils/metrics.js';
 import { formatDuration } from '../audit/utils.js';
 import { createGitCheckpoint, commitGitSuccess, rollbackGitWorkspace } from '../utils/git-manager.js';
-import { AGENT_VALIDATORS, MCP_AGENT_MAPPING } from '../constants.js';
+import { AGENT_VALIDATORS, MCP_AGENT_MAPPING, DEFAULT_MODEL_CONFIG, AGENT_MODEL_PHASES } from '../constants.js';
 import { filterJsonToolCalls, getAgentPrefix } from '../utils/output-formatter.js';
 import { generateSessionLogPath } from '../session-manager.js';
 import { AuditSession } from '../audit/index.js';
@@ -23,6 +23,38 @@ import { createShaartHelperServer } from '../../mcp-server/src/index.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+
+/**
+ * Select appropriate model based on agent type and user configuration
+ * Implements multi-model strategy for cost optimization:
+ * - Haiku for analysis (pre-recon, recon, vulnerability) - ~60x cheaper
+ * - Sonnet for exploitation and reporting - complex reasoning
+ *
+ * @param {string} agentName - Agent name (e.g., 'pre-recon', 'xss-vuln', 'injection-exploit')
+ * @param {object} modelConfig - User-provided model configuration (optional)
+ * @returns {string} Model identifier to use for this agent
+ */
+function selectModelForAgent(agentName, modelConfig = null) {
+  // Get the phase for this agent (analysis, exploitation, or reporting)
+  const phase = AGENT_MODEL_PHASES[agentName];
+
+  if (!phase) {
+    console.log(chalk.yellow(`    ⚠️  Unknown agent "${agentName}", using default Sonnet model`));
+    return 'claude-sonnet-4-5-20250929';
+  }
+
+  // Use user-provided model config if available, otherwise use defaults
+  const effectiveConfig = modelConfig || DEFAULT_MODEL_CONFIG;
+  const selectedModel = effectiveConfig[phase] || DEFAULT_MODEL_CONFIG[phase];
+
+  // Log model selection for transparency
+  const modelName = selectedModel.includes('haiku') ? 'Haiku' :
+                   selectedModel.includes('sonnet') ? 'Sonnet' :
+                   selectedModel.includes('opus') ? 'Opus' : selectedModel;
+  console.log(chalk.gray(`    🤖 Model: ${modelName} (${phase} phase)`));
+
+  return selectedModel;
+}
 
 /**
  * Convert agent name to prompt name for MCP_AGENT_MAPPING lookup
@@ -98,7 +130,7 @@ async function validateAgentOutput(result, agentName, sourceDir) {
 // - Output validation
 // - Prompt snapshotting for debugging
 // - Git checkpoint/rollback safety
-async function runClaudePrompt(prompt, sourceDir, allowedTools = 'Read', context = '', description = 'Claude analysis', agentName = null, colorFn = chalk.cyan, sessionMetadata = null, auditSession = null, attemptNumber = 1) {
+async function runClaudePrompt(prompt, sourceDir, allowedTools = 'Read', context = '', description = 'Claude analysis', agentName = null, colorFn = chalk.cyan, sessionMetadata = null, auditSession = null, attemptNumber = 1, modelConfig = null) {
   const timer = new Timer(`agent-${description.toLowerCase().replace(/\s+/g, '-')}`);
   const fullPrompt = context ? `${context}\n\n${prompt}` : prompt;
   let totalCost = 0;
@@ -192,8 +224,11 @@ async function runClaudePrompt(prompt, sourceDir, allowedTools = 'Read', context
       };
     }
 
+    // Select model based on agent type and user configuration
+    const selectedModel = agentName ? selectModelForAgent(agentName, modelConfig) : 'claude-sonnet-4-5-20250929';
+
     const options = {
-      model: 'claude-sonnet-4-5-20250929', // Use latest Claude 4.5 Sonnet
+      model: selectedModel, // Multi-model strategy: Haiku for analysis, Sonnet for exploitation
       maxTurns: 10_000, // Maximum turns for autonomous work
       cwd: sourceDir, // Set working directory using SDK option
       permissionMode: 'bypassPermissions', // Bypass all permission checks for pentesting
@@ -400,6 +435,13 @@ async function runClaudePrompt(prompt, sourceDir, allowedTools = 'Read', context
         // Store cost for return value and partial tracking
         totalCost = cost;
         partialCost = cost;
+
+        // Log model and cost information for user transparency
+        const modelName = selectedModel.includes('haiku') ? 'Haiku' :
+                         selectedModel.includes('sonnet') ? 'Sonnet' :
+                         selectedModel.includes('opus') ? 'Opus' : selectedModel;
+        console.log(chalk.gray(`    💰 Cost: $${cost.toFixed(4)} (${modelName})`));
+
         break;
       } else {
         // Log any other message types we might not be handling
@@ -560,7 +602,8 @@ async function runClaudePrompt(prompt, sourceDir, allowedTools = 'Read', context
 // - Git checkpoint/rollback safety for workspace protection
 // - Comprehensive error handling and logging
 // - Crash-safe audit logging via AuditSession
-export async function runClaudePromptWithRetry(prompt, sourceDir, allowedTools = 'Read', context = '', description = 'Claude analysis', agentName = null, colorFn = chalk.cyan, sessionMetadata = null) {
+// - Multi-model strategy for cost optimization
+export async function runClaudePromptWithRetry(prompt, sourceDir, allowedTools = 'Read', context = '', description = 'Claude analysis', agentName = null, colorFn = chalk.cyan, sessionMetadata = null, modelConfig = null) {
   const maxRetries = 3;
   let lastError;
   let retryContext = context; // Preserve context between retries
@@ -585,7 +628,7 @@ export async function runClaudePromptWithRetry(prompt, sourceDir, allowedTools =
     }
 
     try {
-      const result = await runClaudePrompt(prompt, sourceDir, allowedTools, retryContext, description, agentName, colorFn, sessionMetadata, auditSession, attempt);
+      const result = await runClaudePrompt(prompt, sourceDir, allowedTools, retryContext, description, agentName, colorFn, sessionMetadata, auditSession, attempt, modelConfig);
 
       // Validate output after successful run
       if (result.success) {

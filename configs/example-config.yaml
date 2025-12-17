@@ -1,6 +1,14 @@
 # Example configuration file for pentest-agent
 # Copy this file and modify it for your specific testing needs
 
+# Multi-model strategy for cost optimization
+# Haiku is ~60x cheaper than Sonnet, perfect for analysis tasks
+# Defaults shown below can be overridden per phase
+models:
+  analysis: claude-haiku-4-5-20250929      # Pre-recon, recon, vulnerability analysis
+  exploitation: claude-sonnet-4-5-20250929 # Exploitation attempts (complex reasoning)
+  reporting: claude-sonnet-4-5-20250929    # Final report generation
+
 authentication:
   login_type: form  # Options: 'form' or 'sso'
   login_url: "https://example.com/login"
