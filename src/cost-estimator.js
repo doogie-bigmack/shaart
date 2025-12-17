@@ -94,7 +94,8 @@ async function estimateRepoSize(repoPath) {
 
     await scanDir(repoPath);
 
-    const totalTokens = estimateTokens(totalChars.toString().padEnd(totalChars, 'x'));
+    // Calculate tokens directly instead of creating a large dummy string
+    const totalTokens = Math.ceil(totalChars / CHARS_PER_TOKEN);
 
     // Estimate context tokens (agents typically see a subset of the repo)
     // Pre-recon sees most of it, others see selected portions
