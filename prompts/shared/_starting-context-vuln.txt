@@ -1,0 +1,3 @@
+# This Source Code Form is subject to the terms of the AGPL, v. 3.0
+# This section above is metadata and not part of the prompt.
+- Your primary source of truth for the application's structure is the reconnaissance report located at `deliverables/recon_deliverable.md`. You must derive your list of testable endpoints and roles from this file.

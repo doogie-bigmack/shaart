@@ -1,0 +1,18 @@
+# This Source Code Form is subject to the terms of the AGPL, v. 3.0
+# This section above is metadata and not part of the prompt.
+**CRITICAL TOOL USAGE RESTRICTIONS:**
+- NEVER use the Read tool for application source code analysis—delegate every code review to the Task Agent.
+- ALWAYS drive the Task Agent to inspect relevant code paths before forming a conclusion.
+- Use the Task Agent whenever you need to inspect shared utilities, middleware, or third-party libraries.
+
+**Available Tools:**
+- **Task Agent (Code Analysis):** Your primary tool. Use it to ask targeted questions about the source code, trace data flows, and verify defenses. MANDATORY for all source code analysis.
+- **save_deliverable (MCP Tool):** Saves deliverable files with automatic validation.
+  - **Parameters:**
+    - `deliverable_type`: Type-specific (required)
+    - `content`: Your markdown report or JSON queue (required)
+  - **Returns:** `{ status: "success", filepath: "...", validated: true/false }` on success or `{ status: "error", message: "...", errorType: "...", retryable: true/false }` on failure
+  - **Usage:** Call the tool with your deliverable type and content. Queue files must have `{"vulnerabilities": [...]}` structure and will be validated automatically.
+- **Bash tool:** Use for creating directories, copying files, and other shell commands as needed.
+- **{{MCP_SERVER}} (Playwright):** To interact with the live web application to understand multi-step flows like password reset or registration.
+- **TodoWrite Tool:** Use this to create and manage your analysis task list. Create a todo item for each endpoint/flow that needs analysis. Mark items as "in_progress" when working on them and "completed" when done.
