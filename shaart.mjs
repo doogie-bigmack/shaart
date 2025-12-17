@@ -33,6 +33,7 @@ import { assembleFinalReport } from './src/phases/reporting.js';
 // Utils
 import { timingResults, costResults, displayTimingSummary, Timer } from './src/utils/metrics.js';
 import { formatDuration, generateAuditPath } from './src/audit/utils.js';
+import { estimateTotalCost } from './src/cost-estimator.js';
 
 // CLI
 import { handleDeveloperCommand } from './src/cli/command-handler.js';
@@ -371,6 +372,7 @@ if (args[0] && args[0].includes('shaart.mjs')) {
 let configPath = null;
 let pipelineTestingMode = false;
 let disableLoader = false;
+let estimateCost = false;
 const nonFlagArgs = [];
 let developerCommand = null;
 const developerCommands = ['--run-phase', '--run-all', '--rollback-to', '--rerun', '--status', '--list-agents', '--cleanup'];
@@ -388,6 +390,8 @@ for (let i = 0; i < args.length; i++) {
     pipelineTestingMode = true;
   } else if (args[i] === '--disable-loader') {
     disableLoader = true;
+  } else if (args[i] === '--estimate-cost') {
+    estimateCost = true;
   } else if (developerCommands.includes(args[i])) {
     developerCommand = args[i];
     // Collect remaining args for the developer command
@@ -470,6 +474,21 @@ if (pipelineTestingMode) {
 }
 if (disableLoader) {
   console.log(chalk.yellow('⚙️  LOADER DISABLED - Progress indicator will not be shown\n'));
+}
+
+// Handle cost estimation mode
+if (estimateCost) {
+  try {
+    await estimateTotalCost(webUrl, repoPathValidation.path, configPath);
+    process.exit(0);
+  } catch (error) {
+    console.log(chalk.red.bold('\n🚨 COST ESTIMATION FAILED'));
+    console.log(chalk.red(`   Error: ${error?.message || error?.toString() || 'Unknown error'}`));
+    if (process.env.DEBUG) {
+      console.log(chalk.gray(`   Stack: ${error?.stack || 'No stack trace available'}`));
+    }
+    process.exit(1);
+  }
 }
 
 try {
