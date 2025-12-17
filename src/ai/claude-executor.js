@@ -148,13 +148,7 @@ async function runClaudePrompt(prompt, sourceDir, allowedTools = 'Read', context
   const statusManager = null;
 
   // Setup progress indicator for clean output agents (unless disabled via flag)
-  let progressIndicator = null;
-  if (useCleanOutput && !global.SHAART_DISABLE_LOADER) {
-    const agentType = description.includes('Pre-recon') ? 'pre-reconnaissance' :
-                     description.includes('Recon') ? 'reconnaissance' :
-                     description.includes('Report') ? 'report generation' : 'analysis';
-    progressIndicator = new ProgressIndicator(`Running ${agentType}...`, { maxTurns: options.maxTurns });
-  }
+  // Note: progressIndicator is initialized after options is defined (see below)
 
   // NOTE: Logging now handled by AuditSession (append-only, crash-safe)
   // Legacy log path generation kept for compatibility
@@ -238,6 +232,15 @@ async function runClaudePrompt(prompt, sourceDir, allowedTools = 'Read', context
     // SDK Options only shown for verbose agents (not clean output)
     if (!useCleanOutput) {
       console.log(chalk.gray(`    SDK Options: maxTurns=${options.maxTurns}, cwd=${sourceDir}, permissions=BYPASS`));
+    }
+
+    // Initialize progress indicator now that options is defined
+    let progressIndicator = null;
+    if (useCleanOutput && !global.SHAART_DISABLE_LOADER) {
+      const agentType = description.includes('Pre-recon') ? 'pre-reconnaissance' :
+                       description.includes('Recon') ? 'reconnaissance' :
+                       description.includes('Report') ? 'report generation' : 'analysis';
+      progressIndicator = new ProgressIndicator(`Running ${agentType}...`, { maxTurns: options.maxTurns });
     }
 
     let result = null;
