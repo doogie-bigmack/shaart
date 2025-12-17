@@ -7,12 +7,27 @@
 import chalk from 'chalk';
 
 export class ProgressIndicator {
-  constructor(message = 'Working...') {
+  constructor(message = 'Working...', options = {}) {
     this.message = message;
     this.frames = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'];
     this.frameIndex = 0;
     this.interval = null;
     this.isRunning = false;
+
+    // Enhanced progress tracking
+    this.currentTurn = 0;
+    this.maxTurns = options.maxTurns || 50;
+    this.currentActivity = '';
+    this.startTime = null;
+    this.tokenUsage = {
+      input: 0,
+      output: 0,
+      total: 0
+    };
+    this.lastLoggedPercentage = -1; // Track last percentage logged in non-TTY mode
+
+    // Check if we're in a TTY environment
+    this.isTTY = process.stdout.isTTY;
   }
 
   start() {
@@ -20,10 +35,10 @@ export class ProgressIndicator {
 
     this.isRunning = true;
     this.frameIndex = 0;
+    this.startTime = Date.now();
 
     this.interval = setInterval(() => {
-      // Clear the line and write the spinner
-      process.stdout.write(`\r${chalk.cyan(this.frames[this.frameIndex])} ${chalk.dim(this.message)}`);
+      this.render();
       this.frameIndex = (this.frameIndex + 1) % this.frames.length;
     }, 100);
   }
@@ -36,9 +51,90 @@ export class ProgressIndicator {
       this.interval = null;
     }
 
-    // Clear the spinner line
-    process.stdout.write('\r' + ' '.repeat(this.message.length + 5) + '\r');
+    // Clear the progress display
+    if (this.isTTY) {
+      process.stdout.write('\r\x1b[K'); // Clear current line
+    }
     this.isRunning = false;
+  }
+
+  updateProgress(turn, activity = '', tokens = null) {
+    this.currentTurn = turn;
+    this.currentActivity = activity;
+
+    if (tokens) {
+      this.tokenUsage = {
+        input: tokens.input || 0,
+        output: tokens.output || 0,
+        total: (tokens.input || 0) + (tokens.output || 0)
+      };
+    }
+  }
+
+  render() {
+    if (!this.isRunning) return;
+
+    const percentage = Math.min(Math.round((this.currentTurn / this.maxTurns) * 100), 100);
+    const barLength = 20;
+    const filledLength = Math.round((barLength * percentage) / 100);
+    const emptyLength = barLength - filledLength;
+    const progressBar = '='.repeat(filledLength) + '>'.padEnd(emptyLength, ' ');
+
+    // Calculate estimated time remaining
+    const elapsed = Date.now() - this.startTime;
+    const estimatedTotal = this.currentTurn > 0 ? (elapsed / this.currentTurn) * this.maxTurns : 0;
+    const remaining = Math.max(0, estimatedTotal - elapsed);
+    const remainingMinutes = Math.round(remaining / 60000);
+
+    if (this.isTTY) {
+      // TTY mode: Use carriage return for live updates
+      let output = '';
+
+      // Line 1: Progress bar with percentage
+      output += `${chalk.cyan(this.frames[this.frameIndex])} ${chalk.dim(this.message)}\n`;
+      output += `[${chalk.green(progressBar)}] ${chalk.bold(percentage + '%')} (Turn ${this.currentTurn}/${this.maxTurns})\n`;
+
+      // Line 2: Current activity
+      if (this.currentActivity) {
+        const activityText = this.currentActivity.length > 80
+          ? this.currentActivity.slice(0, 77) + '...'
+          : this.currentActivity;
+        output += `${chalk.dim('Current:')} ${activityText}\n`;
+      }
+
+      // Line 3: Time estimate
+      if (this.currentTurn > 0) {
+        const timeText = remainingMinutes > 0
+          ? `${remainingMinutes} minute${remainingMinutes !== 1 ? 's' : ''}`
+          : 'less than a minute';
+        output += `${chalk.dim('Estimated time remaining:')} ${timeText}\n`;
+      }
+
+      // Line 4: Token usage
+      if (this.tokenUsage.total > 0) {
+        output += `${chalk.dim('Tokens:')} ${this.tokenUsage.total.toLocaleString()} `;
+        output += chalk.gray(`(Input: ${this.tokenUsage.input.toLocaleString()}, Output: ${this.tokenUsage.output.toLocaleString()})`);
+      }
+
+      // Move cursor up to overwrite previous output
+      const lineCount = 4 + (this.currentActivity ? 0 : -1) + (this.currentTurn > 0 ? 0 : -1);
+      process.stdout.write('\r\x1b[K' + output);
+      if (this.frameIndex > 0) {
+        process.stdout.write(`\x1b[${lineCount}A`); // Move cursor up
+      }
+    } else {
+      // Non-TTY mode: Print periodic updates (every 10%)
+      if (percentage % 10 === 0 && percentage !== this.lastLoggedPercentage) {
+        console.log(`[${progressBar}] ${percentage}% (Turn ${this.currentTurn}/${this.maxTurns})`);
+        if (this.currentActivity) {
+          console.log(`Current: ${this.currentActivity}`);
+        }
+        if (this.tokenUsage.total > 0) {
+          console.log(`Tokens: ${this.tokenUsage.total.toLocaleString()} (Input: ${this.tokenUsage.input.toLocaleString()}, Output: ${this.tokenUsage.output.toLocaleString()})`);
+        }
+        this.lastLoggedPercentage = percentage;
+      }
+    }
   }
 
   finish(successMessage = 'Complete') {

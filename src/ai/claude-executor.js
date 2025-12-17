@@ -121,7 +121,7 @@ async function runClaudePrompt(prompt, sourceDir, allowedTools = 'Read', context
     const agentType = description.includes('Pre-recon') ? 'pre-reconnaissance' :
                      description.includes('Recon') ? 'reconnaissance' :
                      description.includes('Report') ? 'report generation' : 'analysis';
-    progressIndicator = new ProgressIndicator(`Running ${agentType}...`);
+    progressIndicator = new ProgressIndicator(`Running ${agentType}...`, { maxTurns: options.maxTurns });
   }
 
   // NOTE: Logging now handled by AuditSession (append-only, crash-safe)
@@ -236,6 +236,21 @@ async function runClaudePrompt(prompt, sourceDir, allowedTools = 'Read', context
         const content = Array.isArray(message.message.content)
           ? message.message.content.map(c => c.text || JSON.stringify(c)).join('\n')
           : message.message.content;
+
+        // Update progress indicator every 5 turns with current activity
+        if (progressIndicator && turnCount % 5 === 0) {
+          // Extract current activity from assistant message
+          const activityMatch = content.match(/(?:analyzing|testing|scanning|checking|reviewing|examining)\s+([^\n.!?]+)/i);
+          const activity = activityMatch ? activityMatch[0] : '';
+
+          // Extract token usage from message if available
+          const tokens = message.message.usage ? {
+            input: message.message.usage.input_tokens || 0,
+            output: message.message.usage.output_tokens || 0
+          } : null;
+
+          progressIndicator.updateProgress(turnCount, activity, tokens);
+        }
 
         if (statusManager) {
           // Smart status updates for parallel execution
