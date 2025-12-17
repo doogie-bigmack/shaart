@@ -8,6 +8,7 @@ import { fs, path } from 'zx';
 import chalk from 'chalk';
 import { PentestError, handlePromptError } from '../error-handling.js';
 import { MCP_AGENT_MAPPING } from '../constants.js';
+import { PromptBuilder } from './prompt-builder.js';
 
 // Pure function: Build complete login instructions from config
 async function buildLoginInstructions(authentication) {
@@ -188,6 +189,11 @@ async function interpolateVariables(template, variables, config = null) {
     );
   }
 }
+
+/**
+ * Export PromptBuilder for external use
+ */
+export { PromptBuilder };
 
 // Pure function: Load and interpolate prompt template
 export async function loadPrompt(promptName, variables, config = null, pipelineTestingMode = false) {
