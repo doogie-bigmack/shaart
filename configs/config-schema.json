@@ -105,12 +105,41 @@
       "type": "object",
       "description": "Deprecated: Use 'authentication' section instead",
       "deprecated": true
+    },
+    "models": {
+      "type": "object",
+      "description": "Model selection configuration for cost optimization",
+      "properties": {
+        "analysis": {
+          "type": "string",
+          "enum": ["claude-haiku-4-5-20250929", "claude-sonnet-4-5-20250929", "claude-opus-4-5-20251101"],
+          "default": "claude-haiku-4-5-20250929",
+          "description": "Model to use for analysis/reconnaissance tasks (pre-recon, recon, vulnerability analysis)"
+        },
+        "exploitation": {
+          "type": "string",
+          "enum": ["claude-haiku-4-5-20250929", "claude-sonnet-4-5-20250929", "claude-opus-4-5-20251101"],
+          "default": "claude-sonnet-4-5-20250929",
+          "description": "Model to use for exploitation tasks (requires complex reasoning)"
+        },
+        "reporting": {
+          "type": "string",
+          "enum": ["claude-haiku-4-5-20250929", "claude-sonnet-4-5-20250929", "claude-opus-4-5-20251101"],
+          "default": "claude-sonnet-4-5-20250929",
+          "description": "Model to use for final report generation and synthesis"
+        }
+      },
+      "additionalProperties": false
     }
   },
   "anyOf": [
     {"required": ["authentication"]},
     {"required": ["rules"]},
-    {"required": ["authentication", "rules"]}
+    {"required": ["models"]},
+    {"required": ["authentication", "rules"]},
+    {"required": ["authentication", "models"]},
+    {"required": ["rules", "models"]},
+    {"required": ["authentication", "rules", "models"]}
   ],
   "additionalProperties": false,
   "$defs": {

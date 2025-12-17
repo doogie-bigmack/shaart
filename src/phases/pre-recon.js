@@ -106,7 +106,8 @@ async function runPreReconWave1(webUrl, sourceDir, variables, config, pipelineTe
         AGENTS['pre-recon'].displayName,
         'pre-recon',  // Agent name for snapshot creation
         chalk.cyan,
-        { id: sessionId, webUrl }  // Session metadata for audit logging (STANDARD: use 'id' field)
+        { id: sessionId, webUrl },  // Session metadata for audit logging (STANDARD: use 'id' field)
+        config?.models  // Model configuration for cost optimization
       )
     );
     const [codeAnalysis] = await Promise.all(operations);
@@ -129,7 +130,8 @@ async function runPreReconWave1(webUrl, sourceDir, variables, config, pipelineTe
         AGENTS['pre-recon'].displayName,
         'pre-recon',  // Agent name for snapshot creation
         chalk.cyan,
-        { id: sessionId, webUrl }  // Session metadata for audit logging (STANDARD: use 'id' field)
+        { id: sessionId, webUrl },  // Session metadata for audit logging (STANDARD: use 'id' field)
+        config?.models  // Model configuration for cost optimization
       )
     );
   }

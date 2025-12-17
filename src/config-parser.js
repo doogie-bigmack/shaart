@@ -283,11 +283,13 @@ export const distributeConfig = (config) => {
   const avoid = config?.rules?.avoid || [];
   const focus = config?.rules?.focus || [];
   const authentication = config?.authentication || null;
-  
+  const models = config?.models || null;
+
   return {
     avoid: avoid.map(sanitizeRule),
     focus: focus.map(sanitizeRule),
-    authentication: authentication ? sanitizeAuthentication(authentication) : null
+    authentication: authentication ? sanitizeAuthentication(authentication) : null,
+    models: models || null  // Pass through model config (already validated by schema)
   };
 };
 

@@ -8,6 +8,33 @@ import { path, fs } from 'zx';
 import chalk from 'chalk';
 import { validateQueueAndDeliverable } from './queue-validation.js';
 
+// Default model configuration for multi-model strategy (cost optimization)
+// Haiku is ~60x cheaper than Sonnet, perfect for analysis tasks
+// Sonnet is used for complex reasoning in exploitation and reporting
+export const DEFAULT_MODEL_CONFIG = Object.freeze({
+  analysis: 'claude-haiku-4-5-20250929',      // Pre-recon, recon, vulnerability analysis
+  exploitation: 'claude-sonnet-4-5-20250929', // Exploitation attempts
+  reporting: 'claude-sonnet-4-5-20250929'     // Final report synthesis
+});
+
+// Agent to model phase mapping
+// Maps each agent to its model phase (analysis, exploitation, or reporting)
+export const AGENT_MODEL_PHASES = Object.freeze({
+  'pre-recon': 'analysis',
+  'recon': 'analysis',
+  'injection-vuln': 'analysis',
+  'xss-vuln': 'analysis',
+  'auth-vuln': 'analysis',
+  'ssrf-vuln': 'analysis',
+  'authz-vuln': 'analysis',
+  'injection-exploit': 'exploitation',
+  'xss-exploit': 'exploitation',
+  'auth-exploit': 'exploitation',
+  'ssrf-exploit': 'exploitation',
+  'authz-exploit': 'exploitation',
+  'report': 'reporting'
+});
+
 // Factory function for vulnerability queue validators
 function createVulnValidator(vulnType) {
   return async (sourceDir) => {
