@@ -114,7 +114,6 @@ async function runPreReconWave1(webUrl, sourceDir, variables, config, pipelineTe
       nmap: 'Skipped (pipeline testing mode)',
       subfinder: 'Skipped (pipeline testing mode)',
       whatweb: 'Skipped (pipeline testing mode)',
-
       codeAnalysis
     };
   } else {
@@ -138,9 +137,9 @@ async function runPreReconWave1(webUrl, sourceDir, variables, config, pipelineTe
   // Check if authentication config is provided for login instructions injection
   console.log(chalk.gray(`    → Config check: ${config ? 'present' : 'missing'}, Auth: ${config?.authentication ? 'present' : 'missing'}`));
 
-  const [nmap, subfinder, whatweb, naabu, codeAnalysis] = await Promise.all(operations);
+  const [nmap, subfinder, whatweb, codeAnalysis] = await Promise.all(operations);
 
-  return { nmap, subfinder, whatweb, naabu, codeAnalysis };
+  return { nmap, subfinder, whatweb, codeAnalysis };
 }
 
 // Wave 2: Additional scanning
@@ -190,7 +189,7 @@ async function runPreReconWave2(webUrl, sourceDir, toolAvailability, pipelineTes
 
 // Pure function: Stitch together pre-recon outputs and save to file
 async function stitchPreReconOutputs(outputs, sourceDir) {
-  const [nmap, subfinder, whatweb, naabu, codeAnalysis, ...additionalScans] = outputs;
+  const [nmap, subfinder, whatweb, codeAnalysis, ...additionalScans] = outputs;
 
   // Try to read the code analysis deliverable file
   let codeAnalysisContent = 'No analysis available';
@@ -222,10 +221,6 @@ ${scan.output}
   const report = `
 # Pre-Reconnaissance Report
 
-## Port Discovery (naabu)
-Status: ${naabu?.status || 'Skipped'}
-${naabu?.output || naabu || 'No output'}
-
 ## Network Scanning (nmap)
 Status: ${nmap?.status || 'Skipped'}
 ${nmap?.output || nmap || 'No output'}
@@ -237,6 +232,7 @@ ${subfinder?.output || subfinder || 'No output'}
 ## Technology Detection (whatweb)
 Status: ${whatweb?.status || 'Skipped'}
 ${whatweb?.output || whatweb || 'No output'}
+
 ## Code Analysis
 ${codeAnalysisContent}
 ${additionalSection}
@@ -282,7 +278,6 @@ export async function executePreReconPhase(webUrl, sourceDir, variables, config,
     wave1Results.nmap,
     wave1Results.subfinder,
     wave1Results.whatweb,
-    wave1Results.naabu,
     wave1Results.codeAnalysis,
     ...(wave2Results.schemathesis ? [wave2Results.schemathesis] : [])
   ];
