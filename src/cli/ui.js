@@ -14,6 +14,7 @@ export function showHelp() {
 
   console.log(chalk.yellow.bold('NORMAL MODE (Creates Sessions):'));
   console.log('  ./shaart.mjs <WEB_URL> <REPO_PATH> [--config config.yaml] [--pipeline-testing]');
+  console.log('  ./shaart.mjs <WEB_URL> <REPO_PATH> --estimate-cost                  # Preview token usage and cost');
   console.log('  ./shaart.mjs <WEB_URL> <REPO_PATH> --setup-only                     # Setup local repo and create session only\n');
 
   console.log(chalk.yellow.bold('DEVELOPER MODE (Operates on Existing Sessions):'));
@@ -27,6 +28,7 @@ export function showHelp() {
 
   console.log(chalk.yellow.bold('OPTIONS:'));
   console.log('  --config <file>      YAML configuration file for authentication and testing parameters');
+  console.log('  --estimate-cost      Preview token usage and estimated cost without running the scan');
   console.log('  --pipeline-testing   Use minimal prompts for fast pipeline testing (creates minimal deliverables)');
   console.log('  --disable-loader     Disable the animated progress loader (useful when logs interfere with spinner)\n');
 
@@ -43,7 +45,8 @@ export function showHelp() {
   console.log('  # Normal mode - create new session');
   console.log('  ./shaart.mjs "https://example.com" "/path/to/local/repo"');
   console.log('  ./shaart.mjs "https://example.com" "/path/to/local/repo" --config auth.yaml');
-  console.log('  ./shaart.mjs "https://example.com" "/path/to/local/repo" --setup-only  # Setup only\n');
+  console.log('  ./shaart.mjs "https://example.com" "/path/to/local/repo" --estimate-cost  # Preview cost');
+  console.log('  ./shaart.mjs "https://example.com" "/path/to/local/repo" --setup-only     # Setup only\n');
 
   console.log('  # Developer mode - operate on existing session');
   console.log('  ./shaart.mjs --status                    # Show session status');
