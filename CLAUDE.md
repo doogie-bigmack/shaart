@@ -240,7 +240,7 @@ The `prompts/` directory contains specialized prompt templates for each testing 
 The agent uses the `@anthropic-ai/claude-agent-sdk` with maximum autonomy configuration:
 - `maxTurns: 10_000` - Allows extensive autonomous analysis
 - `permissionMode: 'bypassPermissions'` - Full system access for thorough testing
-- Playwright MCP integration for web browser automation
+- Chrome DevTools MCP integration for web browser automation via Chrome DevTools Protocol
 - Working directory set to target local repository
 - Configuration context injection for authenticated testing
 

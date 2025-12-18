@@ -70,7 +70,7 @@ RUN apk update && apk add --no-cache \
     npm \
     python3 \
     ruby \
-    # Chromium browser and dependencies for Playwright
+    # Chromium browser and dependencies for Chrome DevTools MCP
     chromium \
     # Additional libraries Chromium needs
     nss \
@@ -137,8 +137,8 @@ RUN git config --global --add safe.directory '*'
 ENV NODE_ENV=production
 ENV PATH="/usr/local/bin:$PATH"
 ENV SHAART_DOCKER=true
-ENV PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
-ENV PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium-browser
+# Chrome DevTools MCP server will use system Chromium
+ENV CHROME_EXECUTABLE_PATH=/usr/bin/chromium-browser
 
 
 # Set entrypoint

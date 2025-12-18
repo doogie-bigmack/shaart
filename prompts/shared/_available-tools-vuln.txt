@@ -14,5 +14,5 @@
   - **Returns:** `{ status: "success", filepath: "...", validated: true/false }` on success or `{ status: "error", message: "...", errorType: "...", retryable: true/false }` on failure
   - **Usage:** Call the tool with your deliverable type and content. Queue files must have `{"vulnerabilities": [...]}` structure and will be validated automatically.
 - **Bash tool:** Use for creating directories, copying files, and other shell commands as needed.
-- **{{MCP_SERVER}} (Playwright):** To interact with the live web application to understand multi-step flows like password reset or registration.
+- **{{MCP_SERVER}} (Chrome DevTools):** To interact with the live web application via Chrome DevTools Protocol to understand multi-step flows like password reset or registration.
 - **TodoWrite Tool:** Use this to create and manage your analysis task list. Create a todo item for each endpoint/flow that needs analysis. Mark items as "in_progress" when working on them and "completed" when done.

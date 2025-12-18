@@ -1,8 +1,8 @@
 # This Source Code Form is subject to the terms of the AGPL, v. 3.0
 # This section above is metadata and not part of the prompt.
 <!-- BEGIN:COMMON -->
-**IF you are not already logged in when you open playwright, these are the login instructions** 
-**NOTE: playwright automatically saves sessions so ensure you are not already logged in before executing these steps**
+**IF you are not already logged in when you open the browser, these are the login instructions**
+**NOTE: The browser automatically saves sessions so ensure you are not already logged in before executing these steps**
 
 <user_provided_configuration>
 {{user_instructions}}
@@ -14,7 +14,7 @@ Execute the login flow based on the login_type specified in the configuration:
 
 <!-- BEGIN:FORM -->
 **Form-based authentication:**
-1. Navigate to the specified login_url using Playwright
+1. Navigate to the specified login_url using the browser
 2. Execute each step in the login_flow array sequentially:
    - Replace $username with the provided username credential
    - Replace $password with the provided password credential
@@ -26,7 +26,7 @@ Execute the login flow based on the login_type specified in the configuration:
 
 <!-- BEGIN:SSO -->
 **SSO authentication:**
-1. Navigate to the specified login_url using Playwright
+1. Navigate to the specified login_url using the browser
 2. Execute each step in the login_flow array sequentially:
    - Click the SSO provider button (e.g., "Sign in with Google")
    - Handle account selection if prompted

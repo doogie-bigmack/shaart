@@ -169,52 +169,53 @@ async function runClaudePrompt(prompt, sourceDir, allowedTools = 'Read', context
     // Create MCP server with target directory context
     const shaartHelperServer = createShaartHelperServer(sourceDir);
 
-    // Look up agent's assigned Playwright MCP server
+    // Look up agent's assigned Chrome DevTools MCP server
     // Convert agent name (e.g., 'xss-vuln') to prompt name (e.g., 'vuln-xss')
-    let playwrightMcpName = null;
+    let chromeDevToolsMcpName = null;
     if (agentName) {
       const promptName = agentNameToPromptName(agentName);
-      playwrightMcpName = MCP_AGENT_MAPPING[promptName];
+      chromeDevToolsMcpName = MCP_AGENT_MAPPING[promptName];
 
-      if (playwrightMcpName) {
-        console.log(chalk.gray(`    🎭 Assigned ${agentName} → ${playwrightMcpName}`));
+      if (chromeDevToolsMcpName) {
+        console.log(chalk.gray(`    🌐 Assigned ${agentName} → ${chromeDevToolsMcpName}`));
       }
     }
 
-    // Configure MCP servers: shaart-helper (SDK) + playwright-agentN (stdio)
+    // Configure MCP servers: shaart-helper (SDK) + chrome-devtools-agentN (stdio)
     const mcpServers = {
       'shaart-helper': shaartHelperServer,
     };
 
-    // Add Playwright MCP server if this agent needs browser automation
-    if (playwrightMcpName) {
-      const userDataDir = `/tmp/${playwrightMcpName}`;
+    // Add Chrome DevTools MCP server if this agent needs browser automation
+    if (chromeDevToolsMcpName) {
+      const userDataDir = `/tmp/${chromeDevToolsMcpName}`;
 
       // Detect if running in Docker via explicit environment variable
       const isDocker = process.env.SHAART_DOCKER === 'true';
 
-      // Build args array - conditionally add --executable-path for Docker
+      // Build args array for Chrome DevTools MCP server
       const mcpArgs = [
-        '@playwright/mcp@latest',
-        '--isolated',
-        '--user-data-dir', userDataDir,
+        '@modelcontextprotocol/server-chrome-devtools@latest'
       ];
 
-      // Docker: Use system Chromium; Local: Use Playwright's bundled browsers
+      // Configure Chrome launch options
+      const chromeEnv = {
+        ...process.env,
+        // Chrome DevTools MCP server uses these env vars for configuration
+        CHROME_USER_DATA_DIR: userDataDir,
+        CHROME_HEADLESS: 'true', // Ensure headless mode for security and CI compatibility
+      };
+
+      // Docker: Use system Chromium; Local: Use Chrome's default installation
       if (isDocker) {
-        mcpArgs.push('--executable-path', '/usr/bin/chromium-browser');
-        mcpArgs.push('--browser', 'chromium');
+        chromeEnv.CHROME_EXECUTABLE_PATH = '/usr/bin/chromium-browser';
       }
 
-      mcpServers[playwrightMcpName] = {
+      mcpServers[chromeDevToolsMcpName] = {
         type: 'stdio',
         command: 'npx',
         args: mcpArgs,
-        env: {
-          ...process.env,
-          PLAYWRIGHT_HEADLESS: 'true', // Ensure headless mode for security and CI compatibility
-          ...(isDocker && { PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: '1' }), // Only skip in Docker
-        },
+        env: chromeEnv,
       };
     }
 

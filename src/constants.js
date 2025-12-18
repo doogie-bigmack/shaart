@@ -56,34 +56,34 @@ function createExploitValidator(vulnType) {
   };
 }
 
-// MCP agent mapping - assigns each agent to a specific Playwright instance to prevent conflicts
+// MCP agent mapping - assigns each agent to a specific Chrome DevTools instance to prevent conflicts
 export const MCP_AGENT_MAPPING = Object.freeze({
   // Phase 1: Pre-reconnaissance (actual prompt name is 'pre-recon-code')
   // NOTE: Pre-recon is pure code analysis and doesn't use browser automation,
   // but assigning MCP server anyway for consistency and future extensibility
-  'pre-recon-code': 'playwright-agent1',
+  'pre-recon-code': 'chrome-devtools-agent1',
 
   // Phase 2: Reconnaissance (actual prompt name is 'recon')
-  'recon': 'playwright-agent2',
+  'recon': 'chrome-devtools-agent2',
 
   // Phase 3: Vulnerability Analysis (5 parallel agents)
-  'vuln-injection': 'playwright-agent1',
-  'vuln-xss': 'playwright-agent2',
-  'vuln-auth': 'playwright-agent3',
-  'vuln-ssrf': 'playwright-agent4',
-  'vuln-authz': 'playwright-agent5',
+  'vuln-injection': 'chrome-devtools-agent1',
+  'vuln-xss': 'chrome-devtools-agent2',
+  'vuln-auth': 'chrome-devtools-agent3',
+  'vuln-ssrf': 'chrome-devtools-agent4',
+  'vuln-authz': 'chrome-devtools-agent5',
 
   // Phase 4: Exploitation (5 parallel agents - same as vuln counterparts)
-  'exploit-injection': 'playwright-agent1',
-  'exploit-xss': 'playwright-agent2',
-  'exploit-auth': 'playwright-agent3',
-  'exploit-ssrf': 'playwright-agent4',
-  'exploit-authz': 'playwright-agent5',
+  'exploit-injection': 'chrome-devtools-agent1',
+  'exploit-xss': 'chrome-devtools-agent2',
+  'exploit-auth': 'chrome-devtools-agent3',
+  'exploit-ssrf': 'chrome-devtools-agent4',
+  'exploit-authz': 'chrome-devtools-agent5',
 
   // Phase 5: Reporting (actual prompt name is 'report-executive')
   // NOTE: Report generation is typically text-based and doesn't use browser automation,
   // but assigning MCP server anyway for potential screenshot inclusion or future needs
-  'report-executive': 'playwright-agent3'
+  'report-executive': 'chrome-devtools-agent3'
 });
 
 // Direct agent-to-validator mapping - much simpler than pattern matching
