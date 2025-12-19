@@ -6,6 +6,7 @@
 
 import { $ } from 'zx';
 import chalk from 'chalk';
+import { systemMessage, statusLine, COLORS } from '../cli/terminal-ui.js';
 
 // Global git operations semaphore to prevent index.lock conflicts during parallel execution
 class GitSemaphore {
@@ -64,7 +65,10 @@ export const executeGitCommandWithRetry = async (commandArgs, sourceDir, descrip
 
         if (isLockError && attempt < maxRetries) {
           const delay = Math.pow(2, attempt - 1) * 1000; // Exponential backoff: 1s, 2s, 4s, 8s, 16s
-          console.log(chalk.yellow(`    ⚠️ Git lock conflict during ${description} (attempt ${attempt}/${maxRetries}). Retrying in ${delay}ms...`));
+          console.log(statusLine('!', `Git lock conflict during ${description} (attempt ${attempt}/${maxRetries}). Retrying in ${delay}ms...`, {
+            color: COLORS.warning,
+            indent: 4
+          }));
           await new Promise(resolve => setTimeout(resolve, delay));
           continue;
         }
@@ -79,7 +83,10 @@ export const executeGitCommandWithRetry = async (commandArgs, sourceDir, descrip
 
 // Pure functions for Git workspace management
 const cleanWorkspace = async (sourceDir, reason = 'clean start') => {
-  console.log(chalk.blue(`    🧹 Cleaning workspace for ${reason}`));
+  console.log(statusLine('>', `Cleaning workspace for ${reason}`, {
+    color: COLORS.primary,
+    indent: 4
+  }));
   try {
     // Check for uncommitted changes
     const status = await $`cd ${sourceDir} && git status --porcelain`;
@@ -88,35 +95,53 @@ const cleanWorkspace = async (sourceDir, reason = 'clean start') => {
     if (hasChanges) {
       // Show what we're about to remove
       const changes = status.stdout.trim().split('\n').filter(line => line.length > 0);
-      console.log(chalk.yellow(`    🔄 Rolling back workspace for ${reason}`));
+      console.log(statusLine('<', `Rolling back workspace for ${reason}`, {
+        color: COLORS.warning,
+        indent: 4
+      }));
 
       await $`cd ${sourceDir} && git reset --hard HEAD`;
       await $`cd ${sourceDir} && git clean -fd`;
 
-      console.log(chalk.yellow(`    ✅ Rollback completed - removed ${changes.length} contaminated changes:`));
-      changes.slice(0, 3).forEach(change => console.log(chalk.gray(`       ${change}`)));
+      console.log(statusLine('+', `Rollback completed - removed ${changes.length} contaminated changes:`, {
+        color: COLORS.warning,
+        indent: 4
+      }));
+      changes.slice(0, 3).forEach(change => console.log(chalk.hex(COLORS.dim)(`       ${change}`)));
       if (changes.length > 3) {
-        console.log(chalk.gray(`       ... and ${changes.length - 3} more files`));
+        console.log(chalk.hex(COLORS.dim)(`       ... and ${changes.length - 3} more files`));
       }
     } else {
-      console.log(chalk.blue(`    ✅ Workspace already clean (no changes to remove)`));
+      console.log(statusLine('+', 'Workspace already clean (no changes to remove)', {
+        color: COLORS.primary,
+        indent: 4
+      }));
     }
     return { success: true, hadChanges: hasChanges };
   } catch (error) {
-    console.log(chalk.yellow(`    ⚠️ Workspace cleanup failed: ${error.message}`));
+    console.log(statusLine('!', `Workspace cleanup failed: ${error.message}`, {
+      color: COLORS.warning,
+      indent: 4
+    }));
     return { success: false, error };
   }
 };
 
 export const createGitCheckpoint = async (sourceDir, description, attempt) => {
-  console.log(chalk.blue(`    📍 Creating checkpoint for ${description} (attempt ${attempt})`));
+  console.log(statusLine('>', `Creating checkpoint for ${description} (attempt ${attempt})`, {
+    color: COLORS.primary,
+    indent: 4
+  }));
   try {
     // Only clean workspace on retry attempts (attempt > 1), not on first attempts
     // This preserves deliverables between agents while still cleaning on actual retries
     if (attempt > 1) {
       const cleanResult = await cleanWorkspace(sourceDir, `${description} (retry cleanup)`);
       if (!cleanResult.success) {
-        console.log(chalk.yellow(`    ⚠️ Workspace cleanup failed, continuing anyway: ${cleanResult.error.message}`));
+        console.log(statusLine('!', `Workspace cleanup failed, continuing anyway: ${cleanResult.error.message}`, {
+          color: COLORS.warning,
+          indent: 4
+        }));
       }
     }
 
@@ -128,22 +153,34 @@ export const createGitCheckpoint = async (sourceDir, description, attempt) => {
     await executeGitCommandWithRetry(['git', 'add', '-A'], sourceDir, 'staging changes');
 
     // Create commit with retry logic
-    await executeGitCommandWithRetry(['git', 'commit', '-m', `📍 Checkpoint: ${description} (attempt ${attempt})`, '--allow-empty'], sourceDir, 'creating commit');
+    await executeGitCommandWithRetry(['git', 'commit', '-m', `Checkpoint: ${description} (attempt ${attempt})`, '--allow-empty'], sourceDir, 'creating commit');
 
     if (hasChanges) {
-      console.log(chalk.blue(`    ✅ Checkpoint created with uncommitted changes staged`));
+      console.log(statusLine('+', 'Checkpoint created with uncommitted changes staged', {
+        color: COLORS.primary,
+        indent: 4
+      }));
     } else {
-      console.log(chalk.blue(`    ✅ Empty checkpoint created (no workspace changes)`));
+      console.log(statusLine('+', 'Checkpoint created (no workspace changes)', {
+        color: COLORS.primary,
+        indent: 4
+      }));
     }
     return { success: true };
   } catch (error) {
-    console.log(chalk.yellow(`    ⚠️ Checkpoint creation failed after retries: ${error.message}`));
+    console.log(statusLine('!', `Checkpoint creation failed after retries: ${error.message}`, {
+      color: COLORS.warning,
+      indent: 4
+    }));
     return { success: false, error };
   }
 };
 
 export const commitGitSuccess = async (sourceDir, description) => {
-  console.log(chalk.green(`    💾 Committing successful results for ${description}`));
+  console.log(statusLine('>', `Committing successful results for ${description}`, {
+    color: COLORS.primary,
+    indent: 4
+  }));
   try {
     // Check what we're about to commit with retry logic
     const status = await executeGitCommandWithRetry(['git', 'status', '--porcelain'], sourceDir, 'status check for success commit');
@@ -153,26 +190,38 @@ export const commitGitSuccess = async (sourceDir, description) => {
     await executeGitCommandWithRetry(['git', 'add', '-A'], sourceDir, 'staging changes for success commit');
 
     // Create success commit with retry logic
-    await executeGitCommandWithRetry(['git', 'commit', '-m', `✅ ${description}: completed successfully`, '--allow-empty'], sourceDir, 'creating success commit');
+    await executeGitCommandWithRetry(['git', 'commit', '-m', `${description}: completed successfully`, '--allow-empty'], sourceDir, 'creating success commit');
 
     if (changes.length > 0) {
-      console.log(chalk.green(`    ✅ Success commit created with ${changes.length} file changes:`));
-      changes.slice(0, 5).forEach(change => console.log(chalk.gray(`       ${change}`)));
+      console.log(statusLine('+', `Success commit created with ${changes.length} file changes:`, {
+        color: COLORS.primary,
+        indent: 4
+      }));
+      changes.slice(0, 5).forEach(change => console.log(chalk.hex(COLORS.dim)(`       ${change}`)));
       if (changes.length > 5) {
-        console.log(chalk.gray(`       ... and ${changes.length - 5} more files`));
+        console.log(chalk.hex(COLORS.dim)(`       ... and ${changes.length - 5} more files`));
       }
     } else {
-      console.log(chalk.green(`    ✅ Empty success commit created (agent made no file changes)`));
+      console.log(statusLine('+', 'Empty success commit created (agent made no file changes)', {
+        color: COLORS.primary,
+        indent: 4
+      }));
     }
     return { success: true };
   } catch (error) {
-    console.log(chalk.yellow(`    ⚠️ Success commit failed after retries: ${error.message}`));
+    console.log(statusLine('!', `Success commit failed after retries: ${error.message}`, {
+      color: COLORS.warning,
+      indent: 4
+    }));
     return { success: false, error };
   }
 };
 
 export const rollbackGitWorkspace = async (sourceDir, reason = 'retry preparation') => {
-  console.log(chalk.yellow(`    🔄 Rolling back workspace for ${reason}`));
+  console.log(statusLine('<', `Rolling back workspace for ${reason}`, {
+    color: COLORS.warning,
+    indent: 4
+  }));
   try {
     // Show what we're about to remove with retry logic
     const status = await executeGitCommandWithRetry(['git', 'status', '--porcelain'], sourceDir, 'status check for rollback');
@@ -185,17 +234,26 @@ export const rollbackGitWorkspace = async (sourceDir, reason = 'retry preparatio
     await executeGitCommandWithRetry(['git', 'clean', '-fd'], sourceDir, 'cleaning untracked files for rollback');
 
     if (changes.length > 0) {
-      console.log(chalk.yellow(`    ✅ Rollback completed - removed ${changes.length} contaminated changes:`));
-      changes.slice(0, 3).forEach(change => console.log(chalk.gray(`       ${change}`)));
+      console.log(statusLine('+', `Rollback completed - removed ${changes.length} contaminated changes:`, {
+        color: COLORS.warning,
+        indent: 4
+      }));
+      changes.slice(0, 3).forEach(change => console.log(chalk.hex(COLORS.dim)(`       ${change}`)));
       if (changes.length > 3) {
-        console.log(chalk.gray(`       ... and ${changes.length - 3} more files`));
+        console.log(chalk.hex(COLORS.dim)(`       ... and ${changes.length - 3} more files`));
       }
     } else {
-      console.log(chalk.yellow(`    ✅ Rollback completed - no changes to remove`));
+      console.log(statusLine('+', 'Rollback completed - no changes to remove', {
+        color: COLORS.warning,
+        indent: 4
+      }));
     }
     return { success: true };
   } catch (error) {
-    console.log(chalk.red(`    ❌ Rollback failed after retries: ${error.message}`));
+    console.log(statusLine('-', `Rollback failed after retries: ${error.message}`, {
+      color: COLORS.error,
+      indent: 4
+    }));
     return { success: false, error };
   }
 };
