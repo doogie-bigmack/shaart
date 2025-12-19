@@ -1,27 +1,23 @@
 > [!NOTE]
-> **[Shaart Lite achieves a 96.15% success rate on a hint-free, source-aware XBOW benchmark. &rarr;](https://github.com/KeygraphHQ/shaart/tree/main/xben-benchmark-results/README.md)**
-
+> **Shaart Lite: 96.15% success rate on hint-free, source-aware XBOW benchmark. [View Results →](https://github.com/KeygraphHQ/shaart/tree/main/xben-benchmark-results/README.md)**
 
 <div align="center">
 
-<img src="./assets/shaart-screen.png" alt="Shaart Screen" width="100%">
+# 🎯 Shaart
+## Break Your App Before Hackers Do
 
-# Shaart is your fully autonomous AI pentester.
+**Autonomous AI Penetration Testing • Real Exploits, Not Alerts**
 
-Shaart's job is simple: break your web app before anyone else does. <br />
-The Red Team to your vibe-coding Blue team. <br />
-Every Claude (coder) deserves their Shaart.
+[![Discord](https://img.shields.io/badge/Discord-Join%20Community-5865F2?style=flat&logo=discord)](https://discord.gg/u7DRRXrs7H)
+[![Website](https://img.shields.io/badge/Website-keygraph.io-00D9FF?style=flat)](https://keygraph.io)
 
----
-
-[Website](https://keygraph.io) • [Discord](https://discord.gg/u7DRRXrs7H)
-
----
 </div>
 
-## 🖥️ Boot Sequence
+---
 
-Experience Shaart's retro-futuristic terminal interface, inspired by classic sci-fi aesthetics:
+## 🖥️ Your Security Terminal Awaits
+
+When you launch Shaart, you're greeted with a retro-futuristic CRT terminal experience:
 
 ```
 BIGMAC-ATTACK CORP :: SECURITY TERMINAL v1.0.0
@@ -51,301 +47,249 @@ BIGMAC-ATTACK CORP :: SECURITY TERMINAL v1.0.0
 > AWAITING TARGET CONFIGURATION...
 ```
 
-*Set `SHAART_SKIP_ANIMATION=true` to skip the boot animation for instant startup.*
+*Skip the animation in CI/CD: `SHAART_SKIP_ANIMATION=true`*
 
 ---
 
-## 🎯 What is Shaart?
+## 💡 The Problem: Your Security Lag is Showing
 
-Shaart is an AI pentester that delivers actual exploits, not just alerts.
+Your dev team ships code daily with Claude Code and Cursor. But security testing? That's a once-a-year event.
 
-Shaart's goal is to break your web app before someone else does. It autonomously hunts for attack vectors in your code, then uses its built-in browser to execute real exploits, such as injection attacks, and auth bypass, to prove the vulnerability is actually exploitable.
+**364 days of vulnerability exposure** while you wait for the next penetration test.
 
-**What Problem Does Shaart Solve?**
+This gap is where breaches happen. By the time you discover a critical SQL injection or auth bypass, it's been in production for months—or worse, already exploited.
 
-Thanks to tools like Claude Code and Cursor, your team ships code non-stop. But your penetration test? That happens once a year. This creates a *massive* security gap. For the other 364 days, you could be unknowingly shipping vulnerabilities to production.
+## 🛡️ The Solution: Shaart
 
-Shaart closes this gap by acting as your on-demand whitebox pentester. It doesn't just find potential issues. It executes real exploits, providing concrete proof of vulnerabilities. This lets you ship with confidence, knowing every build can be secured.
+**Shaart is an autonomous AI pentester that executes real exploits against your running application.**
 
-> [!NOTE]
-> **From Autonomous Pentesting to Automated Compliance**
->
-> Shaart is a core component of the **Keygraph Security and Compliance Platform**.
->
-> While Shaart automates the critical task of penetration testing for your application, our broader platform automates your entire compliance journey—from evidence collection to audit readiness. We're building the "Rippling for Cybersecurity," a single platform to manage your security posture and streamline compliance frameworks like SOC 2 and HIPAA.
->
-> ➡️ **[Learn more about the Keygraph Platform](https://keygraph.io)**
+Not a scanner. Not a linter. An actual penetration tester that:
+- Reads your source code to understand attack vectors
+- Launches a browser to exploit your live application
+- Proves vulnerabilities with working exploits
+- Delivers pentester-quality reports with proof-of-concepts
 
-## 🎬 See Shaart in Action
-
-**Real Results**: Shaart discovered 20+ critical vulnerabilities in OWASP Juice Shop, including complete auth bypass and database exfiltration. [See full report →](sample-reports/shaart-report-juice-shop.md)
-
-![Demo](assets/shaart-action.gif)
-
-## ✨ What Makes Shaart Unique
-
-### 🧠 Autonomous Exploitation, Not Just Scanning
-Unlike traditional scanners that flag potential issues, Shaart **proves vulnerabilities are exploitable** by executing real attacks. It won't report a finding unless it can demonstrate actual impact—eliminating false positives and providing actionable proof-of-concepts.
-
-### 🔬 White-Box Intelligence Meets Black-Box Validation
-Shaart combines **source code analysis** (understanding your codebase deeply) with **live dynamic testing** (exploiting the running application). This dual approach finds vulnerabilities that pure scanners miss and validates findings that static analysis tools only hypothesize.
-
-### 🤖 Fully Autonomous Multi-Agent Architecture
-Launch with a single command and let Shaart's specialized AI agents handle everything:
-- **Reconnaissance Agent**: Maps attack surface, analyzes tech stack, explores the application
-- **Vulnerability Agents**: Hunt for injection, XSS, auth bypasses, authorization flaws, and SSRF in parallel
-- **Exploitation Agents**: Execute real attacks with browser automation and command-line tools
-- **Reporting Agent**: Synthesizes findings into actionable, pentester-grade reports
-
-### 🔐 Advanced Authentication Support
-Handles complex auth flows that stop most automated tools:
-- **Multi-Factor Authentication (2FA/TOTP)**: Automatically generates time-based codes
-- **OAuth/SSO**: Supports "Sign in with Google" and other federated auth
-- **Custom Login Flows**: Configurable step-by-step authentication instructions
-- **Session Management**: Maintains authentication throughout testing
-
-### 🛠️ Battle-Tested Security Tools Integration
-Enhances discovery with industry-standard tools:
-- **Nmap**: Network port scanning and service detection
-- **Subfinder**: Subdomain enumeration
-- **WhatWeb**: Technology fingerprinting
-- **Schemathesis**: OpenAPI/Swagger fuzzing
-
-### ⚡ Parallel Processing for Speed
-Don't wait hours for results. Shaart parallelizes vulnerability analysis and exploitation across all attack categories simultaneously, dramatically reducing total scan time.
-
-### 📊 Pentester-Grade Reports
-Get reports that security professionals actually use:
-- **Copy-paste proof-of-concepts**: Exact commands to reproduce exploits
-- **Business impact analysis**: Understand real-world consequences
-- **Remediation guidance**: Specific code-level fixes
-- **OWASP categorization**: Mapped to industry-standard frameworks
-
-### 🎨 Retro-Futuristic Terminal Experience
-Enjoy a unique interface inspired by classic sci-fi terminals, complete with:
-- Character-by-character typewriter effects
-- CRT phosphor green color scheme
-- Boot sequence with system diagnostics
-- Optional instant mode for CI/CD pipelines
+Ship with confidence. Test every build. Close the security gap.
 
 ---
 
-## 🚀 Future Capabilities (In Development)
+## 🔥 Why Shaart is Different
 
-Shaart is actively evolving. Here's what's coming next:
+### Real Exploits, Not Theoretical Risks
 
-### 🎯 Expanded Vulnerability Coverage
-- **Business Logic Flaws**: Workflow bypass, rate limiting, price manipulation ([#8](https://github.com/doogie-bigmack/shaart/issues/8))
-- **API Testing Agent**: Native REST/GraphQL vulnerability testing ([#7](https://github.com/doogie-bigmack/shaart/issues/7))
-- **Additional Injection Types**: LDAP, XML/XPath, XXE ([#9](https://github.com/doogie-bigmack/shaart/issues/9))
-- **File Upload Testing**: Polyglot files, MIME bypass, archive attacks ([#11](https://github.com/doogie-bigmack/shaart/issues/11))
-- **Blind Exploitation**: Time-based detection, DNS exfiltration ([#10](https://github.com/doogie-bigmack/shaart/issues/10))
+Traditional scanners flag "potential" vulnerabilities. Shaart proves them.
 
-### 🔄 Continuous Security Management
-- **GitHub Integration**: Automatic issue creation with remediation options ([#32](https://github.com/doogie-bigmack/shaart/issues/32))
-  - Create GitHub issues for each vulnerability with code-level fixes
-  - Track remediation progress via GitHub project boards
-  - Retest workflow to verify fixes
-  - Delta reporting to identify new vs. fixed vulnerabilities
-- **Webhook Integrations**: Real-time alerts to Slack, SIEM, PagerDuty ([#12](https://github.com/doogie-bigmack/shaart/issues/12))
-- **Multiple Report Formats**: JSON, PDF, JIRA-compatible export ([#13](https://github.com/doogie-bigmack/shaart/issues/13))
+- ❌ **Scanner**: "This endpoint might be vulnerable to SQL injection"
+- ✅ **Shaart**: "SQL injection confirmed. Here's the database dump. Here's the exact command."
 
-### 🧪 Testing & Quality Improvements
-- **Unit Test Suite**: Comprehensive test coverage for core modules ([#16](https://github.com/doogie-bigmack/shaart/issues/16))
-- **CI/CD Pipeline**: Automated linting, testing, and validation ([#17](https://github.com/doogie-bigmack/shaart/issues/17))
-- **CVSS Severity Scoring**: Auto-calculate industry-standard risk scores ([#15](https://github.com/doogie-bigmack/shaart/issues/15))
+**No exploit = No report.** If Shaart can't prove it works, it doesn't waste your time.
 
-### 🎯 Intelligence & Optimization
-- **Tech-Stack-Aware Prompts**: Specialized attack patterns for Node.js, Python, Java, .NET ([#20](https://github.com/doogie-bigmack/shaart/issues/20))
-- **In-Context Learning**: Feed past run success/failure into prompts ([#21](https://github.com/doogie-bigmack/shaart/issues/21))
-- **Post-Exploitation Pivoting**: Chain vulnerabilities for deeper access ([#22](https://github.com/doogie-bigmack/shaart/issues/22))
+### Source Code Meets Live Exploitation
 
-### 🔧 Developer Experience
-- **Custom Agent SDK**: Build your own vulnerability testing agents ([#19](https://github.com/doogie-bigmack/shaart/issues/19))
-- **API Server Mode**: REST API for programmatic access ([#18](https://github.com/doogie-bigmack/shaart/issues/18))
-- **CLI Enhancements**: New commands for listing, exporting, debugging ([#23](https://github.com/doogie-bigmack/shaart/issues/23))
+**White-box analysis** tells Shaart where the vulnerabilities hide.
+**Black-box exploitation** proves they're actually exploitable.
 
-*Want to influence the roadmap? [Join our Discord](https://discord.gg/u7DRRXrs7H) or comment on issues!*
+This hybrid approach finds what pure scanners miss and validates what static analysis only guesses.
+
+### Multi-Agent Autonomous Architecture
+
+Launch one command. Shaart's AI agents handle the rest:
+
+```
+┌─────────────────────────────────────────┐
+│  1. RECONNAISSANCE                      │
+│  Maps your attack surface               │
+│  Tech stack, endpoints, auth flows      │
+└──────────────┬──────────────────────────┘
+               │
+    ┌──────────┴──────────┐
+    ▼                     ▼
+┌─────────┐           ┌─────────┐
+│ 2. VULN │           │ 2. VULN │
+│ AGENTS  │    ...    │ AGENTS  │
+│ (PARALLEL)          │ (PARALLEL)
+└────┬────┘           └────┬────┘
+     │                     │
+     ▼                     ▼
+┌─────────┐           ┌─────────┐
+│ 3. EXPLOIT          │ 3. EXPLOIT
+│ AGENTS  │    ...    │ AGENTS  │
+│ (PARALLEL)          │ (PARALLEL)
+└────┬────┘           └────┬────┘
+     │                     │
+     └──────────┬──────────┘
+                ▼
+        ┌──────────────┐
+        │ 4. REPORTING │
+        │ Proven Vulns │
+        │ Only         │
+        └──────────────┘
+```
+
+**Parallelized for speed.** Multiple vulnerability categories tested simultaneously.
+
+### Handles Complex Authentication
+
+Most automated tools fail at login. Shaart doesn't.
+
+✅ **Multi-Factor Authentication (TOTP/2FA)**: Auto-generates time-based codes
+✅ **OAuth & SSO**: "Sign in with Google" and federated identity
+✅ **Custom Workflows**: Step-by-step login instructions you define
+✅ **Session Management**: Stays authenticated throughout the entire test
+
+### Battle-Tested Tool Integration
+
+Shaart augments AI reasoning with proven security tools:
+
+- **Nmap**: Port scanning, service fingerprinting
+- **Subfinder**: Subdomain discovery and enumeration
+- **WhatWeb**: Technology and framework detection
+- **Schemathesis**: OpenAPI/Swagger API fuzzing
+
+### Reports Security Teams Actually Use
+
+Stop drowning in false positives. Shaart delivers actionable findings:
+
+- 📋 **Copy-paste proof-of-concepts**: Commands that reproduce the exploit
+- 💰 **Business impact analysis**: What an attacker could actually do
+- 🔧 **Code-level remediation**: Exact fixes for your tech stack
+- 📊 **OWASP mapping**: Industry-standard vulnerability classification
 
 ---
 
-## 📦 Product Line
+## 🎯 What Shaart Tests
 
-Shaart is available in two editions:
+### Current Coverage
 
-| Edition | License | Best For |
-|---------|---------|----------|
-| **Shaart Lite** | AGPL-3.0 | Security teams, independent researchers, testing your own applications |
-| **Shaart Pro** | Commercial | Enterprises requiring advanced features, CI/CD integration, and dedicated support |
+- **Injection Attacks**: SQL injection, command injection, NoSQL injection
+- **Cross-Site Scripting (XSS)**: Reflected, stored, DOM-based
+- **Authentication Bypass**: Login circumvention, session hijacking, JWT attacks
+- **Authorization Failures**: Privilege escalation, IDOR, missing access controls
+- **Server-Side Request Forgery (SSRF)**: Internal network access, cloud metadata exploitation
 
-> **This repository contains Shaart Lite,** which utilizes our core autonomous AI pentesting framework. **Shaart Pro** enhances this foundation with an advanced, LLM-powered data flow analysis engine (inspired by the [LLMDFA paper](https://arxiv.org/abs/2402.10754)) for enterprise-grade code analysis and deeper vulnerability detection.
+### Coming Soon
 
-> [!IMPORTANT]
-> **White-box only.** Shaart Lite is designed for **white-box (source-available)** application security testing.
-> It expects access to your application's source code and repository layout.
-
-[See feature comparison](./SHAART-PRO.md)
-## 📑 Table of Contents
-
-- [Boot Sequence](#️-boot-sequence)
-- [What is Shaart?](#-what-is-shaart)
-- [See Shaart in Action](#-see-shaart-in-action)
-- [What Makes Shaart Unique](#-what-makes-shaart-unique)
-- [Future Capabilities](#-future-capabilities-in-development)
-- [Product Line](#-product-line)
-- [Setup & Usage Instructions](#-setup--usage-instructions)
-  - [Prerequisites](#prerequisites)
-  - [Authentication Setup](#authentication-setup)
-  - [Quick Start with Docker](#quick-start-with-docker)
-  - [Configuration (Optional)](#configuration-optional)
-  - [Usage Patterns](#usage-patterns)
-  - [Output and Results](#output-and-results)
-- [Sample Reports & Benchmarks](#-sample-reports--benchmarks)
-- [Architecture](#️-architecture)
-- [Coverage and Roadmap](#-coverage-and-roadmap)
-- [Disclaimers](#️-disclaimers)
-- [License](#-license)
-- [Community & Support](#-community--support)
-- [Get in Touch](#-get-in-touch)
+- **Business Logic Vulnerabilities** ([#8](https://github.com/doogie-bigmack/shaart/issues/8)): Workflow bypass, rate limit evasion, price manipulation
+- **API Security Testing** ([#7](https://github.com/doogie-bigmack/shaart/issues/7)): REST/GraphQL native exploitation
+- **Expanded Injection Coverage** ([#9](https://github.com/doogie-bigmack/shaart/issues/9)): LDAP, XML/XPath, XXE
+- **File Upload Exploitation** ([#11](https://github.com/doogie-bigmack/shaart/issues/11)): Polyglot files, MIME bypass
+- **Blind Exploitation** ([#10](https://github.com/doogie-bigmack/shaart/issues/10)): Time-based detection, DNS exfiltration
 
 ---
 
-## 🚀 Setup & Usage Instructions
+## 🔄 Continuous Vulnerability Management (Coming Soon)
+
+**Issue #32**: GitHub integration for complete vulnerability lifecycle management
+
+- **Auto-create GitHub issues** for each discovered vulnerability
+- **Remediation guidance** with multiple code-level fix options
+- **Retest workflow** to verify fixes automatically
+- **Delta reporting** to track new vs. fixed vulnerabilities over time
+- **Project board integration** for remediation tracking
+
+[See full roadmap →](https://github.com/doogie-bigmack/shaart/issues/32)
+
+---
+
+## 📦 Two Editions
+
+| Feature | Shaart Lite<br/>*(This Repo)* | Shaart Pro |
+|---------|-------------------------------|------------|
+| **License** | AGPL-3.0 (Open Source) | Commercial |
+| **Best For** | Security teams, researchers, internal testing | Enterprises, CI/CD integration, compliance |
+| **AI-Powered Exploitation** | ✅ Full multi-agent architecture | ✅ Enhanced with advanced reasoning |
+| **Source Code Analysis** | ✅ Pattern-based vulnerability detection | ✅ **LLM-powered data flow analysis** |
+| **Parallel Execution** | ✅ Fast concurrent testing | ✅ Optimized for large codebases |
+| **Authentication Support** | ✅ 2FA, OAuth, SSO | ✅ Plus enterprise SSO providers |
+| **CI/CD Integration** | ⚠️ Manual setup | ✅ Pre-built GitHub Actions, GitLab CI |
+| **Reporting** | ✅ Markdown reports | ✅ PDF, JSON, JIRA, DefectDojo exports |
+| **Support** | 💬 Community (Discord) | 📧 Dedicated support + SLA |
+
+> **Shaart Lite** is perfect for testing your own applications with full autonomy.
+> **Shaart Pro** adds enterprise-grade data flow analysis (inspired by [LLMDFA](https://arxiv.org/abs/2402.10754)) and turnkey CI/CD workflows.
+
+[Compare editions →](./SHAART-PRO.md)
+
+---
+
+## 🚀 Quick Start
 
 ### Prerequisites
 
-- **Claude Console account with credits** - Required for AI-powered analysis
-- **Docker installed** - Primary deployment method
+- **Docker** (recommended deployment method)
+- **Claude API access** (Console account with credits or API key)
 
-### Authentication Setup
-
-You need either a **Claude Code OAuth token** or an **Anthropic API key** to run Shaart. Get your token from the [Anthropic Console](https://console.anthropic.com) and pass it to Docker via the `-e` flag.
-
-### Environment Configuration (Recommended)
-
-To prevent Claude Code from hitting token limits during long report generation, set the max output tokens environment variable:
-
-**For local runs:**
-```bash
-export CLAUDE_CODE_MAX_OUTPUT_TOKENS=64000
-```
-
-**For Docker runs:**
-```bash
--e CLAUDE_CODE_MAX_OUTPUT_TOKENS=64000
-```
-
-### Quick Start with Docker
-
-#### Build the Container
+### 1. Build Container
 
 ```bash
 docker build -t shaart:latest .
 ```
 
-#### Prepare Your Repository
+### 2. Prepare Your Code
 
-Shaart is designed for **web application security testing** and expects all application code to be available in a single directory structure. This works well for:
-
-- **Monorepos** - Single repository containing all components
-- **Consolidated setups** - Multiple repositories organized in a shared folder
-
-**For monorepos:**
+Shaart needs access to your application's source code:
 
 ```bash
-git clone https://github.com/your-org/your-monorepo.git repos/your-app
-```
+# Clone your repository
+git clone https://github.com/your-org/your-app.git repos/your-app
 
-**For multi-repository applications** (e.g., separate frontend/backend):
-
-```bash
+# Or for multi-repo apps, organize in one folder:
 mkdir repos/your-app
 cd repos/your-app
 git clone https://github.com/your-org/frontend.git
 git clone https://github.com/your-org/backend.git
-git clone https://github.com/your-org/api.git
 ```
 
-**For existing local repositories:**
+### 3. Run Your First Test
 
-```bash
-cp -r /path/to/your-existing-repo repos/your-app
-```
-
-#### Run Your First Pentest
-
-**With Claude Console OAuth Token:**
+**With OAuth Token:**
 
 ```bash
 docker run --rm -it \
-      --network host \
-      --cap-add=NET_RAW \
-      --cap-add=NET_ADMIN \
-      -e CLAUDE_CODE_OAUTH_TOKEN="$CLAUDE_CODE_OAUTH_TOKEN" \
-      -e CLAUDE_CODE_MAX_OUTPUT_TOKENS=64000 \
-      -v "$(pwd)/repos:/app/repos" \
-      -v "$(pwd)/configs:/app/configs" \
-      shaart:latest \
-      "https://your-app.com/" \
-      "/app/repos/your-app" \
-      --config /app/configs/example-config.yaml
+  --network host \
+  --cap-add=NET_RAW \
+  --cap-add=NET_ADMIN \
+  -e CLAUDE_CODE_OAUTH_TOKEN="$CLAUDE_CODE_OAUTH_TOKEN" \
+  -e CLAUDE_CODE_MAX_OUTPUT_TOKENS=64000 \
+  -v "$(pwd)/repos:/app/repos" \
+  shaart:latest \
+  "https://your-app.com" \
+  "/app/repos/your-app"
 ```
 
-**With Anthropic API Key:**
+**With API Key:**
 
 ```bash
 docker run --rm -it \
-      --network host \
-      --cap-add=NET_RAW \
-      --cap-add=NET_ADMIN \
-      -e ANTHROPIC_API_KEY="$ANTHROPIC_API_KEY" \
-      -e CLAUDE_CODE_MAX_OUTPUT_TOKENS=64000 \
-      -v "$(pwd)/repos:/app/repos" \
-      -v "$(pwd)/configs:/app/configs" \
-      shaart:latest \
-      "https://your-app.com/" \
-      "/app/repos/your-app" \
-      --config /app/configs/example-config.yaml
+  --network host \
+  --cap-add=NET_RAW \
+  --cap-add=NET_ADMIN \
+  -e ANTHROPIC_API_KEY="$ANTHROPIC_API_KEY" \
+  -e CLAUDE_CODE_MAX_OUTPUT_TOKENS=64000 \
+  -v "$(pwd)/repos:/app/repos" \
+  shaart:latest \
+  "https://your-app.com" \
+  "/app/repos/your-app"
 ```
 
-**Network Capabilities:**
-
-- `--cap-add=NET_RAW` - Enables advanced port scanning with nmap
-- `--cap-add=NET_ADMIN` - Allows network administration for security tools
-- `--network host` - Provides access to target network interfaces
-
-**Testing Local Applications:**
-
-Docker containers cannot reach `localhost` on your host machine. Use `host.docker.internal` in place of `localhost`:
+**Testing localhost apps?** Use `host.docker.internal` instead of `localhost`:
 
 ```bash
 docker run --rm -it \
-      --add-host=host.docker.internal:host-gateway \
-      --cap-add=NET_RAW \
-      --cap-add=NET_ADMIN \
-      -e CLAUDE_CODE_OAUTH_TOKEN="$CLAUDE_CODE_OAUTH_TOKEN" \
-      -e CLAUDE_CODE_MAX_OUTPUT_TOKENS=64000 \
-      -v "$(pwd)/repos:/app/repos" \
-      -v "$(pwd)/configs:/app/configs" \
-      shaart:latest \
-      "http://host.docker.internal:3000" \
-      "/app/repos/your-app" \
-      --config /app/configs/example-config.yaml
+  --add-host=host.docker.internal:host-gateway \
+  --cap-add=NET_RAW \
+  --cap-add=NET_ADMIN \
+  -e CLAUDE_CODE_OAUTH_TOKEN="$CLAUDE_CODE_OAUTH_TOKEN" \
+  -e CLAUDE_CODE_MAX_OUTPUT_TOKENS=64000 \
+  -v "$(pwd)/repos:/app/repos" \
+  shaart:latest \
+  "http://host.docker.internal:3000" \
+  "/app/repos/your-app"
 ```
 
-### Configuration (Optional)
+### 4. Configure Authentication (Optional)
 
-While you can run without a config file, creating one enables authenticated testing and customized analysis.
-
-#### Create Configuration File
-
-Copy and modify the example configuration:
-
-```bash
-cp configs/example-config.yaml configs/my-app-config.yaml
-```
-
-#### Basic Configuration Structure
+Create `configs/my-app.yaml`:
 
 ```yaml
 authentication:
@@ -353,8 +297,8 @@ authentication:
   login_url: "https://your-app.com/login"
   credentials:
     username: "test@example.com"
-    password: "yourpassword"
-    totp_secret: "LB2E2RX7XFHSTGCK"  # Optional for 2FA
+    password: "testpassword"
+    totp_secret: "BASE32SECRETHERE"  # For 2FA
 
   login_flow:
     - "Type $username into the email field"
@@ -366,257 +310,192 @@ authentication:
     value: "/dashboard"
 
 rules:
-  avoid:
-    - description: "AI should avoid testing logout functionality"
-      type: path
-      url_path: "/logout"
-
   focus:
-    - description: "AI should emphasize testing API endpoints"
+    - description: "Prioritize API endpoints"
       type: path
       url_path: "/api"
+
+  avoid:
+    - description: "Skip logout testing"
+      type: path
+      url_path: "/logout"
 ```
 
-#### TOTP Setup for 2FA
+Then run with: `--config /app/configs/my-app.yaml`
 
-If your application uses two-factor authentication, simply add the TOTP secret to your config file. The AI will automatically generate the required codes during testing.
+### 5. Check Results
 
-### Check Status
+Deliverables saved to `repos/your-app/deliverables/`:
 
-View progress of previous runs:
-
-```bash
-docker run --rm shaart:latest --status
-```
-
-### Output and Results
-
-All analysis results are saved to the `deliverables/` directory:
-
-- **Pre-reconnaissance reports** - External scan results
-- **Vulnerability assessments** - Potential vulnerabilities from thorough code analysis and network mapping
-- **Exploitation results** - Proof-of-concept attempts
-- **Executive reports** - Business-focused security summaries
+- `code_analysis_deliverable.md` - Source code reconnaissance
+- `recon_deliverable.md` - Attack surface mapping
+- `*_analysis_deliverable.md` - Vulnerability hypotheses
+- `*_exploitation_evidence.md` - Proven exploits with PoCs
+- `comprehensive_security_assessment_report.md` - Final report
 
 ---
 
-## 📊 Sample Reports & Benchmarks
+## 📊 Real-World Results
 
-See Shaart's capabilities in action with real penetration test results from industry-standard vulnerable applications:
+### OWASP Juice Shop: 20+ Critical Vulnerabilities
 
-### Benchmark Results
+*The most deliberately insecure web application in existence*
 
-#### 🧃 **OWASP Juice Shop** • [GitHub](https://github.com/juice-shop/juice-shop)
+**Achievements:**
+- ✅ Complete authentication bypass via SQL injection
+- ✅ Full database exfiltration (all users, passwords, cards)
+- ✅ Admin account creation through registration workflow bypass
+- ✅ Privilege escalation to administrator access
+- ✅ IDOR vulnerabilities across cart and profile management
+- ✅ SSRF for internal network reconnaissance
 
-*A notoriously insecure web application maintained by OWASP, designed to test a tool's ability to uncover a wide range of modern vulnerabilities.*
+[Read full report →](sample-reports/shaart-report-juice-shop.md)
 
-**Performance**: Identified **over 20 high-impact vulnerabilities** across targeted OWASP categories in a single automated run.
+### c{api}tal API: 15 High-Severity Exploits
 
-**Key Accomplishments**:
+*Checkmarx's intentionally vulnerable API for OWASP API Top 10 testing*
 
-- **Achieved complete authentication bypass** and exfiltrated the entire user database via Injection attack
-- **Executed a full privilege escalation** by creating a new administrator account through a registration workflow bypass
-- **Identified and exploited systemic authorization flaws (IDOR)** to access and modify any user's private data and shopping cart
-- **Discovered a Server-Side Request Forgery (SSRF)** vulnerability, enabling internal network reconnaissance
+**Achievements:**
+- ✅ Root-level command injection via debug endpoint
+- ✅ Authentication bypass using legacy v1 API endpoint
+- ✅ Mass assignment to escalate user to admin
+- ✅ Zero false positives (correctly identified XSS defenses)
 
-📄 **[View Complete Report →](sample-reports/shaart-report-juice-shop.md)**
+[Read full report →](sample-reports/shaart-report-capital-api.md)
 
----
+### OWASP crAPI: 15+ Critical Findings
 
-#### 🔗 **c{api}tal API** • [GitHub](https://github.com/Checkmarx/capital)
+*Modern vulnerable API designed for OWASP API Security Top 10*
 
-*An intentionally vulnerable API from Checkmarx, designed to test a tool's ability to uncover the OWASP API Security Top 10.*
+**Achievements:**
+- ✅ JWT attacks (Algorithm Confusion, alg:none, weak key)
+- ✅ SQL injection for full database compromise
+- ✅ SSRF to forward internal auth tokens externally
+- ✅ High accuracy with zero XSS false positives
 
-**Performance**: Identified **nearly 15 critical and high-severity vulnerabilities**, leading to full application compromise.
-
-**Key Accomplishments**:
-
-- **Executed a root-level Injection attack** by bypassing a denylist via command chaining in a hidden debug endpoint
-- **Achieved complete authentication bypass** by discovering and targeting a legacy, unpatched v1 API endpoint
-- **Escalated a regular user to full administrator privileges** by exploiting a Mass Assignment vulnerability in the user profile update function
-- **Demonstrated high accuracy** by correctly confirming the application's robust XSS defenses, reporting zero false positives
-
-📄 **[View Complete Report →](sample-reports/shaart-report-capital-api.md)**
-
----
-
-#### 🚗 **OWASP crAPI** • [GitHub](https://github.com/OWASP/crAPI)
-
-*A modern, intentionally vulnerable API from OWASP, designed to benchmark a tool's effectiveness against the OWASP API Security Top 10.*
-
-**Performance**: Identified **over 15 critical and high-severity vulnerabilities**, achieving full application compromise.
-
-**Key Accomplishments**:
-
-- **Bypassed authentication using multiple advanced JWT attacks**, including Algorithm Confusion, alg:none, and weak key (kid) injection
-- **Achieved full database compromise via Injection attacks**, exfiltrating user credentials from the PostgreSQL database
-- **Executed a critical Server-Side Request Forgery (SSRF) attack** that successfully forwarded internal authentication tokens to an external service
-- **Demonstrated high accuracy** by correctly identifying the application's robust XSS defenses, reporting zero false positives
-
-📄 **[View Complete Report →](sample-reports/shaart-report-crapi.md)**
+[Read full report →](sample-reports/shaart-report-crapi.md)
 
 ---
 
-*These results demonstrate Shaart's ability to move beyond simple scanning, performing deep contextual exploitation with minimal false positives and actionable proof-of-concepts.*
+## ⚖️ Legal & Responsible Use
+
+### ⚠️ Read Before Running
+
+**Shaart executes real attacks.** This is not passive scanning.
+
+#### ❌ Never Run On:
+- Production environments
+- Systems you don't own
+- Applications without explicit authorization
+
+#### ✅ Safe Environments:
+- Local development setups
+- Staging environments
+- Sandboxed test instances
+- Your own applications with proper authorization
+
+#### Legal Requirements:
+- **Written authorization required** from system owner
+- Unauthorized testing violates Computer Fraud and Abuse Act (CFAA)
+- User assumes all liability for misuse
+
+### Potential Mutations:
+- Creates test accounts and users
+- Modifies application data
+- May trigger side effects (emails, webhooks, etc.)
+- Can delete or corrupt test data
+
+**You are responsible for ensuring proper authorization and environment selection.**
 
 ---
 
-## 🏗️ Architecture
+## 🏗️ Architecture Deep Dive
 
-Shaart emulates a human penetration tester's methodology using a sophisticated multi-agent architecture. It combines white-box source code analysis with black-box dynamic exploitation across four distinct phases:
+Shaart emulates a human penetration tester's workflow using specialized AI agents orchestrated across four phases.
 
-```
-                    ┌──────────────────────┐
-                    │    Reconnaissance    │
-                    └──────────┬───────────┘
-                               │
-                               ▼
-                    ┌──────────┴───────────┐
-                    │          │           │
-                    ▼          ▼           ▼
-        ┌─────────────────┐ ┌─────────────────┐ ┌─────────────────┐
-        │ Vuln Analysis   │ │ Vuln Analysis   │ │      ...        │
-        │  (Injection)    │ │     (XSS)       │ │                 │
-        └─────────┬───────┘ └─────────┬───────┘ └─────────┬───────┘
-                  │                   │                   │
-                  ▼                   ▼                   ▼
-        ┌─────────────────┐ ┌─────────────────┐ ┌─────────────────┐
-        │  Exploitation   │ │  Exploitation   │ │      ...        │
-        │  (Injection)    │ │     (XSS)       │ │                 │
-        └─────────┬───────┘ └─────────┬───────┘ └─────────┬───────┘
-                  │                   │                   │
-                  └─────────┬─────────┴───────────────────┘
-                            │
-                            ▼
-                    ┌──────────────────────┐
-                    │      Reporting       │
-                    └──────────────────────┘
-```
+**Phase 1: Reconnaissance**
+→ Source code analysis + live application exploration
+→ Maps attack surface, tech stack, auth mechanisms
+→ Produces comprehensive entry point inventory
 
-### Architectural Overview
+**Phase 2: Vulnerability Analysis** (Parallel)
+→ Specialized agents per OWASP category
+→ Data flow tracing from user input to dangerous sinks
+→ Generates hypothesized exploitation paths
 
-Shaart is engineered to emulate the methodology of a human penetration tester. It leverages Anthropic's Claude Agent SDK as its core reasoning engine, but its true strength lies in the sophisticated multi-agent architecture built around it. This architecture combines the deep context of **white-box source code analysis** with the real-world validation of **black-box dynamic exploitation**, managed by an orchestrator through four distinct phases to ensure a focus on minimal false positives and intelligent context management.
+**Phase 3: Exploitation** (Parallel)
+→ Attempts real-world attacks via browser and CLI
+→ **"No Exploit, No Report" policy**
+→ Discards unproven hypotheses as false positives
+
+**Phase 4: Reporting**
+→ Consolidates only verified findings
+→ Includes reproducible proof-of-concepts
+→ Delivers pentester-grade actionable reports
+
+[See detailed architecture →](./COVERAGE.md)
 
 ---
 
-#### **Phase 1: Reconnaissance**
+## 💰 Cost & Performance
 
-The first phase builds a comprehensive map of the application's attack surface. Shaart analyzes the source code and integrates with tools like Nmap and Subfinder to understand the tech stack and infrastructure. Simultaneously, it performs live application exploration via browser automation to correlate code-level insights with real-world behavior, producing a detailed map of all entry points, API endpoints, and authentication mechanisms for the next phase.
+**Time**: 1-1.5 hours for a typical web application
+**Cost**: ~$50 USD using Claude 4.5 Sonnet (subject to change)
+**Token Optimization**: Multi-model strategy (Haiku for analysis, Sonnet for exploitation)
 
-#### **Phase 2: Vulnerability Analysis**
+---
 
-To maximize efficiency, this phase operates in parallel. Using the reconnaissance data, specialized agents for each OWASP category hunt for potential flaws in parallel. For vulnerabilities like Injection and SSRF, agents perform a structured data flow analysis, tracing user input to dangerous sinks. This phase produces a key deliverable: a list of **hypothesized exploitable paths** that are passed on for validation.
+## 🛣️ Development Roadmap
 
-#### **Phase 3: Exploitation**
+Track active development and request features:
 
-Continuing the parallel workflow to maintain speed, this phase is dedicated entirely to turning hypotheses into proof. Dedicated exploit agents receive the hypothesized paths and attempt to execute real-world attacks using browser automation, command-line tools, and custom scripts. This phase enforces a strict **"No Exploit, No Report"** policy: if a hypothesis cannot be successfully exploited to demonstrate impact, it is discarded as a false positive.
+- [Open Issues](https://github.com/doogie-bigmack/shaart/issues)
+- [Feature Roadmap](https://github.com/doogie-bigmack/shaart/issues?q=is%3Aissue+is%3Aopen+label%3Aenhancement)
+- [Join Discord](https://discord.gg/u7DRRXrs7H) to influence priorities
 
-#### **Phase 4: Reporting**
+---
 
-The final phase compiles all validated findings into a professional, actionable report. An agent consolidates the reconnaissance data and the successful exploit evidence, cleaning up any noise or hallucinated artifacts. Only verified vulnerabilities are included, complete with **reproducible, copy-and-paste Proof-of-Concepts**, delivering a final pentest-grade report focused exclusively on proven risks.
+## 🤝 Community & Support
 
+### Get Help
 
-## 📋 Coverage and Roadmap
+- 🐛 [Report Bugs](https://github.com/keygraph/shaart/issues)
+- 💬 [Discord Community](https://discord.gg/u7DRRXrs7H)
+- 💡 [Feature Requests](https://github.com/keygraph/shaart/discussions)
 
-For detailed information about Shaart's security testing coverage and development roadmap, see our [Coverage and Roadmap](./COVERAGE.md) documentation.
+### Stay Updated
 
-## ⚠️ Disclaimers
+- 🐦 [@KeygraphHQ on Twitter](https://twitter.com/KeygraphHQ)
+- 💼 [Keygraph on LinkedIn](https://linkedin.com/company/keygraph)
+- 🌐 [keygraph.io](https://keygraph.io)
 
-### Important Usage Guidelines & Disclaimers
+---
 
-Please review the following guidelines carefully before using Shaart (Lite). As a user, you are responsible for your actions and assume all liability.
+## 🏢 Enterprise?
 
-#### **1. Potential for Mutative Effects & Environment Selection**
+**Shaart Pro** offers:
+- Advanced data flow analysis engine
+- Pre-built CI/CD integrations
+- Multiple export formats (PDF, JSON, JIRA)
+- Dedicated support with SLAs
+- Compliance-ready audit reports
 
-This is not a passive scanner. The exploitation agents are designed to **actively execute attacks** to confirm vulnerabilities. This process can have mutative effects on the target application and its data.
+📋 [Express interest in Shaart Pro](https://docs.google.com/forms/d/e/1FAIpQLSf-cPZcWjlfBJ3TCT8AaWpf8ztsw3FaHzJE4urr55KdlQs6cQ/viewform?usp=header)
+📧 [shaart@keygraph.io](mailto:shaart@keygraph.io)
 
-> [!WARNING]
-> **⚠️ DO NOT run Shaart on production environments.**
->
-> - It is intended exclusively for use on sandboxed, staging, or local development environments where data integrity is not a concern.
-> - Potential mutative effects include, but are not limited to: creating new users, modifying or deleting data, compromising test accounts, and triggering unintended side effects from injection attacks.
-
-#### **2. Legal & Ethical Use**
-
-Shaart is designed for legitimate security auditing purposes only.
-
-> [!CAUTION]
-> **You must have explicit, written authorization** from the owner of the target system before running Shaart.
->
-> Unauthorized scanning and exploitation of systems you do not own is illegal and can be prosecuted under laws such as the Computer Fraud and Abuse Act (CFAA). Keygraph is not responsible for any misuse of Shaart.
-
-#### **3. LLM & Automation Caveats**
-
-- **Verification is Required**: While significant engineering has gone into our "proof-by-exploitation" methodology to eliminate false positives, the underlying LLMs can still generate hallucinated or weakly-supported content in the final report. **Human oversight is essential** to validate the legitimacy and severity of all reported findings.
-- **Comprehensiveness**: The analysis in Shaart Lite may not be exhaustive due to the inherent limitations of LLM context windows. For a more comprehensive, graph-based analysis of your entire codebase, **Shaart Pro** leverages its advanced data flow analysis engine to ensure deeper and more thorough coverage.
-
-#### **4. Scope of Analysis**
-
-- **Targeted Vulnerabilities**: The current version of Shaart Lite specifically targets the following classes of *exploitable* vulnerabilities:
-  - Broken Authentication & Authorization
-  - Injection
-  - Cross-Site Scripting (XSS)
-  - Server-Side Request Forgery (SSRF)
-- **What Shaart Lite Does Not Cover**: This list is not exhaustive of all potential security risks. Shaart Lite's "proof-by-exploitation" model means it will not report on issues it cannot actively exploit, such as vulnerable third-party libraries or insecure configurations. These types of deep static-analysis findings are a core focus of the advanced analysis engine in **Shaart Pro**.
-
-#### **5. Cost & Performance**
-
-- **Time**: As of the current version, a full test run typically takes **1 to 1.5 hours** to complete.
-- **Cost**: Running the full test using Anthropic's Claude 4.5 Sonnet model may incur costs of approximately **$50 USD**. Please note that costs are subject to change based on model pricing and the complexity of the target application.
-
-#### **6. Windows Antivirus False Positives**
-
-Windows Defender may flag files in `xben-benchmark-results/` or `deliverables/` as malware. These are false positives caused by exploit code in the reports. Add an exclusion for the Shaart directory in Windows Defender, or use Docker/WSL2.
-
+---
 
 ## 📜 License
 
-Shaart Lite is released under the [GNU Affero General Public License v3.0 (AGPL-3.0)](LICENSE).
+**Shaart Lite**: [AGPL-3.0](LICENSE)
 
-Shaart is open source (AGPL v3). This license allows you to:
-- Use it freely for all internal security testing.
-- Modify the code privately for internal use without sharing your changes.
-
-The AGPL's sharing requirements primarily apply to organizations offering Shaart as a public or managed service (such as a SaaS platform). In those specific cases, any modifications made to the core software must be open-sourced.
-
-
-## 👥 Community & Support
-
-### Community Resources
-
-- 🐛 **Report bugs** via [GitHub Issues](https://github.com/keygraph/shaart/issues)
-- 💡 **Suggest features** in [Discussions](https://github.com/keygraph/shaart/discussions)
-- 💬 **Join our [Discord](https://discord.gg/u7DRRXrs7H)** for real-time community support
-
-### Stay Connected
-
-- 🐦 **Twitter**: [@KeygraphHQ](https://twitter.com/KeygraphHQ)
-- 💼 **LinkedIn**: [Keygraph](https://linkedin.com/company/keygraph)
-- 🌐 **Website**: [keygraph.io](https://keygraph.io)
-
-
-
-## 💬 Get in Touch
-
-### Interested in Shaart Pro?
-
-Shaart Pro is designed for organizations serious about application security. It offers enterprise-grade features, dedicated support, and seamless CI/CD integration, all powered by our most advanced LLM-based analysis engine. Find and fix complex vulnerabilities deep in your codebase before they ever reach production.
-
-For a detailed breakdown of features, technical differences, and enterprise use cases, see our [complete comparison guide](./SHAART-PRO.md).
-
-<p align="center">
-  <a href="https://docs.google.com/forms/d/e/1FAIpQLSf-cPZcWjlfBJ3TCT8AaWpf8ztsw3FaHzJE4urr55KdlQs6cQ/viewform?usp=header" target="_blank">
-    <img src="https://img.shields.io/badge/📋%20Express%20Interest%20in%20Shaart%20Pro-4285F4?style=for-the-badge&logo=google&logoColor=white" alt="Express Interest">
-  </a>
-</p>
-
-**Or contact us directly:**
-
-📧 **Email**: [shaart@keygraph.io](mailto:shaart@keygraph.io)
+- ✅ Free for internal security testing
+- ✅ Private modifications allowed
+- ⚠️ Network service providers must open-source modifications
 
 ---
 
 <p align="center">
-  <b>Built with ❤️ by the Keygraph team</b><br>
-  <i>Making application security accessible to everyone</i>
+  <strong>Built by Keygraph</strong><br>
+  <em>Autonomous security for the AI era</em>
 </p>
