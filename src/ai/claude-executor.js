@@ -28,6 +28,7 @@ import {
   checkpointMessage,
   modelIndicator,
   statusLine,
+  systemMessage,
   errorMessage,
   COLORS
 } from '../cli/terminal-ui.js';
@@ -62,7 +63,7 @@ function selectModelForAgent(agentName, modelConfig = null) {
   const modelName = selectedModel.includes('haiku') ? 'Haiku' :
                    selectedModel.includes('sonnet') ? 'Sonnet' :
                    selectedModel.includes('opus') ? 'Opus' : selectedModel;
-  console.log(chalk.gray(`    🤖 Model: ${modelName} (${phase} phase)`));
+  console.log(modelIndicator(modelName, phase));
 
   return selectedModel;
 }
@@ -97,7 +98,7 @@ function agentNameToPromptName(agentName) {
 
 // Simplified validation using direct agent name mapping
 async function validateAgentOutput(result, agentName, sourceDir) {
-  console.log(statusLine('🔍', `Validating ${agentName} agent output`, {
+  console.log(statusLine('>', `Validating ${agentName} agent output`, {
     color: COLORS.tertiary,
     indent: 4
   }));
@@ -113,7 +114,7 @@ async function validateAgentOutput(result, agentName, sourceDir) {
     const validator = AGENT_VALIDATORS[agentName];
 
     if (!validator) {
-      console.log(statusLine('⚠️', `No validator found for agent "${agentName}" - assuming success`, {
+      console.log(statusLine('!', `No validator found for agent "${agentName}" - assuming success`, {
         color: COLORS.warning,
         indent: 4
       }));
@@ -121,11 +122,11 @@ async function validateAgentOutput(result, agentName, sourceDir) {
       return true;
     }
 
-    console.log(statusLine('📋', `Using validator for agent: ${agentName}`, {
+    console.log(statusLine('>', `Using validator for agent: ${agentName}`, {
       color: COLORS.dim,
       indent: 4
     }));
-    console.log(statusLine('📂', `Source directory: ${sourceDir}`, {
+    console.log(statusLine('>', `Source directory: ${sourceDir}`, {
       color: COLORS.dim,
       indent: 4
     }));
@@ -182,7 +183,7 @@ async function runClaudePrompt(prompt, sourceDir, allowedTools = 'Read', context
     const logDir = generateSessionLogPath(sessionMetadata.webUrl, sessionMetadata.id);
     logFilePath = path.join(logDir, `${timestamp}_${agentName}_attempt-${attemptNumber}.log`);
   } else {
-    console.log(chalk.blue(`  🤖 Running Claude Code: ${description}...`));
+    console.log(systemMessage(`Running Claude Code: ${description}...`, { color: COLORS.dim, prefix: '  ' }));
   }
 
   // Declare variables that need to be accessible in both try and catch blocks
@@ -210,7 +211,10 @@ async function runClaudePrompt(prompt, sourceDir, allowedTools = 'Read', context
       playwrightMcpName = MCP_AGENT_MAPPING[promptName];
 
       if (playwrightMcpName) {
-        console.log(chalk.gray(`    🎭 Assigned ${agentName} → ${playwrightMcpName}`));
+        console.log(systemMessage(`Assigned ${agentName} → ${playwrightMcpName}`, {
+          color: COLORS.dim,
+          prefix: '   '
+        }));
       }
     }
 
@@ -296,7 +300,7 @@ async function runClaudePrompt(prompt, sourceDir, allowedTools = 'Read', context
         // Periodic heartbeat for long-running agents (only when loader is disabled)
         const now = Date.now();
         if (global.SHAART_DISABLE_LOADER && now - lastHeartbeat > HEARTBEAT_INTERVAL) {
-          console.log(chalk.blue(`    ⏱️  [${Math.floor((now - timer.startTime) / 1000)}s] ${description} running... (Turn ${turnCount})`));
+          console.log(systemMessage(`[${Math.floor((now - timer.startTime) / 1000)}s] ${description} running... (Turn ${turnCount})`, { color: COLORS.dim, prefix: '    ' }));
           lastHeartbeat = now;
         }
 
@@ -345,7 +349,7 @@ async function runClaudePrompt(prompt, sourceDir, allowedTools = 'Read', context
               console.log(colorFn(`${prefix} ${cleanedContent}`));
             } else {
               // Full turn output for single agents
-              console.log(colorFn(`\n    🤖 Turn ${turnCount} (${description}):`))
+              console.log(colorFn(`\n    > Turn ${turnCount} (${description}):`))
               console.log(colorFn(`    ${cleanedContent}`));
             }
 
@@ -356,7 +360,7 @@ async function runClaudePrompt(prompt, sourceDir, allowedTools = 'Read', context
           }
         } else {
           // Full streaming output - show complete messages with specialist color
-          console.log(colorFn(`\n    🤖 Turn ${turnCount} (${description}):`))
+          console.log(colorFn(`\n    > Turn ${turnCount} (${description}):`))
           console.log(colorFn(`    ${content}`));
         }
 
@@ -379,17 +383,17 @@ async function runClaudePrompt(prompt, sourceDir, allowedTools = 'Read', context
           }
           if (lowerContent.includes('api error') || lowerContent.includes('terminated')) {
             apiErrorDetected = true;
-            console.log(chalk.red(`    ⚠️  API Error detected in assistant response: ${content.trim()}`));
+            console.log(statusLine('!', `API Error detected in assistant response: ${content.trim()}`, { color: COLORS.error, indent: 4 }));
           }
         }
 
       } else if (message.type === "system" && message.subtype === "init") {
         // Show useful system info only for verbose agents
         if (!useCleanOutput) {
-          console.log(chalk.blue(`    ℹ️  Model: ${message.model}, Permission: ${message.permissionMode}`));
+          console.log(systemMessage(`Model: ${message.model}, Permission: ${message.permissionMode}`, { color: COLORS.dim, prefix: '    ' }));
           if (message.mcp_servers && message.mcp_servers.length > 0) {
             const mcpStatus = message.mcp_servers.map(s => `${s.name}(${s.status})`).join(', ');
-            console.log(chalk.blue(`    📦 MCP: ${mcpStatus}`));
+            console.log(systemMessage(`MCP: ${mcpStatus}`, { color: COLORS.dim, prefix: '    ' }));
           }
         }
 
@@ -398,9 +402,9 @@ async function runClaudePrompt(prompt, sourceDir, allowedTools = 'Read', context
         continue;
 
       } else if (message.type === "tool_use") {
-        console.log(chalk.yellow(`\n    🔧 Using Tool: ${message.name}`));
+        console.log(statusLine('>', `Using Tool: ${message.name}`, { color: COLORS.warning, indent: 4 }));
         if (message.input && Object.keys(message.input).length > 0) {
-          console.log(chalk.gray(`    Input: ${JSON.stringify(message.input, null, 2)}`));
+          console.log(chalk.hex(COLORS.dim)(`    Input: ${JSON.stringify(message.input, null, 2)}`));
         }
 
         // Log tool start event
@@ -412,14 +416,14 @@ async function runClaudePrompt(prompt, sourceDir, allowedTools = 'Read', context
           });
         }
       } else if (message.type === "tool_result") {
-        console.log(chalk.green(`    ✅ Tool Result:`));
+        console.log(statusLine('+', 'Tool Result:', { color: COLORS.primary, indent: 4 }));
         if (message.content) {
           // Show tool results but truncate if too long
           const resultStr = typeof message.content === 'string' ? message.content : JSON.stringify(message.content, null, 2);
           if (resultStr.length > 500) {
-            console.log(chalk.gray(`    ${resultStr.slice(0, 500)}...\n    [Result truncated - ${resultStr.length} total chars]`));
+            console.log(chalk.hex(COLORS.dim)(`    ${resultStr.slice(0, 500)}...\n    [Result truncated - ${resultStr.length} total chars]`));
           } else {
-            console.log(chalk.gray(`    ${resultStr}`));
+            console.log(chalk.hex(COLORS.dim)(`    ${resultStr}`));
           }
         }
 
@@ -446,19 +450,19 @@ async function runClaudePrompt(prompt, sourceDir, allowedTools = 'Read', context
           }));
 
           if (message.subtype === "error_max_turns") {
-            console.log(statusLine('⚠️', 'Stopped: Hit maximum turns limit', {
+            console.log(statusLine('!', 'Stopped: Hit maximum turns limit', {
               color: COLORS.warning,
               indent: 4
             }));
           } else if (message.subtype === "error_during_execution") {
-            console.log(statusLine('❌', 'Stopped: Execution error', {
+            console.log(statusLine('-', 'Stopped: Execution error', {
               color: COLORS.error,
               indent: 4
             }));
           }
 
           if (message.permission_denials && message.permission_denials.length > 0) {
-            console.log(statusLine('🚫', `${message.permission_denials.length} permission denials`, {
+            console.log(statusLine('!', `${message.permission_denials.length} permission denials`, {
               color: COLORS.warning,
               indent: 4
             }));
@@ -467,9 +471,9 @@ async function runClaudePrompt(prompt, sourceDir, allowedTools = 'Read', context
           // Show result content (if not using clean output)
           if (!useCleanOutput && result && typeof result === 'string') {
             if (result.length > 1000) {
-              console.log(chalk.hex(COLORS.dim)(`    📄 ${result.slice(0, 1000)}... [${result.length} total chars]`));
+              console.log(chalk.hex(COLORS.dim)(`    > ${result.slice(0, 1000)}... [${result.length} total chars]`));
             } else {
-              console.log(chalk.hex(COLORS.dim)(`    📄 ${result}`));
+              console.log(chalk.hex(COLORS.dim)(`    > ${result}`));
             }
           }
         }
@@ -493,7 +497,7 @@ async function runClaudePrompt(prompt, sourceDir, allowedTools = 'Read', context
         break;
       } else {
         // Log any other message types we might not be handling
-        console.log(chalk.gray(`    💬 ${message.type}: ${JSON.stringify(message, null, 2)}`));
+        console.log(chalk.hex(COLORS.dim)(`    > ${message.type}: ${JSON.stringify(message, null, 2)}`));
       }
       }
     } catch (queryError) {
@@ -507,7 +511,7 @@ async function runClaudePrompt(prompt, sourceDir, allowedTools = 'Read', context
     // API error detection is logged but not immediately failed
     // Let the retry logic handle validation first
     if (apiErrorDetected) {
-      console.log(chalk.yellow(`  ⚠️ API Error detected in ${description} - will validate deliverables before failing`));
+      console.log(statusLine('!', `API Error detected in ${description} - will validate deliverables before failing`, { color: COLORS.warning, indent: 2 }));
     }
 
     // Finish status line for parallel execution
@@ -529,10 +533,10 @@ async function runClaudePrompt(prompt, sourceDir, allowedTools = 'Read', context
     } else if (isParallelExecution) {
       // Compact completion for parallel agents
       const prefix = getAgentPrefix(description);
-      console.log(chalk.green(`${prefix} ✅ Complete (${turnCount} turns, ${formatDuration(duration)})`));
+      console.log(statusLine('+', `Complete (${turnCount} turns, ${formatDuration(duration)})`, { color: COLORS.primary, prefix }));
     } else if (!useCleanOutput) {
       // Verbose completion for remaining agents
-      console.log(chalk.green(`  ✅ Claude Code completed: ${description} (${turnCount} turns) in ${formatDuration(duration)}`));
+      console.log(statusLine('+', `Claude Code completed: ${description} (${turnCount} turns) in ${formatDuration(duration)})`, { color: COLORS.primary, indent: 2 }));
     }
 
     // Return result with log file path for all agents
@@ -580,14 +584,14 @@ async function runClaudePrompt(prompt, sourceDir, allowedTools = 'Read', context
       const agentType = description.includes('Pre-recon') ? 'Pre-recon analysis' :
                        description.includes('Recon') ? 'Reconnaissance' :
                        description.includes('Report') ? 'Report generation' : 'Analysis';
-      console.log(chalk.red(`❌ ${agentType} failed (${formatDuration(duration)})`));
+      console.log(statusLine('-', `${agentType} failed (${formatDuration(duration)})`, { color: COLORS.error }));
     } else if (isParallelExecution) {
       // Compact error for parallel agents
       const prefix = getAgentPrefix(description);
-      console.log(chalk.red(`${prefix} ❌ Failed (${formatDuration(duration)})`));
+      console.log(statusLine('-', `Failed (${formatDuration(duration)})`, { color: COLORS.error, prefix }));
     } else if (!useCleanOutput) {
       // Verbose error for remaining agents
-      console.log(chalk.red(`  ❌ Claude Code failed: ${description} (${formatDuration(duration)})`));
+      console.log(statusLine('-', `Claude Code failed: ${description} (${formatDuration(duration)})`, { color: COLORS.error, indent: 2 }));
     }
     console.log(chalk.red(`    Error Type: ${error.constructor.name}`));
     console.log(chalk.red(`    Message: ${error.message}`));
@@ -701,11 +705,11 @@ export async function runClaudePromptWithRetry(prompt, sourceDir, allowedTools =
 
           // Commit successful changes (will include the snapshot)
           await commitGitSuccess(sourceDir, description);
-          console.log(chalk.green.bold(`🎉 ${description} completed successfully on attempt ${attempt}/${maxRetries}`));
+          console.log(statusLine('+', `${description} completed successfully on attempt ${attempt}/${maxRetries}`, { color: COLORS.primary }));
           return result;
         } else {
           // Agent completed but output validation failed
-          console.log(chalk.yellow(`⚠️ ${description} completed but output validation failed`));
+          console.log(statusLine('!', `${description} completed but output validation failed`, { color: COLORS.warning }));
 
           // Record failed validation attempt in audit system
           if (auditSession) {
@@ -721,7 +725,7 @@ export async function runClaudePromptWithRetry(prompt, sourceDir, allowedTools =
 
           // If API error detected AND validation failed, this is a retryable error
           if (result.apiErrorDetected) {
-            console.log(chalk.yellow(`⚠️ API Error detected with validation failure - treating as retryable`));
+            console.log(statusLine('!', 'API Error detected with validation failure - treating as retryable', { color: COLORS.warning }));
             lastError = new Error('API Error: terminated with validation failure');
           } else {
             lastError = new Error('Output validation failed');
@@ -760,7 +764,7 @@ export async function runClaudePromptWithRetry(prompt, sourceDir, allowedTools =
 
       // Check if error is retryable
       if (!isRetryableError(error)) {
-        console.log(chalk.red(`❌ ${description} failed with non-retryable error: ${error.message}`));
+        console.log(statusLine('-', `${description} failed with non-retryable error: ${error.message}`, { color: COLORS.error }));
         await rollbackGitWorkspace(sourceDir, 'non-retryable error cleanup');
         throw error;
       }
@@ -771,9 +775,9 @@ export async function runClaudePromptWithRetry(prompt, sourceDir, allowedTools =
 
         const delay = getRetryDelay(error, attempt);
         const delaySeconds = (delay / 1000).toFixed(1);
-        console.log(chalk.yellow(`⚠️ ${description} failed (attempt ${attempt}/${maxRetries})`));
-        console.log(chalk.gray(`    Error: ${error.message}`));
-        console.log(chalk.gray(`    Workspace rolled back, retrying in ${delaySeconds}s...`));
+        console.log(statusLine('!', `${description} failed (attempt ${attempt}/${maxRetries})`, { color: COLORS.warning }));
+        console.log(chalk.hex(COLORS.dim)(`    Error: ${error.message}`));
+        console.log(chalk.hex(COLORS.dim)(`    Workspace rolled back, retrying in ${delaySeconds}s...`));
 
         // Preserve any partial results for next retry
         if (error.partialResults) {
@@ -783,8 +787,8 @@ export async function runClaudePromptWithRetry(prompt, sourceDir, allowedTools =
         await new Promise(resolve => setTimeout(resolve, delay));
       } else {
         await rollbackGitWorkspace(sourceDir, 'final failure cleanup');
-        console.log(chalk.red(`❌ ${description} failed after ${maxRetries} attempts`));
-        console.log(chalk.red(`    Final error: ${error.message}`));
+        console.log(statusLine('-', `${description} failed after ${maxRetries} attempts`, { color: COLORS.error }));
+        console.log(chalk.hex(COLORS.error)(`    Final error: ${error.message}`));
       }
     }
   }

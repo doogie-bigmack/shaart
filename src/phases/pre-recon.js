@@ -21,7 +21,7 @@ async function runTerminalScan(tool, target, sourceDir = null) {
     let command, result;
     switch (tool) {
       case 'nmap':
-        console.log(chalk.blue(`    🔍 Running ${tool} scan...`));
+        console.log(systemMessage(`Running ${tool} scan...`, { color: COLORS.dim, prefix: '   ' }));
         const nmapHostname = new URL(target).hostname;
         result = await $({ silent: true, stdio: ['ignore', 'pipe', 'ignore'] })`nmap -sV -sC ${nmapHostname}`;
         const duration = timer.stop();
@@ -29,7 +29,7 @@ async function runTerminalScan(tool, target, sourceDir = null) {
         console.log(toolResult(tool, true, duration));
         return { tool: 'nmap', output: result.stdout, status: 'success', duration };
       case 'subfinder':
-        console.log(chalk.blue(`    🔍 Running ${tool} scan...`));
+        console.log(systemMessage(`Running ${tool} scan...`, { color: COLORS.dim, prefix: '   ' }));
         const hostname = new URL(target).hostname;
         result = await $({ silent: true, stdio: ['ignore', 'pipe', 'ignore'] })`subfinder -d ${hostname}`;
         const subfinderDuration = timer.stop();
@@ -37,9 +37,9 @@ async function runTerminalScan(tool, target, sourceDir = null) {
         console.log(toolResult(tool, true, subfinderDuration));
         return { tool: 'subfinder', output: result.stdout, status: 'success', duration: subfinderDuration };
       case 'whatweb':
-        console.log(chalk.blue(`    🔍 Running ${tool} scan...`));
+        console.log(systemMessage(`Running ${tool} scan...`, { color: COLORS.dim, prefix: '   ' }));
         command = `whatweb --open-timeout 30 --read-timeout 60 ${target}`;
-        console.log(chalk.gray(`    Command: ${command}`));
+        console.log(systemMessage(`Command: ${command}`, { color: COLORS.dim, prefix: '   ' }));
         result = await $({ silent: true, stdio: ['ignore', 'pipe', 'ignore'] })`whatweb --open-timeout 30 --read-timeout 60 ${target}`;
         const whatwebDuration = timer.stop();
         timingResults.commands[tool] = whatwebDuration;
@@ -52,7 +52,7 @@ async function runTerminalScan(tool, target, sourceDir = null) {
           const schemaFiles = await fs.readdir(schemasDir);
           const apiSchemas = schemaFiles.filter(f => f.endsWith('.json') || f.endsWith('.yml') || f.endsWith('.yaml'));
           if (apiSchemas.length > 0) {
-            console.log(chalk.blue(`    🔍 Running ${tool} scan...`));
+            console.log(systemMessage(`Running ${tool} scan...`, { color: COLORS.dim, prefix: '   ' }));
             let allResults = [];
 
             // Run schemathesis on each schema file
@@ -71,11 +71,17 @@ async function runTerminalScan(tool, target, sourceDir = null) {
             console.log(toolResult(tool, true, schemaDuration));
             return { tool: 'schemathesis', output: allResults.join('\n\n'), status: 'success', duration: schemaDuration };
           } else {
-            console.log(chalk.gray(`    ⏭️ ${tool} - no API schemas found`));
+            console.log(systemMessage(`${tool} - no API schemas found`, {
+              color: COLORS.dim,
+              prefix: '   '
+            }));
             return { tool: 'schemathesis', output: 'No API schemas found', status: 'skipped', duration: timer.stop() };
           }
         } else {
-          console.log(chalk.gray(`    ⏭️ ${tool} - schemas directory not found`));
+          console.log(systemMessage(`${tool} - schemas directory not found`, {
+            color: COLORS.dim,
+            prefix: '   '
+          }));
           return { tool: 'schemathesis', output: 'Schemas directory not found', status: 'skipped', duration: timer.stop() };
         }
       default:
@@ -84,7 +90,7 @@ async function runTerminalScan(tool, target, sourceDir = null) {
   } catch (error) {
     const duration = timer.stop();
     timingResults.commands[tool] = duration;
-    console.log(chalk.red(`    ❌ ${tool} failed in ${formatDuration(duration)}`));
+    console.log(toolResult(tool, false, duration));
     return handleToolError(tool, error);
   }
 }
@@ -100,7 +106,10 @@ async function runPreReconWave1(webUrl, sourceDir, variables, config, pipelineTe
 
   // Skip external commands in pipeline testing mode
   if (pipelineTestingMode) {
-    console.log(chalk.gray('    ⏭️ Skipping external tools (pipeline testing mode)'));
+    console.log(systemMessage('Skipping external tools (pipeline testing mode)', {
+      color: COLORS.dim,
+      prefix: '   '
+    }));
     operations.push(
       runClaudePromptWithRetry(
         await loadPrompt('pre-recon-code', variables, null, pipelineTestingMode),
@@ -143,7 +152,10 @@ async function runPreReconWave1(webUrl, sourceDir, variables, config, pipelineTe
   }
 
   // Check if authentication config is provided for login instructions injection
-  console.log(chalk.gray(`    → Config check: ${config ? 'present' : 'missing'}, Auth: ${config?.authentication ? 'present' : 'missing'}`));
+  console.log(systemMessage(
+    `Config check: ${config ? 'present' : 'missing'}, Auth: ${config?.authentication ? 'present' : 'missing'}`,
+    { color: COLORS.dim, prefix: '   ' }
+  ));
 
   const [nmap, subfinder, whatweb, codeAnalysis] = await Promise.all(operations);
 
@@ -159,7 +171,10 @@ async function runPreReconWave2(webUrl, sourceDir, toolAvailability, pipelineTes
 
   // Skip external commands in pipeline testing mode
   if (pipelineTestingMode) {
-    console.log(chalk.gray('    ⏭️ Skipping external tools (pipeline testing mode)'));
+    console.log(systemMessage('Skipping external tools (pipeline testing mode)', {
+      color: COLORS.dim,
+      prefix: '   '
+    }));
     return {
       schemathesis: { tool: 'schemathesis', output: 'Skipped (pipeline testing mode)', status: 'skipped', duration: 0 }
     };
@@ -194,7 +209,10 @@ async function runPreReconWave2(webUrl, sourceDir, toolAvailability, pipelineTes
   if (toolAvailability.schemathesis) {
     response.schemathesis = results[resultIndex++];
   } else {
-    console.log(chalk.gray('    ⏭️ schemathesis - tool not available'));
+    console.log(systemMessage('schemathesis - tool not available', {
+      color: COLORS.dim,
+      prefix: '   '
+    }));
     response.schemathesis = { tool: 'schemathesis', output: 'Tool not available', status: 'skipped', duration: 0 };
   }
 
@@ -211,7 +229,9 @@ async function stitchPreReconOutputs(outputs, sourceDir) {
     const codeAnalysisPath = path.join(sourceDir, 'deliverables', 'code_analysis_deliverable.md');
     codeAnalysisContent = await fs.readFile(codeAnalysisPath, 'utf8');
   } catch (error) {
-    console.log(chalk.yellow(`⚠️ Could not read code analysis deliverable: ${error.message}`));
+    console.log(statusLine('!', `Could not read code analysis deliverable: ${error.message}`, {
+      color: COLORS.warning
+    }));
     // Fallback message if file doesn't exist
     codeAnalysisContent = 'Analysis located in deliverables/code_analysis_deliverable.md';
   }

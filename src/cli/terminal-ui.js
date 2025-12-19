@@ -153,17 +153,17 @@ export function completionMessage(agentName, duration, cost, options = {}) {
     model = 'Sonnet'
   } = options;
 
-  const icon = success ? '🏁' : '❌';
+  const icon = success ? '+' : '-';
   const status = success ? 'COMPLETED' : 'FAILED';
   const statusColor = success ? COLORS.primary : COLORS.error;
 
   const lines = [];
   lines.push('');
   lines.push(chalk.hex(statusColor).bold(`    ${icon} ${status}:`));
-  lines.push(chalk.hex(COLORS.dim)(`    ⏱️  Duration: ${duration}s, Cost: $${cost.toFixed(4)}`));
+  lines.push(chalk.hex(COLORS.dim)(`    > Duration: ${duration}s, Cost: $${cost.toFixed(4)}`));
 
   if (turns > 0) {
-    lines.push(chalk.hex(COLORS.dim)(`    💰 Cost: $${cost.toFixed(4)} (${model})`));
+    lines.push(chalk.hex(COLORS.dim)(`    > Cost: $${cost.toFixed(4)} (${model})`));
   }
 
   return lines.join('\n');
@@ -173,7 +173,7 @@ export function completionMessage(agentName, duration, cost, options = {}) {
  * Agent activity message (replaces boring "Running analysis...")
  */
 export function agentActivity(agentName, activity, options = {}) {
-  const { emoji = '🔍', color = COLORS.primary } = options;
+  const { emoji = '>', color = COLORS.primary } = options;
   return statusLine(emoji, `${agentName}: ${activity}`, { color, dimMessage: true });
 }
 
@@ -181,7 +181,7 @@ export function agentActivity(agentName, activity, options = {}) {
  * Phase header (PHASE 1: PRE-RECONNAISSANCE style)
  */
 export function phaseHeader(phaseNumber, phaseName, options = {}) {
-  const { emoji = '⚡' } = options;
+  const { emoji = '>' } = options;
   const header = `${emoji} PHASE ${phaseNumber}: ${phaseName.toUpperCase()}`;
 
   const lines = [];
@@ -196,7 +196,7 @@ export function phaseHeader(phaseNumber, phaseName, options = {}) {
  * Validation result
  */
 export function validationResult(passed, message) {
-  const icon = passed ? '✅' : '❌';
+  const icon = passed ? '+' : '-';
   const color = passed ? COLORS.primary : COLORS.error;
   return statusLine(icon, message, { color, indent: 4 });
 }
@@ -206,12 +206,12 @@ export function validationResult(passed, message) {
  */
 export function commitResult(success, filesChanged, message = '') {
   if (success) {
-    return statusLine('✅', `Success commit created with ${filesChanged} file changes`, {
+    return statusLine('+', `Success commit created with ${filesChanged} file changes`, {
       color: COLORS.primary,
       indent: 4
     });
   } else {
-    return statusLine('❌', `Commit failed: ${message}`, {
+    return statusLine('-', `Commit failed: ${message}`, {
       color: COLORS.error,
       indent: 4
     });
@@ -223,10 +223,10 @@ export function commitResult(success, filesChanged, message = '') {
  */
 export function checkpointMessage(action, agentName, attempt = null) {
   const actions = {
-    creating: '📍',
-    created: '✅',
-    failed: '❌',
-    rolling_back: '🔄'
+    creating: '>',
+    created: '+',
+    failed: '-',
+    rolling_back: '<'
   };
 
   const icon = actions[action] || '•';
@@ -290,7 +290,7 @@ export function errorMessage(message, options = {}) {
 
   const lines = [];
   lines.push('');
-  lines.push(statusLine(fatal ? '🔴' : '⚠️', message, { color: COLORS.error }));
+  lines.push(statusLine('!', message, { color: COLORS.error }));
 
   if (details) {
     lines.push(chalk.hex(COLORS.dim)(`    ${details}`));
@@ -305,7 +305,7 @@ export function errorMessage(message, options = {}) {
 export function toolResult(toolName, success, duration, options = {}) {
   const { output = null } = options;
 
-  const icon = success ? '✅' : '❌';
+  const icon = success ? '+' : '-';
   const color = success ? COLORS.primary : COLORS.error;
   const durationText = typeof duration === 'string' ? duration : `${(duration/1000).toFixed(1)}s`;
 
@@ -334,9 +334,8 @@ export function waitingMessage(message) {
  * Model indicator
  */
 export function modelIndicator(modelName, phase = '') {
-  const emoji = modelName.toLowerCase().includes('haiku') ? '🤖' : '🤖';
   const phaseText = phase ? ` (${phase})` : '';
-  return statusLine(emoji, `Model: ${modelName}${phaseText}`, {
+  return statusLine('>', `Model: ${modelName}${phaseText}`, {
     color: COLORS.dim,
     indent: 4
   });
