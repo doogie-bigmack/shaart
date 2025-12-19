@@ -130,7 +130,7 @@ async function validateAgentOutput(result, agentName, sourceDir) {
 // - Output validation
 // - Prompt snapshotting for debugging
 // - Git checkpoint/rollback safety
-async function runClaudePrompt(prompt, sourceDir, allowedTools = 'Read', context = '', description = 'Claude analysis', agentName = null, colorFn = chalk.cyan, sessionMetadata = null, auditSession = null, attemptNumber = 1, modelConfig = null) {
+async function runClaudePrompt(prompt, sourceDir, allowedTools = 'Read', context = '', description = 'Claude analysis', agentName = null, colorFn = chalk.cyan, sessionMetadata = null, auditSession = null, attemptNumber = 1, modelConfig = null, config = null) {
   const timer = new Timer(`agent-${description.toLowerCase().replace(/\s+/g, '-')}`);
   const fullPrompt = context ? `${context}\n\n${prompt}` : prompt;
   let totalCost = 0;
@@ -630,7 +630,7 @@ async function runClaudePrompt(prompt, sourceDir, allowedTools = 'Read', context
 // - Comprehensive error handling and logging
 // - Crash-safe audit logging via AuditSession
 // - Multi-model strategy for cost optimization
-export async function runClaudePromptWithRetry(prompt, sourceDir, allowedTools = 'Read', context = '', description = 'Claude analysis', agentName = null, colorFn = chalk.cyan, sessionMetadata = null, modelConfig = null) {
+export async function runClaudePromptWithRetry(prompt, sourceDir, allowedTools = 'Read', context = '', description = 'Claude analysis', agentName = null, colorFn = chalk.cyan, sessionMetadata = null, modelConfig = null, config = null) {
   const maxRetries = 3;
   let lastError;
   let retryContext = context; // Preserve context between retries
@@ -655,7 +655,7 @@ export async function runClaudePromptWithRetry(prompt, sourceDir, allowedTools =
     }
 
     try {
-      const result = await runClaudePrompt(prompt, sourceDir, allowedTools, retryContext, description, agentName, colorFn, sessionMetadata, auditSession, attempt, modelConfig);
+      const result = await runClaudePrompt(prompt, sourceDir, allowedTools, retryContext, description, agentName, colorFn, sessionMetadata, auditSession, attempt, modelConfig, config);
 
       // Validate output after successful run
       if (result.success) {

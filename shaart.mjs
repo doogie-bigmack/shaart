@@ -229,7 +229,8 @@ async function main(webUrl, repoPath, configPath = null, pipelineTestingMode = f
       'recon',  // Agent name for snapshot creation
       chalk.cyan,
       { id: session.id, webUrl },  // Session metadata for audit logging (STANDARD: use 'id' field)
-      distributedConfig?.models  // Model configuration for cost optimization
+      distributedConfig?.models,  // Model configuration for cost optimization
+      distributedConfig  // Full config for exploit memory
     );
     const reconDuration = reconTimer.stop();
     timingResults.phases['recon'] = reconDuration;
@@ -306,7 +307,8 @@ async function main(webUrl, repoPath, configPath = null, pipelineTestingMode = f
       'report',  // Agent name for snapshot creation
       chalk.cyan,
       { id: session.id, webUrl },  // Session metadata for audit logging (STANDARD: use 'id' field)
-      distributedConfig?.models  // Model configuration for cost optimization
+      distributedConfig?.models,  // Model configuration for cost optimization
+      distributedConfig  // Full config for exploit memory
     );
 
     const reportDuration = reportTimer.stop();
