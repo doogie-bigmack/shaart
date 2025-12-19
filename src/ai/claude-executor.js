@@ -271,11 +271,13 @@ async function runClaudePrompt(prompt, sourceDir, allowedTools = 'Read', context
       console.log(chalk.gray(`    SDK Options: maxTurns=${options.maxTurns}, cwd=${sourceDir}, permissions=BYPASS`));
     }
 
+    // Define agentType at function scope for use in completion/error messages
+    const agentType = description.includes('Pre-recon') ? 'pre-reconnaissance' :
+                     description.includes('Recon') ? 'reconnaissance' :
+                     description.includes('Report') ? 'report generation' : 'analysis';
+
     // Initialize progress indicator now that options is defined
     if (useCleanOutput && !global.SHAART_DISABLE_LOADER) {
-      const agentType = description.includes('Pre-recon') ? 'pre-reconnaissance' :
-                       description.includes('Recon') ? 'reconnaissance' :
-                       description.includes('Report') ? 'report generation' : 'analysis';
       progressIndicator = new ProgressIndicator(`Running ${agentType}...`, { maxTurns: options.maxTurns });
     }
 

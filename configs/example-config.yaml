@@ -2,10 +2,10 @@
 # Copy this file and modify it for your specific testing needs
 
 # Multi-model strategy for cost optimization
-# Haiku is ~60x cheaper than Sonnet, perfect for analysis tasks
-# Defaults shown below can be overridden per phase
+# Using Sonnet 4.5 for all phases (Haiku 4.5 not yet available)
+# TODO: Switch to Haiku for analysis when claude-haiku-4-5 is released
 models:
-  analysis: claude-haiku-4-5-20250929      # Pre-recon, recon, vulnerability analysis
+  analysis: claude-sonnet-4-5-20250929     # Pre-recon, recon, vulnerability analysis
   exploitation: claude-sonnet-4-5-20250929 # Exploitation attempts (complex reasoning)
   reporting: claude-sonnet-4-5-20250929    # Final report generation
 
