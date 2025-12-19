@@ -58,7 +58,7 @@ async function nostromoBootSequence(version) {
 
   // Header with typewriter effect
   await typewriterEffect(
-    'WEYLAND-YUTANI CORP :: SECURITY TERMINAL v' + version,
+    'BIGMAC-ATTACK CORP :: SECURITY TERMINAL v' + version,
     chalk.hex('#00FF00'),
     25
   );
@@ -114,7 +114,7 @@ function generateQuickSplash(version) {
   });
 
   const content = [
-    chalk.hex('#00FF00')('WEYLAND-YUTANI CORP :: SECURITY TERMINAL v' + version),
+    chalk.hex('#00FF00')('BIGMAC-ATTACK CORP :: SECURITY TERMINAL v' + version),
     chalk.hex('#00DD00')('═'.repeat(70)),
     '',
     applyGlow(artText),
