@@ -9,10 +9,10 @@ import chalk from 'chalk';
 import { validateQueueAndDeliverable } from './queue-validation.js';
 
 // Default model configuration for multi-model strategy (cost optimization)
-// Using Sonnet 4.5 for all phases (Haiku 4.5 not yet available)
-// TODO: Switch analysis phase to Haiku when claude-haiku-4-5 is released
+// Haiku 4 is ~60x cheaper than Sonnet, perfect for analysis tasks
+// Sonnet is used for complex reasoning in exploitation and reporting
 export const DEFAULT_MODEL_CONFIG = Object.freeze({
-  analysis: 'claude-sonnet-4-5-20250929',     // Pre-recon, recon, vulnerability analysis
+  analysis: 'claude-4-haiku-20250514',        // Pre-recon, recon, vulnerability analysis
   exploitation: 'claude-sonnet-4-5-20250929', // Exploitation attempts
   reporting: 'claude-sonnet-4-5-20250929'     // Final report synthesis
 });
