@@ -78,13 +78,14 @@ async function main(webUrl, repoPath, configPath = null, pipelineTestingMode = f
   // Display splash screen
   await displaySplashScreen();
 
-  console.log(chalk.cyan.bold('🚀 AI PENETRATION TESTING AGENT'));
-  console.log(chalk.cyan(`🎯 Target: ${webUrl}`));
-  console.log(chalk.cyan(`📁 Source: ${repoPath}`));
+  console.log('');
+  console.log(systemMessage('AWAITING TARGET CONFIGURATION...', { color: COLORS.tertiary }));
+  console.log(systemMessage(`Target: ${webUrl}`, { color: COLORS.white }));
+  console.log(systemMessage(`Source: ${repoPath}`, { color: COLORS.white }));
   if (configPath) {
-    console.log(chalk.cyan(`⚙️ Config: ${configPath}`));
+    console.log(systemMessage(`Config: ${configPath}`, { color: COLORS.white }));
   }
-  console.log(chalk.gray('─'.repeat(60)));
+  console.log('');
 
   // Parse configuration if provided
   let config = null;
@@ -104,7 +105,10 @@ async function main(webUrl, repoPath, configPath = null, pipelineTestingMode = f
 
       config = await parseConfig(resolvedConfigPath);
       distributedConfig = distributeConfig(config);
-      console.log(chalk.green(`✅ Configuration loaded successfully`));
+      console.log(statusLine('+', 'Configuration loaded successfully', {
+        color: COLORS.primary,
+        indent: 0
+      }));
     } catch (error) {
       await logError(error, `Configuration loading from ${configPath}`);
       throw error; // Let the main error boundary handle it
@@ -116,12 +120,15 @@ async function main(webUrl, repoPath, configPath = null, pipelineTestingMode = f
   handleMissingTools(toolAvailability);
 
   // Setup local repository
-  console.log(chalk.blue('📁 Setting up local repository...'));
+  console.log(systemMessage('Setting up local repository...', { color: COLORS.dim }));
   let sourceDir;
   try {
     sourceDir = await setupLocalRepo(repoPath);
     const variables = { webUrl, repoPath, sourceDir };
-    console.log(chalk.green('✅ Local repository setup successfully'));
+    console.log(statusLine('+', 'Local repository setup successfully', {
+      color: COLORS.primary,
+      indent: 0
+    }));
   } catch (error) {
     console.log(chalk.red(`❌ Failed to setup local repository: ${error.message}`));
     console.log(chalk.gray('This could be due to:'));

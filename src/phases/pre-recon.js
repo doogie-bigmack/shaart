@@ -12,6 +12,7 @@ import { handleToolError, PentestError } from '../error-handling.js';
 import { AGENTS } from '../session-manager.js';
 import { runClaudePromptWithRetry } from '../ai/claude-executor.js';
 import { loadPrompt } from '../prompts/prompt-manager.js';
+import { systemMessage, statusLine, toolResult, phaseHeader, COLORS } from '../cli/terminal-ui.js';
 
 // Pure function: Run terminal scanning tools
 async function runTerminalScan(tool, target, sourceDir = null) {
@@ -25,7 +26,7 @@ async function runTerminalScan(tool, target, sourceDir = null) {
         result = await $({ silent: true, stdio: ['ignore', 'pipe', 'ignore'] })`nmap -sV -sC ${nmapHostname}`;
         const duration = timer.stop();
         timingResults.commands[tool] = duration;
-        console.log(chalk.green(`    ✅ ${tool} completed in ${formatDuration(duration)}`));
+        console.log(toolResult(tool, true, duration));
         return { tool: 'nmap', output: result.stdout, status: 'success', duration };
       case 'subfinder':
         console.log(chalk.blue(`    🔍 Running ${tool} scan...`));
@@ -33,7 +34,7 @@ async function runTerminalScan(tool, target, sourceDir = null) {
         result = await $({ silent: true, stdio: ['ignore', 'pipe', 'ignore'] })`subfinder -d ${hostname}`;
         const subfinderDuration = timer.stop();
         timingResults.commands[tool] = subfinderDuration;
-        console.log(chalk.green(`    ✅ ${tool} completed in ${formatDuration(subfinderDuration)}`));
+        console.log(toolResult(tool, true, subfinderDuration));
         return { tool: 'subfinder', output: result.stdout, status: 'success', duration: subfinderDuration };
       case 'whatweb':
         console.log(chalk.blue(`    🔍 Running ${tool} scan...`));
@@ -42,7 +43,7 @@ async function runTerminalScan(tool, target, sourceDir = null) {
         result = await $({ silent: true, stdio: ['ignore', 'pipe', 'ignore'] })`whatweb --open-timeout 30 --read-timeout 60 ${target}`;
         const whatwebDuration = timer.stop();
         timingResults.commands[tool] = whatwebDuration;
-        console.log(chalk.green(`    ✅ ${tool} completed in ${formatDuration(whatwebDuration)}`));
+        console.log(toolResult(tool, true, whatwebDuration));
         return { tool: 'whatweb', output: result.stdout, status: 'success', duration: whatwebDuration };
       case 'schemathesis':
         // Only run if API schemas found
@@ -67,7 +68,7 @@ async function runTerminalScan(tool, target, sourceDir = null) {
 
             const schemaDuration = timer.stop();
             timingResults.commands[tool] = schemaDuration;
-            console.log(chalk.green(`    ✅ ${tool} completed in ${formatDuration(schemaDuration)}`));
+            console.log(toolResult(tool, true, schemaDuration));
             return { tool: 'schemathesis', output: allResults.join('\n\n'), status: 'success', duration: schemaDuration };
           } else {
             console.log(chalk.gray(`    ⏭️ ${tool} - no API schemas found`));
@@ -90,7 +91,10 @@ async function runTerminalScan(tool, target, sourceDir = null) {
 
 // Wave 1: Initial footprinting + authentication
 async function runPreReconWave1(webUrl, sourceDir, variables, config, pipelineTestingMode = false, sessionId = null) {
-  console.log(chalk.blue('    → Launching Wave 1 operations in parallel...'));
+  console.log(systemMessage('Launching Wave 1 operations in parallel...', {
+    color: COLORS.dim,
+    prefix: '   '
+  }));
 
   const operations = [];
 
@@ -148,7 +152,10 @@ async function runPreReconWave1(webUrl, sourceDir, variables, config, pipelineTe
 
 // Wave 2: Additional scanning
 async function runPreReconWave2(webUrl, sourceDir, toolAvailability, pipelineTestingMode = false) {
-  console.log(chalk.blue('    → Running Wave 2 additional scans in parallel...'));
+  console.log(systemMessage('Running Wave 2 additional scans in parallel...', {
+    color: COLORS.dim,
+    prefix: '   '
+  }));
 
   // Skip external commands in pipeline testing mode
   if (pipelineTestingMode) {
@@ -168,7 +175,10 @@ async function runPreReconWave2(webUrl, sourceDir, toolAvailability, pipelineTes
 
   // If no tools are available, return early
   if (operations.length === 0) {
-    console.log(chalk.gray('    ⏭️ No Wave 2 tools available'));
+    console.log(systemMessage('No Wave 2 tools available', {
+      color: COLORS.dim,
+      prefix: '   '
+    }));
     return {
       schemathesis: { tool: 'schemathesis', output: 'Tool not available', status: 'skipped', duration: 0 }
     };
@@ -265,18 +275,24 @@ Report generated at: ${new Date().toISOString()}
 
 // Main pre-recon phase execution function
 export async function executePreReconPhase(webUrl, sourceDir, variables, config, toolAvailability, pipelineTestingMode, sessionId = null) {
-  console.log(chalk.yellow.bold('\n🔍 PHASE 1: PRE-RECONNAISSANCE'));
+  console.log(phaseHeader(1, 'PRE-RECONNAISSANCE'));
   const timer = new Timer('phase-1-pre-recon');
 
-  console.log(chalk.yellow('Wave 1: Initial footprinting...'));
+  console.log(systemMessage('Wave 1: Initial footprinting...', { color: COLORS.white }));
   const wave1Results = await runPreReconWave1(webUrl, sourceDir, variables, config, pipelineTestingMode, sessionId);
-  console.log(chalk.green('  ✅ Wave 1 operations completed'));
+  console.log(statusLine('+', 'Wave 1 operations completed', {
+    color: COLORS.primary,
+    indent: 2
+  }));
 
-  console.log(chalk.yellow('Wave 2: Additional scanning...'));
+  console.log(systemMessage('Wave 2: Additional scanning...', { color: COLORS.white }));
   const wave2Results = await runPreReconWave2(webUrl, sourceDir, toolAvailability, pipelineTestingMode);
-  console.log(chalk.green('  ✅ Wave 2 operations completed'));
+  console.log(statusLine('+', 'Wave 2 operations completed', {
+    color: COLORS.primary,
+    indent: 2
+  }));
 
-  console.log(chalk.blue('📝 Stitching pre-recon outputs...'));
+  console.log(systemMessage('Stitching pre-recon outputs...', { color: COLORS.dim }));
   // Combine wave 1 and wave 2 results for stitching
   const allResults = [
     wave1Results.nmap,
@@ -288,8 +304,12 @@ export async function executePreReconPhase(webUrl, sourceDir, variables, config,
   const preReconReport = await stitchPreReconOutputs(allResults, sourceDir);
   const duration = timer.stop();
 
-  console.log(chalk.green(`✅ Pre-reconnaissance complete in ${formatDuration(duration)}`));
-  console.log(chalk.green(`💾 Saved to ${sourceDir}/deliverables/pre_recon_deliverable.md`));
+  console.log(statusLine('+', `Pre-reconnaissance complete in ${formatDuration(duration)}`, {
+    color: COLORS.primary
+  }));
+  console.log(statusLine('+', `Saved to ${sourceDir}/deliverables/pre_recon_deliverable.md`, {
+    color: COLORS.primary
+  }));
 
   return { duration, report: preReconReport };
 }

@@ -7,6 +7,7 @@
 import { $, fs, path } from 'zx';
 import chalk from 'chalk';
 import { PentestError } from '../error-handling.js';
+import { statusLine, COLORS } from '../cli/terminal-ui.js';
 
 // Pure function: Setup local repository for testing
 export async function setupLocalRepo(repoPath) {
@@ -23,7 +24,10 @@ export async function setupLocalRepo(repoPath) {
 
       if (!isGitRepo) {
         await $`cd ${sourceDir} && git init`;
-        console.log(chalk.blue('✅ Git repository initialized'));
+        console.log(statusLine('+', 'Git repository initialized', {
+          color: COLORS.primary,
+          indent: 0
+        }));
       }
 
       // Configure git for pentest agent
@@ -32,9 +36,15 @@ export async function setupLocalRepo(repoPath) {
 
       // Create initial checkpoint
       await $`cd ${sourceDir} && git add -A && git commit -m "Initial checkpoint: Local repository setup" --allow-empty`;
-      console.log(chalk.green('✅ Initial checkpoint created'));
+      console.log(statusLine('+', 'Initial checkpoint created', {
+        color: COLORS.primary,
+        indent: 0
+      }));
     } catch (gitError) {
-      console.log(chalk.yellow(`⚠️ Git setup warning: ${gitError.message}`));
+      console.log(statusLine('!', `Git setup warning: ${gitError.message}`, {
+        color: COLORS.warning,
+        indent: 0
+      }));
       // Non-fatal - continue without Git setup
     }
 
