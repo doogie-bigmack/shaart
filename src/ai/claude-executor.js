@@ -164,6 +164,7 @@ async function runClaudePrompt(prompt, sourceDir, allowedTools = 'Read', context
 
   // Declare variables that need to be accessible in both try and catch blocks
   let turnCount = 0;
+  let progressIndicator = null;
 
   try {
     // Create MCP server with target directory context and exploit memory config
@@ -244,7 +245,6 @@ async function runClaudePrompt(prompt, sourceDir, allowedTools = 'Read', context
     }
 
     // Initialize progress indicator now that options is defined
-    let progressIndicator = null;
     if (useCleanOutput && !global.SHAART_DISABLE_LOADER) {
       const agentType = description.includes('Pre-recon') ? 'pre-reconnaissance' :
                        description.includes('Recon') ? 'reconnaissance' :
