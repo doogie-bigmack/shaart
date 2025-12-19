@@ -68,7 +68,7 @@ export const parseConfig = async (configPath) => {
     let config;
     try {
       config = yaml.load(configContent, {
-        schema: yaml.FAILSAFE_SCHEMA, // Only basic YAML types, no JS evaluation
+        schema: yaml.CORE_SCHEMA, // Basic types + booleans, numbers (no custom JS types)
         json: false, // Don't allow JSON-specific syntax
         filename: configPath
       });

@@ -130,16 +130,54 @@
         }
       },
       "additionalProperties": false
+    },
+    "exploit_memory": {
+      "type": "object",
+      "description": "Exploit memory database configuration for vulnerability tracking across sessions",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable exploit memory database for vulnerability deduplication and historical tracking"
+        },
+        "deduplication_strategy": {
+          "type": "string",
+          "enum": ["strict", "loose", "both"],
+          "default": "strict",
+          "description": "Deduplication strategy: strict (exact match), loose (path-only), both (check both)"
+        },
+        "max_age_days": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 365,
+          "default": 90,
+          "description": "Maximum age in days for historical vulnerabilities to include in context"
+        },
+        "trigger_infrastructure": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically trigger infrastructure testing phase when credentials are discovered"
+        }
+      },
+      "additionalProperties": false
     }
   },
   "anyOf": [
     {"required": ["authentication"]},
     {"required": ["rules"]},
     {"required": ["models"]},
+    {"required": ["exploit_memory"]},
     {"required": ["authentication", "rules"]},
     {"required": ["authentication", "models"]},
+    {"required": ["authentication", "exploit_memory"]},
     {"required": ["rules", "models"]},
-    {"required": ["authentication", "rules", "models"]}
+    {"required": ["rules", "exploit_memory"]},
+    {"required": ["models", "exploit_memory"]},
+    {"required": ["authentication", "rules", "models"]},
+    {"required": ["authentication", "rules", "exploit_memory"]},
+    {"required": ["authentication", "models", "exploit_memory"]},
+    {"required": ["rules", "models", "exploit_memory"]},
+    {"required": ["authentication", "rules", "models", "exploit_memory"]}
   ],
   "additionalProperties": false,
   "$defs": {

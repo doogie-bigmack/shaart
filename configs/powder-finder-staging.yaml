@@ -1,0 +1,51 @@
+# Powder Finder Staging Environment Pentest Config
+
+authentication:
+  login_type: sso
+  login_url: "https://staging.bigmac-attack.com/"
+  credentials:
+    username: "doogie-bigmac"
+    password: "YYt1l1b1s0!"
+
+  # GitHub OAuth login flow
+  login_flow:
+    - "Click the 'Sign In' button in the header"
+    - "Click 'Continue with GitHub' button"
+    - "On the GitHub login page, type $username into the username or email field"
+    - "Type $password into the password field"
+    - "Click the 'Sign in' button"
+    - "If prompted to authorize, click 'Authorize' button"
+
+  success_condition:
+    type: url_contains
+    value: "/dashboard"
+
+# Exploit Memory Configuration
+exploit_memory:
+  enabled: true
+  deduplication_strategy: strict
+  max_age_days: 90
+  trigger_infrastructure: true
+
+rules:
+  avoid:
+    - description: "Skip logout to maintain session"
+      type: path
+      url_path: "/logout"
+
+    - description: "Skip sign-out endpoint"
+      type: path
+      url_path: "/api/v1/auth/logout"
+
+    - description: "Don't test external OAuth providers"
+      type: path
+      url_path: "/api/v1/auth/login/*"
+
+  focus:
+    - description: "Focus on API endpoints"
+      type: path
+      url_path: "/api/*"
+
+    - description: "Focus on dashboard functionality"
+      type: path
+      url_path: "/dashboard*"

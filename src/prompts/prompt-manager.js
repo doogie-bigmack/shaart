@@ -112,6 +112,85 @@ async function processIncludes(content, baseDir) {
   return content;
 }
 
+/**
+ * Format exploit memory context for injection into prompts
+ *
+ * @param {Object} exploitMemory - Exploit memory data
+ * @returns {string} Formatted exploit memory section
+ */
+function formatExploitMemoryContext(exploitMemory) {
+  if (!exploitMemory || !exploitMemory.vulnerabilities) {
+    return '';
+  }
+
+  let context = '\n\n<exploit_memory>\n';
+  context += '# Historical Vulnerability Data\n\n';
+  context += 'The following vulnerabilities were discovered in previous test sessions:\n\n';
+
+  // Group vulnerabilities by type
+  const vulnsByType = {};
+  for (const vuln of exploitMemory.vulnerabilities) {
+    if (!vulnsByType[vuln.vuln_type]) {
+      vulnsByType[vuln.vuln_type] = [];
+    }
+    vulnsByType[vuln.vuln_type].push(vuln);
+  }
+
+  // Format by type
+  for (const [type, vulns] of Object.entries(vulnsByType)) {
+    context += `## ${type} (${vulns.length} found)\n\n`;
+    for (const vuln of vulns.slice(0, 5)) { // Limit to 5 per type
+      context += `- **${vuln.path}** (confidence: ${vuln.confidence}%)\n`;
+      context += `  - Source: ${vuln.source}\n`;
+      if (vuln.sink_call) {
+        context += `  - Sink: ${vuln.sink_call}\n`;
+      }
+      context += `  - Status: ${vuln.remediation_status}\n`;
+      context += `  - First discovered: ${vuln.first_discovered_at}\n\n`;
+    }
+    if (vulns.length > 5) {
+      context += `  ... and ${vulns.length - 5} more\n\n`;
+    }
+  }
+
+  // Add attack patterns if available
+  if (exploitMemory.patterns && exploitMemory.patterns.length > 0) {
+    context += '\n## Successful Attack Patterns\n\n';
+    for (const pattern of exploitMemory.patterns.slice(0, 3)) {
+      context += `- **${pattern.pattern_type}** (used ${pattern.success_count} times)\n`;
+      context += `  - Last used: ${pattern.last_used_at}\n\n`;
+    }
+  }
+
+  // Add discovered credentials if available
+  if (exploitMemory.credentials && exploitMemory.credentials.length > 0) {
+    context += '\n## Discovered Credentials\n\n';
+    context += `Found ${exploitMemory.credentials.length} credential(s) in previous sessions:\n\n`;
+    for (const cred of exploitMemory.credentials.slice(0, 5)) {
+      context += `- **${cred.credential_type}** (${cred.service_type || 'unknown service'})\n`;
+      if (cred.username) {
+        context += `  - Username: ${cred.username}\n`;
+      }
+      context += `  - Discovered via: ${cred.discovered_via}\n`;
+      context += `  - Validated: ${cred.validated ? 'Yes' : 'No'}\n\n`;
+    }
+  }
+
+  // Add tech stack if available
+  if (exploitMemory.application?.tech_stack) {
+    context += '\n## Known Tech Stack\n\n';
+    context += exploitMemory.application.tech_stack.join(', ') + '\n\n';
+  }
+
+  context += '</exploit_memory>\n\n';
+  context += 'Use this historical data to:\n';
+  context += '1. Avoid testing already-verified vulnerabilities\n';
+  context += '2. Focus on similar patterns that were successful before\n';
+  context += '3. Build on discovered credentials for deeper exploitation\n\n';
+
+  return context;
+}
+
 // Pure function: Variable interpolation
 async function interpolateVariables(template, variables, config = null) {
   try {
@@ -163,11 +242,20 @@ async function interpolateVariables(template, variables, config = null) {
       } else {
         result = result.replace(/{{LOGIN_INSTRUCTIONS}}/g, '');
       }
+
+      // Inject exploit memory context if available
+      if (variables.exploitMemory) {
+        const exploitMemoryContext = formatExploitMemoryContext(variables.exploitMemory);
+        result = result.replace(/{{EXPLOIT_MEMORY}}/g, exploitMemoryContext);
+      } else {
+        result = result.replace(/{{EXPLOIT_MEMORY}}/g, '');
+      }
     } else {
       // Replace the entire rules section with a clean message when no config provided
       const cleanRulesSection = '<rules>\nNo specific rules or focus areas provided for this test.\n</rules>';
       result = result.replace(/<rules>[\s\S]*?<\/rules>/g, cleanRulesSection);
       result = result.replace(/{{LOGIN_INSTRUCTIONS}}/g, '');
+      result = result.replace(/{{EXPLOIT_MEMORY}}/g, '');
     }
 
     // Validate that all placeholders have been replaced (excluding instructional text)

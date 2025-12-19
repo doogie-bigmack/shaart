@@ -10,6 +10,13 @@ import crypto from 'crypto';
 import { PentestError } from './error-handling.js';
 import { SessionMutex } from './utils/concurrency.js';
 import { promptSelection } from './cli/prompts.js';
+import {
+  getDatabase,
+  getApplication,
+  queryVulnerabilities,
+  getPatterns,
+  queryCredentials
+} from './exploit-memory/index.js';
 
 // Generate a session-based log folder path
 // NEW FORMAT: {hostname}_{sessionId} (no hash, full UUID for consistency with audit system)
@@ -197,6 +204,67 @@ const findExistingSession = async (webUrl, targetRepo) => {
 const generateSessionId = () => {
   // Always generate a unique UUID for each session
   return crypto.randomUUID();
+};
+
+/**
+ * Query exploit memory for a hostname
+ *
+ * @param {string} webUrl - Target web URL
+ * @param {Object} config - Configuration object
+ * @returns {Object|null} Exploit memory data or null if disabled
+ */
+export const queryExploitMemoryForSession = (webUrl, config = null) => {
+  try {
+    // Check if exploit memory is enabled
+    const exploitMemoryEnabled = config?.exploit_memory?.enabled !== false;
+    if (!exploitMemoryEnabled) {
+      return null;
+    }
+
+    const hostname = new URL(webUrl).hostname;
+    const db = getDatabase(hostname);
+
+    // Get application info
+    const application = getApplication(db, hostname);
+
+    // If no application record exists, return null
+    if (!application) {
+      console.log(chalk.gray('   📋 No historical exploit data found for this application'));
+      return null;
+    }
+
+    // Query vulnerabilities (only open and fixed ones, not false positives)
+    const maxAgeDays = config?.exploit_memory?.max_age_days || 90;
+    const vulnerabilities = queryVulnerabilities(db, {
+      hostname,
+      remediation_status: ['open', 'fixed'].join(','),
+      max_age_days: maxAgeDays
+    });
+
+    // Get successful attack patterns
+    const patterns = getPatterns(db, hostname);
+
+    // Get discovered credentials (without sensitive data)
+    const credentials = queryCredentials(db, hostname);
+
+    console.log(chalk.blue(`   📋 Found exploit memory: ${vulnerabilities.length} vulnerabilities, ${patterns.length} patterns, ${credentials.length} credentials`));
+
+    return {
+      application,
+      vulnerabilities,
+      patterns,
+      credentials: credentials.map(c => ({
+        credential_type: c.credential_type,
+        service_type: c.service_type,
+        username: c.username,
+        discovered_via: c.discovered_via,
+        validated: c.validated
+      }))
+    };
+  } catch (error) {
+    console.log(chalk.yellow(`   ⚠️ Failed to query exploit memory: ${error.message}`));
+    return null;
+  }
 };
 
 // Create new session or return existing one

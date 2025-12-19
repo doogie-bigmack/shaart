@@ -6,3 +6,7 @@ audit-logs/
 .shannon-store.json
 .shaart-store.json
 workspace/
+coverage/
+*.log
+.vitest/
+exploit-memory/

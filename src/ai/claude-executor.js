@@ -166,8 +166,17 @@ async function runClaudePrompt(prompt, sourceDir, allowedTools = 'Read', context
   let turnCount = 0;
 
   try {
-    // Create MCP server with target directory context
-    const shaartHelperServer = createShaartHelperServer(sourceDir);
+    // Create MCP server with target directory context and exploit memory config
+    const exploitMemoryConfig = config?.exploit_memory || {};
+    const shaartHelperServer = createShaartHelperServer(sourceDir, exploitMemoryConfig);
+
+    // Set global hostname and session ID for exploit memory access
+    if (sessionMetadata?.webUrl) {
+      global.__SHAART_HOSTNAME = new URL(sessionMetadata.webUrl).hostname;
+    }
+    if (sessionMetadata?.id) {
+      global.__SHAART_SESSION_ID = sessionMetadata.id;
+    }
 
     // Look up agent's assigned Playwright MCP server
     // Convert agent name (e.g., 'xss-vuln') to prompt name (e.g., 'vuln-xss')
