@@ -5,6 +5,7 @@
 // as published by the Free Software Foundation.
 
 import chalk from 'chalk';
+import { progressBar, runningIndicator, COLORS } from './cli/terminal-ui.js';
 
 export class ProgressIndicator {
   constructor(message = 'Working...', options = {}) {
@@ -75,10 +76,6 @@ export class ProgressIndicator {
     if (!this.isRunning) return;
 
     const percentage = Math.min(Math.round((this.currentTurn / this.maxTurns) * 100), 100);
-    const barLength = 20;
-    const filledLength = Math.round((barLength * percentage) / 100);
-    const emptyLength = barLength - filledLength;
-    const progressBar = '='.repeat(filledLength) + '>'.padEnd(emptyLength, ' ');
 
     // Calculate estimated time remaining
     const elapsed = Date.now() - this.startTime;
@@ -87,33 +84,41 @@ export class ProgressIndicator {
     const remainingMinutes = Math.round(remaining / 60000);
 
     if (this.isTTY) {
-      // TTY mode: Use carriage return for live updates
+      // TTY mode: Use carriage return for live updates with Nostromo styling
       let output = '';
 
-      // Line 1: Progress bar with percentage
-      output += `${chalk.cyan(this.frames[this.frameIndex])} ${chalk.dim(this.message)}\n`;
-      output += `[${chalk.green(progressBar)}] ${chalk.bold(percentage + '%')} (Turn ${this.currentTurn}/${this.maxTurns})\n`;
+      // Line 1: Running indicator with spinner
+      output += chalk.hex(COLORS.primary)(this.frames[this.frameIndex]) + ' ' +
+                chalk.hex(COLORS.dim)(this.message) + '\n';
 
-      // Line 2: Current activity
+      // Line 2: Progress bar (Nostromo style)
+      output += progressBar(percentage, 20, {
+        label: '',
+        showPercentage: true
+      }) + chalk.hex(COLORS.dim)(` (Turn ${this.currentTurn}/${this.maxTurns})`) + '\n';
+
+      // Line 3: Current activity
       if (this.currentActivity) {
         const activityText = this.currentActivity.length > 80
           ? this.currentActivity.slice(0, 77) + '...'
           : this.currentActivity;
-        output += `${chalk.dim('Current:')} ${activityText}\n`;
+        output += chalk.hex(COLORS.dim)('> ') + chalk.hex(COLORS.white)(activityText) + '\n';
       }
 
-      // Line 3: Time estimate
+      // Line 4: Time estimate
       if (this.currentTurn > 0) {
         const timeText = remainingMinutes > 0
           ? `${remainingMinutes} minute${remainingMinutes !== 1 ? 's' : ''}`
           : 'less than a minute';
-        output += `${chalk.dim('Estimated time remaining:')} ${timeText}\n`;
+        output += chalk.hex(COLORS.dim)(`> Estimated time remaining: ${timeText}`) + '\n';
       }
 
-      // Line 4: Token usage
+      // Line 5: Token usage
       if (this.tokenUsage.total > 0) {
-        output += `${chalk.dim('Tokens:')} ${this.tokenUsage.total.toLocaleString()} `;
-        output += chalk.gray(`(Input: ${this.tokenUsage.input.toLocaleString()}, Output: ${this.tokenUsage.output.toLocaleString()})`);
+        output += chalk.hex(COLORS.dim)(
+          `> Tokens: ${this.tokenUsage.total.toLocaleString()} ` +
+          `(In: ${this.tokenUsage.input.toLocaleString()}, Out: ${this.tokenUsage.output.toLocaleString()})`
+        );
       }
 
       // Move cursor up to overwrite previous output
@@ -125,12 +130,19 @@ export class ProgressIndicator {
     } else {
       // Non-TTY mode: Print periodic updates (every 10%)
       if (percentage % 10 === 0 && percentage !== this.lastLoggedPercentage) {
-        console.log(`[${progressBar}] ${percentage}% (Turn ${this.currentTurn}/${this.maxTurns})`);
+        console.log(progressBar(percentage, 20, {
+          label: this.message,
+          showPercentage: true
+        }) + chalk.hex(COLORS.dim)(` (Turn ${this.currentTurn}/${this.maxTurns})`));
+
         if (this.currentActivity) {
-          console.log(`Current: ${this.currentActivity}`);
+          console.log(chalk.hex(COLORS.dim)(`> ${this.currentActivity}`));
         }
         if (this.tokenUsage.total > 0) {
-          console.log(`Tokens: ${this.tokenUsage.total.toLocaleString()} (Input: ${this.tokenUsage.input.toLocaleString()}, Output: ${this.tokenUsage.output.toLocaleString()})`);
+          console.log(chalk.hex(COLORS.dim)(
+            `> Tokens: ${this.tokenUsage.total.toLocaleString()} ` +
+            `(In: ${this.tokenUsage.input.toLocaleString()}, Out: ${this.tokenUsage.output.toLocaleString()})`
+          ));
         }
         this.lastLoggedPercentage = percentage;
       }
@@ -139,6 +151,6 @@ export class ProgressIndicator {
 
   finish(successMessage = 'Complete') {
     this.stop();
-    console.log(chalk.green(`✓ ${successMessage}`));
+    console.log(chalk.hex(COLORS.primary)(`✓ ${successMessage}`));
   }
 }

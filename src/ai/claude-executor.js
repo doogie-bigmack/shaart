@@ -20,6 +20,17 @@ import { filterJsonToolCalls, getAgentPrefix } from '../utils/output-formatter.j
 import { generateSessionLogPath } from '../session-manager.js';
 import { AuditSession } from '../audit/index.js';
 import { createShaartHelperServer } from '../../mcp-server/src/index.js';
+import {
+  completionMessage,
+  agentActivity,
+  validationResult,
+  commitResult,
+  checkpointMessage,
+  modelIndicator,
+  statusLine,
+  errorMessage,
+  COLORS
+} from '../cli/terminal-ui.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -86,12 +97,15 @@ function agentNameToPromptName(agentName) {
 
 // Simplified validation using direct agent name mapping
 async function validateAgentOutput(result, agentName, sourceDir) {
-  console.log(chalk.blue(`    🔍 Validating ${agentName} agent output`));
+  console.log(statusLine('🔍', `Validating ${agentName} agent output`, {
+    color: COLORS.tertiary,
+    indent: 4
+  }));
 
   try {
     // Check if agent completed successfully
     if (!result.success || !result.result) {
-      console.log(chalk.red(`    ❌ Validation failed: Agent execution was unsuccessful`));
+      console.log(validationResult(false, 'Agent execution was unsuccessful'));
       return false;
     }
 
@@ -99,27 +113,36 @@ async function validateAgentOutput(result, agentName, sourceDir) {
     const validator = AGENT_VALIDATORS[agentName];
 
     if (!validator) {
-      console.log(chalk.yellow(`    ⚠️ No validator found for agent "${agentName}" - assuming success`));
-      console.log(chalk.green(`    ✅ Validation passed: Unknown agent with successful result`));
+      console.log(statusLine('⚠️', `No validator found for agent "${agentName}" - assuming success`, {
+        color: COLORS.warning,
+        indent: 4
+      }));
+      console.log(validationResult(true, 'Unknown agent with successful result'));
       return true;
     }
 
-    console.log(chalk.blue(`    📋 Using validator for agent: ${agentName}`));
-    console.log(chalk.blue(`    📂 Source directory: ${sourceDir}`));
+    console.log(statusLine('📋', `Using validator for agent: ${agentName}`, {
+      color: COLORS.dim,
+      indent: 4
+    }));
+    console.log(statusLine('📂', `Source directory: ${sourceDir}`, {
+      color: COLORS.dim,
+      indent: 4
+    }));
 
     // Apply validation function
-    const validationResult = await validator(sourceDir);
+    const validationPassed = await validator(sourceDir);
 
-    if (validationResult) {
-      console.log(chalk.green(`    ✅ Validation passed: Required files/structure present`));
+    if (validationPassed) {
+      console.log(validationResult(true, 'Required files/structure present'));
     } else {
-      console.log(chalk.red(`    ❌ Validation failed: Missing required deliverable files`));
+      console.log(validationResult(false, 'Missing required deliverable files'));
     }
 
-    return validationResult;
+    return validationPassed;
 
   } catch (error) {
-    console.log(chalk.red(`    ❌ Validation failed with error: ${error.message}`));
+    console.log(validationResult(false, `Validation error: ${error.message}`));
     return false; // Assume invalid on validation error
   }
 }
@@ -411,44 +434,42 @@ async function runClaudePrompt(prompt, sourceDir, allowedTools = 'Read', context
         result = message.result;
 
         if (!statusManager) {
-          if (useCleanOutput) {
-            // Clean completion output - just duration and cost
-            console.log(chalk.magenta(`\n    🏁 COMPLETED:`));
-            const cost = message.total_cost_usd || 0;
-            console.log(chalk.gray(`    ⏱️  Duration: ${(message.duration_ms/1000).toFixed(1)}s, Cost: $${cost.toFixed(4)}`));
+          const cost = message.total_cost_usd || 0;
+          const durationSec = (message.duration_ms/1000).toFixed(1);
 
-            if (message.subtype === "error_max_turns") {
-              console.log(chalk.red(`    ⚠️  Stopped: Hit maximum turns limit`));
-            } else if (message.subtype === "error_during_execution") {
-              console.log(chalk.red(`    ❌ Stopped: Execution error`));
-            }
+          // Use Nostromo-styled completion message
+          console.log(completionMessage(agentType, durationSec, cost, {
+            turns: turnCount,
+            success: message.subtype !== "error_during_execution",
+            model: selectedModel.includes('haiku') ? 'Haiku' :
+                   selectedModel.includes('sonnet') ? 'Sonnet' : 'Opus'
+          }));
 
-            if (message.permission_denials && message.permission_denials.length > 0) {
-              console.log(chalk.yellow(`    🚫 ${message.permission_denials.length} permission denials`));
-            }
-          } else {
-            // Full completion output for agents without clean output
-            console.log(chalk.magenta(`\n    🏁 COMPLETED:`));
-            const cost = message.total_cost_usd || 0;
-            console.log(chalk.gray(`    ⏱️  Duration: ${(message.duration_ms/1000).toFixed(1)}s, Cost: $${cost.toFixed(4)}`));
+          if (message.subtype === "error_max_turns") {
+            console.log(statusLine('⚠️', 'Stopped: Hit maximum turns limit', {
+              color: COLORS.warning,
+              indent: 4
+            }));
+          } else if (message.subtype === "error_during_execution") {
+            console.log(statusLine('❌', 'Stopped: Execution error', {
+              color: COLORS.error,
+              indent: 4
+            }));
+          }
 
-            if (message.subtype === "error_max_turns") {
-              console.log(chalk.red(`    ⚠️  Stopped: Hit maximum turns limit`));
-            } else if (message.subtype === "error_during_execution") {
-              console.log(chalk.red(`    ❌ Stopped: Execution error`));
-            }
+          if (message.permission_denials && message.permission_denials.length > 0) {
+            console.log(statusLine('🚫', `${message.permission_denials.length} permission denials`, {
+              color: COLORS.warning,
+              indent: 4
+            }));
+          }
 
-            if (message.permission_denials && message.permission_denials.length > 0) {
-              console.log(chalk.yellow(`    🚫 ${message.permission_denials.length} permission denials`));
-            }
-
-            // Show result content (if it's reasonable length)
-            if (result && typeof result === 'string') {
-              if (result.length > 1000) {
-                console.log(chalk.magenta(`    📄 ${result.slice(0, 1000)}... [${result.length} total chars]`));
-              } else {
-                console.log(chalk.magenta(`    📄 ${result}`));
-              }
+          // Show result content (if not using clean output)
+          if (!useCleanOutput && result && typeof result === 'string') {
+            if (result.length > 1000) {
+              console.log(chalk.hex(COLORS.dim)(`    📄 ${result.slice(0, 1000)}... [${result.length} total chars]`));
+            } else {
+              console.log(chalk.hex(COLORS.dim)(`    📄 ${result}`));
             }
           }
         }
@@ -467,7 +488,7 @@ async function runClaudePrompt(prompt, sourceDir, allowedTools = 'Read', context
         const modelName = selectedModel.includes('haiku') ? 'Haiku' :
                          selectedModel.includes('sonnet') ? 'Sonnet' :
                          selectedModel.includes('opus') ? 'Opus' : selectedModel;
-        console.log(chalk.gray(`    💰 Cost: $${cost.toFixed(4)} (${modelName})`));
+        // Cost already shown in completionMessage above
 
         break;
       } else {

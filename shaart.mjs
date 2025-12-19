@@ -38,6 +38,7 @@ import { estimateTotalCost } from './src/cost-estimator.js';
 // CLI
 import { handleDeveloperCommand } from './src/cli/command-handler.js';
 import { showHelp, displaySplashScreen } from './src/cli/ui.js';
+import { phaseHeader, systemMessage, statusLine, COLORS } from './src/cli/terminal-ui.js';
 import { validateWebUrl, validateRepoPath } from './src/cli/input-validator.js';
 
 // Error Handling
@@ -217,8 +218,8 @@ async function main(webUrl, repoPath, configPath = null, pipelineTestingMode = f
 
   // PHASE 2: RECONNAISSANCE
   if (startPhase <= 2) {
-    console.log(chalk.magenta.bold('\n🔎 PHASE 2: RECONNAISSANCE'));
-    console.log(chalk.magenta('Analyzing initial findings...'));
+    console.log(phaseHeader(2, 'RECONNAISSANCE', { emoji: '🔎' }));
+    console.log(systemMessage('Analyzing initial findings...', { color: COLORS.dim }));
     const reconTimer = new Timer('phase-2-recon');
     const recon = await runClaudePromptWithRetry(
       await loadPrompt('recon', variables, distributedConfig, pipelineTestingMode),
@@ -235,14 +236,16 @@ async function main(webUrl, repoPath, configPath = null, pipelineTestingMode = f
     const reconDuration = reconTimer.stop();
     timingResults.phases['recon'] = reconDuration;
 
-    console.log(chalk.green(`✅ Reconnaissance complete in ${formatDuration(reconDuration)}`));
+    console.log(statusLine('✅', `Reconnaissance complete in ${formatDuration(reconDuration)}`, {
+      color: COLORS.primary
+    }));
     await updateSessionProgress('recon');
   }
 
   // PHASE 3: VULNERABILITY ANALYSIS
   if (startPhase <= 3) {
     const vulnTimer = new Timer('phase-3-vulnerability-analysis');
-    console.log(chalk.red.bold('\n🚨 PHASE 3: VULNERABILITY ANALYSIS'));
+    console.log(phaseHeader(3, 'VULNERABILITY ANALYSIS', { emoji: '🚨' }));
 
     await runPhase('vulnerability-analysis', session, pipelineTestingMode, runClaudePromptWithRetry, loadPrompt, distributedConfig?.models);
 
@@ -254,13 +257,15 @@ async function main(webUrl, repoPath, configPath = null, pipelineTestingMode = f
     const vulnDuration = vulnTimer.stop();
     timingResults.phases['vulnerability-analysis'] = vulnDuration;
 
-    console.log(chalk.green(`✅ Vulnerability analysis phase complete in ${formatDuration(vulnDuration)}`));
+    console.log(statusLine('✅', `Vulnerability analysis phase complete in ${formatDuration(vulnDuration)}`, {
+      color: COLORS.primary
+    }));
   }
 
   // PHASE 4: EXPLOITATION
   if (startPhase <= 4) {
     const exploitTimer = new Timer('phase-4-exploitation');
-    console.log(chalk.red.bold('\n💥 PHASE 4: EXPLOITATION'));
+    console.log(phaseHeader(4, 'EXPLOITATION', { emoji: '💥' }));
 
     // Get fresh session data to ensure we have latest vulnerability analysis results
     const freshSession = await getSession(session.id);
@@ -278,13 +283,17 @@ async function main(webUrl, repoPath, configPath = null, pipelineTestingMode = f
     const exploitDuration = exploitTimer.stop();
     timingResults.phases['exploitation'] = exploitDuration;
 
-    console.log(chalk.green(`✅ Exploitation phase complete in ${formatDuration(exploitDuration)}`));
+    console.log(statusLine('✅', `Exploitation phase complete in ${formatDuration(exploitDuration)}`, {
+      color: COLORS.primary
+    }));
   }
 
   // PHASE 5: REPORTING
   if (startPhase <= 5) {
-    console.log(chalk.greenBright.bold('\n📊 PHASE 5: REPORTING'));
-    console.log(chalk.greenBright('Generating executive summary and assembling final report...'));
+    console.log(phaseHeader(5, 'REPORTING', { emoji: '📊' }));
+    console.log(systemMessage('Generating executive summary and assembling final report...', {
+      color: COLORS.dim
+    }));
     const reportTimer = new Timer('phase-5-reporting');
 
     // First, assemble all deliverables into a single concatenated report
@@ -314,7 +323,9 @@ async function main(webUrl, repoPath, configPath = null, pipelineTestingMode = f
     const reportDuration = reportTimer.stop();
     timingResults.phases['reporting'] = reportDuration;
 
-    console.log(chalk.green(`✅ Final report generated in ${formatDuration(reportDuration)}`));
+    console.log(statusLine('✅', `Final report generated in ${formatDuration(reportDuration)}`, {
+      color: COLORS.primary
+    }));
 
     // Get the commit hash after successful report generation for checkpoint
     try {
