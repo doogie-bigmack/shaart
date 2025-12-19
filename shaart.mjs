@@ -38,7 +38,7 @@ import { estimateTotalCost } from './src/cost-estimator.js';
 // CLI
 import { handleDeveloperCommand } from './src/cli/command-handler.js';
 import { showHelp, displaySplashScreen } from './src/cli/ui.js';
-import { phaseHeader, systemMessage, statusLine, COLORS } from './src/cli/terminal-ui.js';
+import { phaseHeader, systemMessage, statusLine, separator, COLORS } from './src/cli/terminal-ui.js';
 import { validateWebUrl, validateRepoPath } from './src/cli/input-validator.js';
 
 // Error Handling
@@ -56,13 +56,13 @@ $.timeout = 0;
 
 // Setup graceful cleanup on process signals
 process.on('SIGINT', async () => {
-  console.log(chalk.yellow('\n⚠️ Received SIGINT, cleaning up...'));
+  console.log(statusLine('!', 'Received SIGINT, cleaning up...', { color: COLORS.warning }));
 
   process.exit(0);
 });
 
 process.on('SIGTERM', async () => {
-  console.log(chalk.yellow('\n⚠️ Received SIGTERM, cleaning up...'));
+  console.log(statusLine('!', 'Received SIGTERM, cleaning up...', { color: COLORS.warning }));
 
   process.exit(0);
 });
@@ -130,12 +130,12 @@ async function main(webUrl, repoPath, configPath = null, pipelineTestingMode = f
       indent: 0
     }));
   } catch (error) {
-    console.log(chalk.red(`❌ Failed to setup local repository: ${error.message}`));
-    console.log(chalk.gray('This could be due to:'));
-    console.log(chalk.gray('  - Insufficient permissions'));
-    console.log(chalk.gray('  - Repository path not accessible'));
-    console.log(chalk.gray('  - Git initialization issues'));
-    console.log(chalk.gray('  - Insufficient disk space'));
+    console.log(statusLine('-', `Failed to setup local repository: ${error.message}`, { color: COLORS.error }));
+    console.log(systemMessage('This could be due to:', { color: COLORS.dim, prefix: '' }));
+    console.log(systemMessage('  - Insufficient permissions', { color: COLORS.dim, prefix: '' }));
+    console.log(systemMessage('  - Repository path not accessible', { color: COLORS.dim, prefix: '' }));
+    console.log(systemMessage('  - Git initialization issues', { color: COLORS.dim, prefix: '' }));
+    console.log(systemMessage('  - Insufficient disk space', { color: COLORS.dim, prefix: '' }));
     process.exit(1);
   }
 
@@ -143,14 +143,14 @@ async function main(webUrl, repoPath, configPath = null, pipelineTestingMode = f
 
   // Create session for tracking (in normal mode)
   const session = await createSession(webUrl, repoPath, configPath, sourceDir);
-  console.log(chalk.blue(`📝 Session created: ${session.id.substring(0, 8)}...`));
+  console.log(statusLine('>', `Session created: ${session.id.substring(0, 8)}...`, { color: COLORS.primary }));
 
   // If setup-only mode, exit after session creation
   if (process.argv.includes('--setup-only')) {
-    console.log(chalk.green('✅ Setup complete! Local repository setup and session created.'));
-    console.log(chalk.gray('Use developer commands to run individual agents:'));
-    console.log(chalk.gray('  ./shaart.mjs --run-agent pre-recon'));
-    console.log(chalk.gray('  ./shaart.mjs --status'));
+    console.log(statusLine('+', 'Setup complete! Local repository setup and session created.', { color: COLORS.primary }));
+    console.log(systemMessage('Use developer commands to run individual agents:', { color: COLORS.dim, prefix: '' }));
+    console.log(systemMessage('  ./shaart.mjs --run-agent pre-recon', { color: COLORS.dim, prefix: '' }));
+    console.log(systemMessage('  ./shaart.mjs --status', { color: COLORS.dim, prefix: '' }));
     process.exit(0);
   }
 
@@ -170,9 +170,15 @@ async function main(webUrl, repoPath, configPath = null, pipelineTestingMode = f
       await updateSession(session.id, updates);
       // Update local session object for subsequent updates
       Object.assign(session, updates);
-      console.log(chalk.gray(`    📝 Session updated: ${agentName} completed`));
+      console.log(systemMessage(`Session updated: ${agentName} completed`, {
+        color: COLORS.dim,
+        prefix: '   '
+      }));
     } catch (error) {
-      console.log(chalk.yellow(`    ⚠️ Failed to update session: ${error.message}`));
+      console.log(statusLine('!', `Failed to update session: ${error.message}`, {
+        color: COLORS.warning,
+        indent: 4
+      }));
     }
   };
 
@@ -194,12 +200,12 @@ async function main(webUrl, repoPath, configPath = null, pipelineTestingMode = f
   // Check if we should continue from where session left off
   const nextAgent = getNextAgent(session);
   if (!nextAgent) {
-    console.log(chalk.green(`✅ All agents completed! Session is finished.`));
+    console.log(statusLine('+', 'All agents completed! Session is finished.', { color: COLORS.primary }));
     await displayTimingSummary(timingResults, costResults, session.completedAgents);
     process.exit(0);
   }
 
-  console.log(chalk.blue(`🔄 Continuing from ${nextAgent.displayName} (${session.completedAgents.length}/${Object.keys(AGENTS).length} agents completed)`));
+  console.log(statusLine('>', `Continuing from ${nextAgent.displayName} (${session.completedAgents.length}/${Object.keys(AGENTS).length} agents completed)`, { color: COLORS.primary }));
 
   // Determine which phase to start from based on next agent
   const startPhase = nextAgent.name === 'pre-recon' ? 1
@@ -259,12 +265,14 @@ async function main(webUrl, repoPath, configPath = null, pipelineTestingMode = f
     // Display vulnerability analysis summary
     const currentSession = await getSession(session.id);
     const vulnSummary = calculateVulnerabilityAnalysisSummary(currentSession);
-    console.log(chalk.blue(`\n📊 Vulnerability Analysis Summary: ${vulnSummary.totalAnalyses} analyses, ${vulnSummary.totalVulnerabilities} vulnerabilities found, ${vulnSummary.exploitationCandidates} ready for exploitation`));
+    console.log(systemMessage(`Vulnerability Analysis Summary: ${vulnSummary.totalAnalyses} analyses, ${vulnSummary.totalVulnerabilities} vulnerabilities found, ${vulnSummary.exploitationCandidates} ready for exploitation`, {
+      color: COLORS.primary
+    }));
 
     const vulnDuration = vulnTimer.stop();
     timingResults.phases['vulnerability-analysis'] = vulnDuration;
 
-    console.log(statusLine('✅', `Vulnerability analysis phase complete in ${formatDuration(vulnDuration)}`, {
+    console.log(statusLine('+', `Vulnerability analysis phase complete in ${formatDuration(vulnDuration)}`, {
       color: COLORS.primary
     }));
   }
@@ -282,15 +290,19 @@ async function main(webUrl, repoPath, configPath = null, pipelineTestingMode = f
     const finalSession = await getSession(session.id);
     const exploitSummary = calculateExploitationSummary(finalSession);
     if (exploitSummary.eligibleExploits > 0) {
-      console.log(chalk.blue(`\n🎯 Exploitation Summary: ${exploitSummary.totalAttempts}/${exploitSummary.eligibleExploits} attempted, ${exploitSummary.skippedExploits} skipped (no vulnerabilities)`));
+      console.log(systemMessage(`Exploitation Summary: ${exploitSummary.totalAttempts}/${exploitSummary.eligibleExploits} attempted, ${exploitSummary.skippedExploits} skipped (no vulnerabilities)`, {
+        color: COLORS.primary
+      }));
     } else {
-      console.log(chalk.gray(`\n🎯 Exploitation Summary: No exploitation attempts (no vulnerabilities found)`));
+      console.log(systemMessage('Exploitation Summary: No exploitation attempts (no vulnerabilities found)', {
+        color: COLORS.dim
+      }));
     }
 
     const exploitDuration = exploitTimer.stop();
     timingResults.phases['exploitation'] = exploitDuration;
 
-    console.log(statusLine('✅', `Exploitation phase complete in ${formatDuration(exploitDuration)}`, {
+    console.log(statusLine('+', `Exploitation phase complete in ${formatDuration(exploitDuration)}`, {
       color: COLORS.primary
     }));
   }
@@ -304,16 +316,20 @@ async function main(webUrl, repoPath, configPath = null, pipelineTestingMode = f
     const reportTimer = new Timer('phase-5-reporting');
 
     // First, assemble all deliverables into a single concatenated report
-    console.log(chalk.blue('📝 Assembling deliverables from specialist agents...'));
+    console.log(systemMessage('Assembling deliverables from specialist agents...', {
+      color: COLORS.primary
+    }));
 
     try {
       await assembleFinalReport(sourceDir);
     } catch (error) {
-      console.log(chalk.red(`❌ Error assembling final report: ${error.message}`));
+      console.log(statusLine('-', `Error assembling final report: ${error.message}`, { color: COLORS.error }));
     }
 
     // Then run reporter agent to create executive summary and clean up hallucinations
-    console.log(chalk.blue('📋 Generating executive summary and cleaning up report...'));
+    console.log(systemMessage('Generating executive summary and cleaning up report...', {
+      color: COLORS.primary
+    }));
     const execSummary = await runClaudePromptWithRetry(
       await loadPrompt('report-executive', variables, distributedConfig, pipelineTestingMode),
       sourceDir,
@@ -330,7 +346,7 @@ async function main(webUrl, repoPath, configPath = null, pipelineTestingMode = f
     const reportDuration = reportTimer.stop();
     timingResults.phases['reporting'] = reportDuration;
 
-    console.log(statusLine('✅', `Final report generated in ${formatDuration(reportDuration)}`, {
+    console.log(statusLine('+', `Final report generated in ${formatDuration(reportDuration)}`, {
       color: COLORS.primary
     }));
 
@@ -338,9 +354,15 @@ async function main(webUrl, repoPath, configPath = null, pipelineTestingMode = f
     try {
       const reportCommitHash = await getGitCommitHash(sourceDir);
       await updateSessionProgress('report', reportCommitHash);
-      console.log(chalk.gray(`    📍 Report checkpoint saved: ${reportCommitHash.substring(0, 8)}`));
+      console.log(systemMessage(`Report checkpoint saved: ${reportCommitHash.substring(0, 8)}`, {
+        color: COLORS.dim,
+        prefix: '   '
+      }));
     } catch (error) {
-      console.log(chalk.yellow(`    ⚠️ Failed to save report checkpoint: ${error.message}`));
+      console.log(statusLine('!', `Failed to save report checkpoint: ${error.message}`, {
+        color: COLORS.warning,
+        indent: 4
+      }));
       await updateSessionProgress('report'); // Fallback without checkpoint
     }
   }
@@ -370,8 +392,9 @@ async function main(webUrl, repoPath, configPath = null, pipelineTestingMode = f
   // Display comprehensive timing summary
   displayTimingSummary();
 
-  console.log(chalk.cyan.bold('\n🎉 PENETRATION TESTING COMPLETE!'));
-  console.log(chalk.gray('─'.repeat(60)));
+  console.log('');
+  console.log(statusLine('+', 'PENETRATION TESTING COMPLETE!', { color: COLORS.primary }));
+  console.log(separator(60, 'light'));
 
   // Calculate audit logs path
   const auditLogsPath = generateAuditPath(session);
@@ -405,7 +428,7 @@ for (let i = 0; i < args.length; i++) {
       configPath = args[i + 1];
       i++; // Skip the next argument
     } else {
-      console.log(chalk.red('❌ --config flag requires a file path'));
+      console.log(statusLine('-', '--config flag requires a file path', { color: COLORS.error }));
       process.exit(1);
     }
   } else if (args[i] === '--pipeline-testing') {
@@ -455,16 +478,17 @@ if (developerCommand) {
 
 // Handle no arguments - show help
 if (nonFlagArgs.length === 0) {
-  console.log(chalk.red.bold('❌ Error: No arguments provided\n'));
+  console.log(statusLine('-', 'Error: No arguments provided', { color: COLORS.error }));
+  console.log('');
   showHelp();
   process.exit(1);
 }
 
 // Handle insufficient arguments
 if (nonFlagArgs.length < 2) {
-  console.log(chalk.red('❌ Both WEB_URL and REPO_PATH are required'));
-  console.log(chalk.gray('Usage: ./shaart.mjs <WEB_URL> <REPO_PATH> [--config config.yaml]'));
-  console.log(chalk.gray('Help:  ./shaart.mjs --help'));
+  console.log(statusLine('-', 'Both WEB_URL and REPO_PATH are required', { color: COLORS.error }));
+  console.log(systemMessage('Usage: ./shaart.mjs <WEB_URL> <REPO_PATH> [--config config.yaml]', { color: COLORS.dim, prefix: '' }));
+  console.log(systemMessage('Help:  ./shaart.mjs --help', { color: COLORS.dim, prefix: '' }));
   process.exit(1);
 }
 
@@ -473,29 +497,32 @@ const [webUrl, repoPath] = nonFlagArgs;
 // Validate web URL
 const webUrlValidation = validateWebUrl(webUrl);
 if (!webUrlValidation.valid) {
-  console.log(chalk.red(`❌ Invalid web URL: ${webUrlValidation.error}`));
-  console.log(chalk.gray(`Expected format: https://example.com`));
+  console.log(statusLine('-', `Invalid web URL: ${webUrlValidation.error}`, { color: COLORS.error }));
+  console.log(systemMessage('Expected format: https://example.com', { color: COLORS.dim, prefix: '' }));
   process.exit(1);
 }
 
 // Validate repository path
 const repoPathValidation = await validateRepoPath(repoPath);
 if (!repoPathValidation.valid) {
-  console.log(chalk.red(`❌ Invalid repository path: ${repoPathValidation.error}`));
-  console.log(chalk.gray(`Expected: Accessible local directory path`));
+  console.log(statusLine('-', `Invalid repository path: ${repoPathValidation.error}`, { color: COLORS.error }));
+  console.log(systemMessage('Expected: Accessible local directory path', { color: COLORS.dim, prefix: '' }));
   process.exit(1);
 }
 
 // Success - show validated inputs
-console.log(chalk.green('✅ Input validation passed:'));
-console.log(chalk.gray(`   Target Web URL: ${webUrl}`));
-console.log(chalk.gray(`   Target Repository: ${repoPathValidation.path}\n`));
-console.log(chalk.gray(`   Config Path: ${configPath}\n`));
+console.log(statusLine('+', 'Input validation passed:', { color: COLORS.primary }));
+console.log(systemMessage(`   Target Web URL: ${webUrl}`, { color: COLORS.dim, prefix: '' }));
+console.log(systemMessage(`   Target Repository: ${repoPathValidation.path}`, { color: COLORS.dim, prefix: '' }));
+console.log(systemMessage(`   Config Path: ${configPath}`, { color: COLORS.dim, prefix: '' }));
+console.log('');
 if (pipelineTestingMode) {
-  console.log(chalk.yellow('⚡ PIPELINE TESTING MODE ENABLED - Using minimal test prompts for fast pipeline validation\n'));
+  console.log(statusLine('>', 'PIPELINE TESTING MODE ENABLED - Using minimal test prompts for fast pipeline validation', { color: COLORS.warning }));
+  console.log('');
 }
 if (disableLoader) {
-  console.log(chalk.yellow('⚙️  LOADER DISABLED - Progress indicator will not be shown\n'));
+  console.log(statusLine('>', 'LOADER DISABLED - Progress indicator will not be shown', { color: COLORS.warning }));
+  console.log('');
 }
 
 // Handle cost estimation mode
@@ -504,10 +531,11 @@ if (estimateCost) {
     await estimateTotalCost(webUrl, repoPathValidation.path, configPath);
     process.exit(0);
   } catch (error) {
-    console.log(chalk.red.bold('\n🚨 COST ESTIMATION FAILED'));
-    console.log(chalk.red(`   Error: ${error?.message || error?.toString() || 'Unknown error'}`));
+    console.log('');
+    console.log(statusLine('-', 'COST ESTIMATION FAILED', { color: COLORS.error }));
+    console.log(systemMessage(`   Error: ${error?.message || error?.toString() || 'Unknown error'}`, { color: COLORS.error, prefix: '' }));
     if (process.env.DEBUG) {
-      console.log(chalk.gray(`   Stack: ${error?.stack || 'No stack trace available'}`));
+      console.log(systemMessage(`   Stack: ${error?.stack || 'No stack trace available'}`, { color: COLORS.dim, prefix: '' }));
     }
     process.exit(1);
   }
@@ -515,28 +543,32 @@ if (estimateCost) {
 
 try {
   const result = await main(webUrl, repoPathValidation.path, configPath, pipelineTestingMode, disableLoader);
-  console.log(chalk.green.bold('\n📄 FINAL REPORT AVAILABLE:'));
-  console.log(chalk.cyan(result.reportPath));
-  console.log(chalk.green.bold('\n📂 AUDIT LOGS AVAILABLE:'));
-  console.log(chalk.cyan(result.auditLogsPath));
+  console.log('');
+  console.log(statusLine('+', 'FINAL REPORT AVAILABLE:', { color: COLORS.primary }));
+  console.log(systemMessage(result.reportPath, { color: COLORS.tertiary, prefix: '' }));
+  console.log('');
+  console.log(statusLine('+', 'AUDIT LOGS AVAILABLE:', { color: COLORS.primary }));
+  console.log(systemMessage(result.auditLogsPath, { color: COLORS.tertiary, prefix: '' }));
 
 } catch (error) {
   // Enhanced error boundary with proper logging
   if (error instanceof PentestError) {
     await logError(error, 'Main execution failed');
-    console.log(chalk.red.bold('\n🚨 PENTEST EXECUTION FAILED'));
-    console.log(chalk.red(`   Type: ${error.type}`));
-    console.log(chalk.red(`   Retryable: ${error.retryable ? 'Yes' : 'No'}`));
+    console.log('');
+    console.log(statusLine('-', 'PENTEST EXECUTION FAILED', { color: COLORS.error }));
+    console.log(systemMessage(`   Type: ${error.type}`, { color: COLORS.error, prefix: '' }));
+    console.log(systemMessage(`   Retryable: ${error.retryable ? 'Yes' : 'No'}`, { color: COLORS.error, prefix: '' }));
 
     if (error.retryable) {
-      console.log(chalk.yellow('   Consider running the command again or checking network connectivity.'));
+      console.log(systemMessage('   Consider running the command again or checking network connectivity.', { color: COLORS.warning, prefix: '' }));
     }
   } else {
-    console.log(chalk.red.bold('\n🚨 UNEXPECTED ERROR OCCURRED'));
-    console.log(chalk.red(`   Error: ${error?.message || error?.toString() || 'Unknown error'}`));
+    console.log('');
+    console.log(statusLine('-', 'UNEXPECTED ERROR OCCURRED', { color: COLORS.error }));
+    console.log(systemMessage(`   Error: ${error?.message || error?.toString() || 'Unknown error'}`, { color: COLORS.error, prefix: '' }));
 
     if (process.env.DEBUG) {
-      console.log(chalk.gray(`   Stack: ${error?.stack || 'No stack trace available'}`));
+      console.log(systemMessage(`   Stack: ${error?.stack || 'No stack trace available'}`, { color: COLORS.dim, prefix: '' }));
     }
   }
 

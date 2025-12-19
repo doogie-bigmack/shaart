@@ -40,7 +40,10 @@ export const handleMissingTools = (toolAvailability) => {
       color: COLORS.warning,
       indent: 0
     }));
-    console.log(chalk.hex(COLORS.dim)('Some functionality will be limited. Install missing tools for full capability.'));
+    console.log(systemMessage('Some functionality will be limited. Install missing tools for full capability.', {
+      color: COLORS.dim,
+      prefix: ''
+    }));
 
     // Provide installation hints
     const installHints = {
@@ -50,10 +53,11 @@ export const handleMissingTools = (toolAvailability) => {
       'schemathesis': 'pip install schemathesis'
     };
 
-    console.log(chalk.hex(COLORS.dim)('\nInstallation hints:'));
+    console.log('');
+    console.log(systemMessage('Installation hints:', { color: COLORS.dim, prefix: '' }));
     missing.forEach(tool => {
       if (installHints[tool]) {
-        console.log(chalk.hex(COLORS.dim)(`  ${tool}: ${installHints[tool]}`));
+        console.log(systemMessage(`  ${tool}: ${installHints[tool]}`, { color: COLORS.dim, prefix: '' }));
       }
     });
     console.log('');
