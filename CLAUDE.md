@@ -170,6 +170,7 @@ TOTP generation is now handled automatically via the `generate_totp` MCP tool du
 | `CLAUDE_CODE_MAX_OUTPUT_TOKENS` | Max output tokens per request (recommend: 64000) | No |
 | `PENTEST_MAX_RETRIES` | Number of AI retry attempts (default: 3) | No |
 | `SHAART_DOCKER` | Set automatically in Docker container | Auto |
+| `SHAART_SKIP_ANIMATION` | Skip Nostromo boot sequence animation (set to 'true' for instant startup) | No |
 | `DEBUG` | Enable debug logging | No |
 
 ## Architecture & Components
