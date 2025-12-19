@@ -1,5 +1,5 @@
 > [!NOTE]
-> **Shaart Lite: 96.15% success rate on hint-free, source-aware XBOW benchmark. [View Results →](https://github.com/KeygraphHQ/shaart/tree/main/xben-benchmark-results/README.md)**
+> **Shaart: 96.15% success rate on hint-free, source-aware XBOW benchmark. [View Results →](https://github.com/KeygraphHQ/shaart/tree/main/xben-benchmark-results/README.md)**
 
 <div align="center">
 
@@ -188,27 +188,6 @@ Stop drowning in false positives. Shaart delivers actionable findings:
 - **Project board integration** for remediation tracking
 
 [See full roadmap →](https://github.com/doogie-bigmack/shaart/issues/32)
-
----
-
-## 📦 Two Editions
-
-| Feature | Shaart Lite<br/>*(This Repo)* | Shaart Pro |
-|---------|-------------------------------|------------|
-| **License** | AGPL-3.0 (Open Source) | Commercial |
-| **Best For** | Security teams, researchers, internal testing | Enterprises, CI/CD integration, compliance |
-| **AI-Powered Exploitation** | ✅ Full multi-agent architecture | ✅ Enhanced with advanced reasoning |
-| **Source Code Analysis** | ✅ Pattern-based vulnerability detection | ✅ **LLM-powered data flow analysis** |
-| **Parallel Execution** | ✅ Fast concurrent testing | ✅ Optimized for large codebases |
-| **Authentication Support** | ✅ 2FA, OAuth, SSO | ✅ Plus enterprise SSO providers |
-| **CI/CD Integration** | ⚠️ Manual setup | ✅ Pre-built GitHub Actions, GitLab CI |
-| **Reporting** | ✅ Markdown reports | ✅ PDF, JSON, JIRA, DefectDojo exports |
-| **Support** | 💬 Community (Discord) | 📧 Dedicated support + SLA |
-
-> **Shaart Lite** is perfect for testing your own applications with full autonomy.
-> **Shaart Pro** adds enterprise-grade data flow analysis (inspired by [LLMDFA](https://arxiv.org/abs/2402.10754)) and turnkey CI/CD workflows.
-
-[Compare editions →](./SHAART-PRO.md)
 
 ---
 
@@ -473,21 +452,21 @@ Track active development and request features:
 
 ## 🏢 Enterprise?
 
-**Shaart Pro** offers:
+Need enterprise features?
 - Advanced data flow analysis engine
 - Pre-built CI/CD integrations
 - Multiple export formats (PDF, JSON, JIRA)
 - Dedicated support with SLAs
 - Compliance-ready audit reports
 
-📋 [Express interest in Shaart Pro](https://docs.google.com/forms/d/e/1FAIpQLSf-cPZcWjlfBJ3TCT8AaWpf8ztsw3FaHzJE4urr55KdlQs6cQ/viewform?usp=header)
+📋 [Express interest in enterprise features](https://docs.google.com/forms/d/e/1FAIpQLSf-cPZcWjlfBJ3TCT8AaWpf8ztsw3FaHzJE4urr55KdlQs6cQ/viewform?usp=header)
 📧 [shaart@keygraph.io](mailto:shaart@keygraph.io)
 
 ---
 
 ## 📜 License
 
-**Shaart Lite**: [AGPL-3.0](LICENSE)
+**Shaart**: [AGPL-3.0](LICENSE)
 
 - ✅ Free for internal security testing
 - ✅ Private modifications allowed
