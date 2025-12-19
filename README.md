@@ -8,7 +8,7 @@
 
 # Shaart is your fully autonomous AI pentester.
 
-Shaart’s job is simple: break your web app before anyone else does. <br />
+Shaart's job is simple: break your web app before anyone else does. <br />
 The Red Team to your vibe-coding Blue team. <br />
 Every Claude (coder) deserves their Shaart.
 
@@ -18,6 +18,42 @@ Every Claude (coder) deserves their Shaart.
 
 ---
 </div>
+
+## 🖥️ Boot Sequence
+
+Experience Shaart's retro-futuristic terminal interface, inspired by classic sci-fi aesthetics:
+
+```
+BIGMAC-ATTACK CORP :: SECURITY TERMINAL v1.0.0
+══════════════════════════════════════════════════════════════════════
+> INITIALIZING SYSTEM...
+> LOADING BIOS... OK
+> CHECKING MEMORY... 64K OK
+> MOUNTING DRIVES... OK
+> BOOTING SECURITY SUBSYSTEM...
+> LOADING MU/TH/UR 6000 PROTOCOLS...
+> INITIALIZING AI MODULES...
+
+███████╗██╗  ██╗ █████╗  █████╗ ██████╗ ████████╗
+██╔════╝██║  ██║██╔══██╗██╔══██╗██╔══██╗╚══██╔══╝
+███████╗███████║███████║███████║██████╔╝   ██║
+╚════██║██╔══██║██╔══██║██╔══██║██╔══██╗   ██║
+███████║██║  ██║██║  ██║██║  ██║██║  ██║   ██║
+╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝
+
+> SECURITY HUNTING AI AGENT FOR RECON & TESTING
+> SYSTEM STATUS........................... [ACTIVE]
+> AUTHORIZATION................. [REQUIRED - READ ONLY]
+
+⚠ WARNING: DEFENSIVE SECURITY OPERATIONS ONLY
+⚠ UNAUTHORIZED ACCESS PROHIBITED :: 18 U.S.C. § 1030
+
+> AWAITING TARGET CONFIGURATION...
+```
+
+*Set `SHAART_SKIP_ANIMATION=true` to skip the boot animation for instant startup.*
+
+---
 
 ## 🎯 What is Shaart?
 
@@ -46,14 +82,92 @@ Shaart closes this gap by acting as your on-demand whitebox pentester. It doesn'
 
 ![Demo](assets/shaart-action.gif)
 
-## ✨ Features
+## ✨ What Makes Shaart Unique
 
-- **Fully Autonomous Operation**: Launch the pentest with a single command. The AI handles everything from advanced 2FA/TOTP logins (including sign in with Google) and browser navigation to the final report with zero intervention.
-- **Pentester-Grade Reports with Reproducible Exploits**: Delivers a final report focused on proven, exploitable findings, complete with copy-and-paste Proof-of-Concepts to eliminate false positives and provide actionable results.
-- **Critical OWASP Vulnerability Coverage**: Currently identifies and validates the following critical vulnerabilities: Injection, XSS, SSRF, and Broken Authentication/Authorization, with more types in development.
-- **Code-Aware Dynamic Testing**: Analyzes your source code to intelligently guide its attack strategy, then performs live, browser and command line based exploits on the running application to confirm real-world risk.
-- **Powered by Integrated Security Tools**: Enhances its discovery phase by leveraging leading reconnaissance and testing tools—including **Nmap, Subfinder, WhatWeb, and Schemathesis**—for deep analysis of the target environment.
-- **Parallel Processing for Faster Results**: Get your report faster. The system parallelizes the most time-intensive phases, running analysis and exploitation for all vulnerability types concurrently.
+### 🧠 Autonomous Exploitation, Not Just Scanning
+Unlike traditional scanners that flag potential issues, Shaart **proves vulnerabilities are exploitable** by executing real attacks. It won't report a finding unless it can demonstrate actual impact—eliminating false positives and providing actionable proof-of-concepts.
+
+### 🔬 White-Box Intelligence Meets Black-Box Validation
+Shaart combines **source code analysis** (understanding your codebase deeply) with **live dynamic testing** (exploiting the running application). This dual approach finds vulnerabilities that pure scanners miss and validates findings that static analysis tools only hypothesize.
+
+### 🤖 Fully Autonomous Multi-Agent Architecture
+Launch with a single command and let Shaart's specialized AI agents handle everything:
+- **Reconnaissance Agent**: Maps attack surface, analyzes tech stack, explores the application
+- **Vulnerability Agents**: Hunt for injection, XSS, auth bypasses, authorization flaws, and SSRF in parallel
+- **Exploitation Agents**: Execute real attacks with browser automation and command-line tools
+- **Reporting Agent**: Synthesizes findings into actionable, pentester-grade reports
+
+### 🔐 Advanced Authentication Support
+Handles complex auth flows that stop most automated tools:
+- **Multi-Factor Authentication (2FA/TOTP)**: Automatically generates time-based codes
+- **OAuth/SSO**: Supports "Sign in with Google" and other federated auth
+- **Custom Login Flows**: Configurable step-by-step authentication instructions
+- **Session Management**: Maintains authentication throughout testing
+
+### 🛠️ Battle-Tested Security Tools Integration
+Enhances discovery with industry-standard tools:
+- **Nmap**: Network port scanning and service detection
+- **Subfinder**: Subdomain enumeration
+- **WhatWeb**: Technology fingerprinting
+- **Schemathesis**: OpenAPI/Swagger fuzzing
+
+### ⚡ Parallel Processing for Speed
+Don't wait hours for results. Shaart parallelizes vulnerability analysis and exploitation across all attack categories simultaneously, dramatically reducing total scan time.
+
+### 📊 Pentester-Grade Reports
+Get reports that security professionals actually use:
+- **Copy-paste proof-of-concepts**: Exact commands to reproduce exploits
+- **Business impact analysis**: Understand real-world consequences
+- **Remediation guidance**: Specific code-level fixes
+- **OWASP categorization**: Mapped to industry-standard frameworks
+
+### 🎨 Retro-Futuristic Terminal Experience
+Enjoy a unique interface inspired by classic sci-fi terminals, complete with:
+- Character-by-character typewriter effects
+- CRT phosphor green color scheme
+- Boot sequence with system diagnostics
+- Optional instant mode for CI/CD pipelines
+
+---
+
+## 🚀 Future Capabilities (In Development)
+
+Shaart is actively evolving. Here's what's coming next:
+
+### 🎯 Expanded Vulnerability Coverage
+- **Business Logic Flaws**: Workflow bypass, rate limiting, price manipulation ([#8](https://github.com/doogie-bigmack/shaart/issues/8))
+- **API Testing Agent**: Native REST/GraphQL vulnerability testing ([#7](https://github.com/doogie-bigmack/shaart/issues/7))
+- **Additional Injection Types**: LDAP, XML/XPath, XXE ([#9](https://github.com/doogie-bigmack/shaart/issues/9))
+- **File Upload Testing**: Polyglot files, MIME bypass, archive attacks ([#11](https://github.com/doogie-bigmack/shaart/issues/11))
+- **Blind Exploitation**: Time-based detection, DNS exfiltration ([#10](https://github.com/doogie-bigmack/shaart/issues/10))
+
+### 🔄 Continuous Security Management
+- **GitHub Integration**: Automatic issue creation with remediation options ([#32](https://github.com/doogie-bigmack/shaart/issues/32))
+  - Create GitHub issues for each vulnerability with code-level fixes
+  - Track remediation progress via GitHub project boards
+  - Retest workflow to verify fixes
+  - Delta reporting to identify new vs. fixed vulnerabilities
+- **Webhook Integrations**: Real-time alerts to Slack, SIEM, PagerDuty ([#12](https://github.com/doogie-bigmack/shaart/issues/12))
+- **Multiple Report Formats**: JSON, PDF, JIRA-compatible export ([#13](https://github.com/doogie-bigmack/shaart/issues/13))
+
+### 🧪 Testing & Quality Improvements
+- **Unit Test Suite**: Comprehensive test coverage for core modules ([#16](https://github.com/doogie-bigmack/shaart/issues/16))
+- **CI/CD Pipeline**: Automated linting, testing, and validation ([#17](https://github.com/doogie-bigmack/shaart/issues/17))
+- **CVSS Severity Scoring**: Auto-calculate industry-standard risk scores ([#15](https://github.com/doogie-bigmack/shaart/issues/15))
+
+### 🎯 Intelligence & Optimization
+- **Tech-Stack-Aware Prompts**: Specialized attack patterns for Node.js, Python, Java, .NET ([#20](https://github.com/doogie-bigmack/shaart/issues/20))
+- **In-Context Learning**: Feed past run success/failure into prompts ([#21](https://github.com/doogie-bigmack/shaart/issues/21))
+- **Post-Exploitation Pivoting**: Chain vulnerabilities for deeper access ([#22](https://github.com/doogie-bigmack/shaart/issues/22))
+
+### 🔧 Developer Experience
+- **Custom Agent SDK**: Build your own vulnerability testing agents ([#19](https://github.com/doogie-bigmack/shaart/issues/19))
+- **API Server Mode**: REST API for programmatic access ([#18](https://github.com/doogie-bigmack/shaart/issues/18))
+- **CLI Enhancements**: New commands for listing, exporting, debugging ([#23](https://github.com/doogie-bigmack/shaart/issues/23))
+
+*Want to influence the roadmap? [Join our Discord](https://discord.gg/u7DRRXrs7H) or comment on issues!*
+
+---
 
 ## 📦 Product Line
 
@@ -67,15 +181,17 @@ Shaart is available in two editions:
 > **This repository contains Shaart Lite,** which utilizes our core autonomous AI pentesting framework. **Shaart Pro** enhances this foundation with an advanced, LLM-powered data flow analysis engine (inspired by the [LLMDFA paper](https://arxiv.org/abs/2402.10754)) for enterprise-grade code analysis and deeper vulnerability detection.
 
 > [!IMPORTANT]
-> **White-box only.** Shaart Lite is designed for **white-box (source-available)** application security testing.  
+> **White-box only.** Shaart Lite is designed for **white-box (source-available)** application security testing.
 > It expects access to your application's source code and repository layout.
 
 [See feature comparison](./SHAART-PRO.md)
 ## 📑 Table of Contents
 
+- [Boot Sequence](#️-boot-sequence)
 - [What is Shaart?](#-what-is-shaart)
 - [See Shaart in Action](#-see-shaart-in-action)
-- [Features](#-features)
+- [What Makes Shaart Unique](#-what-makes-shaart-unique)
+- [Future Capabilities](#-future-capabilities-in-development)
 - [Product Line](#-product-line)
 - [Setup & Usage Instructions](#-setup--usage-instructions)
   - [Prerequisites](#prerequisites)
@@ -85,9 +201,9 @@ Shaart is available in two editions:
   - [Usage Patterns](#usage-patterns)
   - [Output and Results](#output-and-results)
 - [Sample Reports & Benchmarks](#-sample-reports--benchmarks)
-- [Architecture](#-architecture)
+- [Architecture](#️-architecture)
 - [Coverage and Roadmap](#-coverage-and-roadmap)
-- [Disclaimers](#-disclaimers)
+- [Disclaimers](#️-disclaimers)
 - [License](#-license)
 - [Community & Support](#-community--support)
 - [Get in Touch](#-get-in-touch)
