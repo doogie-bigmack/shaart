@@ -3,8 +3,6 @@ node_modules/
 agent-logs/
 /audit-logs/xben-benchmark-results/
 audit-logs/
-.shannon-store.json
-.shaart-store.json
 workspace/
 coverage/
 *.log
