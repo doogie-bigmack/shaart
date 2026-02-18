@@ -20,7 +20,7 @@
 When you launch Shaart, you're greeted with a retro-futuristic CRT terminal experience:
 
 ```
-BIGMAC-ATTACK CORP :: SECURITY TERMINAL v1.0.0
+Security Analysis Tool :: SECURITY TERMINAL v1.0.0
 ══════════════════════════════════════════════════════════════════════
 > INITIALIZING SYSTEM...
 > LOADING BIOS... OK

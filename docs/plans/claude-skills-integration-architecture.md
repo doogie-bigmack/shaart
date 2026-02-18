@@ -1,4 +1,4 @@
-# BIGMAC-ATTACK CORP :: SKILLS INTEGRATION PROPOSAL
+# EXAMPLE CORP :: SKILLS INTEGRATION PROPOSAL
 ═══════════════════════════════════════════════════════════════════════
 
 ```
@@ -313,7 +313,7 @@ RISK: Low (final polish)
 
 ```
 > LOADING EXPLOITATION SCENARIO...
-> TARGET: https://staging.bigmac-attack.com/
+> TARGET: https://staging.example-corp.com/
 > VULNERABILITY: SQLi in /api/users?id=
 > INVOKING SPECIALIST SKILL...
 ```
