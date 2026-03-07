@@ -1,0 +1,63 @@
+# Production Daily Security Scan Configuration
+# Owner: security-claudia
+# Schedule: Daily at 2 AM CST
+# Mission: Find REAL vulnerabilities with working exploits - no false positives
+# Focus: Applications & Infrastructure Security
+
+# Multi-model strategy - AGGRESSIVE exploitation mode
+models:
+  analysis: claude-sonnet-4-20250514      # Sonnet 4 for analysis phases
+  exploitation: claude-opus-4-20250514    # Opus 4 for complex exploitation reasoning
+  reporting: claude-sonnet-4-20250514     # Final report generation
+
+# Exploit Memory - Track real vulnerabilities across scans
+exploit_memory:
+  enabled: true                             # Deduplicate findings across daily scans
+  deduplication_strategy: strict            # Exact match - avoid reporting same vuln twice
+  max_age_days: 90                          # Include 90 days of historical context
+  trigger_infrastructure: true              # Auto-test discovered credentials
+
+# Authentication (optional - expand as needed)
+# authentication:
+#   login_type: form
+#   login_url: "https://claudia.bigmac-attack.com/login"
+#   credentials:
+#     username: "security-scan"
+#     password: "REDACTED"
+
+# Scan rules - APPLICATION & INFRASTRUCTURE FOCUS
+rules:
+  avoid:
+    - description: "Skip logout endpoints"
+      type: path
+      url_path: "/logout"
+    
+    - description: "Skip health check endpoints"
+      type: path
+      url_path: "/health"
+    
+    - description: "Avoid destructive operations"
+      type: path
+      url_path: "/api/*/delete"
+  
+  focus:
+    # Application Security Targets
+    - description: "Prioritize API endpoints - auth bypass, injection, IDOR"
+      type: path
+      url_path: "/api/*"
+    
+    - description: "Authentication flows - session management, password reset"
+      type: path
+      url_path: "/auth/*"
+    
+    - description: "Admin endpoints - privilege escalation, access control"
+      type: path
+      url_path: "/admin/*"
+    
+    - description: "WebSocket/realtime - injection, DoS"
+      type: path
+      url_path: "/ws/*"
+    
+    - description: "File upload/download - path traversal, RCE"
+      type: path
+      url_path: "/upload/*"
