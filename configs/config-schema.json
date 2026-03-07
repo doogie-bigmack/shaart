@@ -11,7 +11,12 @@
       "properties": {
         "login_type": {
           "type": "string",
-          "enum": ["form", "sso", "api", "basic"],
+          "enum": [
+            "form",
+            "sso",
+            "api",
+            "basic"
+          ],
           "description": "Type of authentication mechanism"
         },
         "login_url": {
@@ -41,7 +46,10 @@
               "description": "TOTP secret for two-factor authentication (Base32 encoded, case insensitive)"
             }
           },
-          "required": ["username", "password"],
+          "required": [
+            "username",
+            "password"
+          ],
           "additionalProperties": false
         },
         "login_flow": {
@@ -61,7 +69,12 @@
           "properties": {
             "type": {
               "type": "string",
-              "enum": ["url_contains", "element_present", "url_equals_exactly", "text_contains"],
+              "enum": [
+                "url_contains",
+                "element_present",
+                "url_equals_exactly",
+                "text_contains"
+              ],
               "description": "Type of success condition to check"
             },
             "value": {
@@ -71,11 +84,19 @@
               "description": "Value to match against the success condition"
             }
           },
-          "required": ["type", "value"],
+          "required": [
+            "type",
+            "value"
+          ],
           "additionalProperties": false
         }
       },
-      "required": ["login_type", "login_url", "credentials", "success_condition"],
+      "required": [
+        "login_type",
+        "login_url",
+        "credentials",
+        "success_condition"
+      ],
       "additionalProperties": false
     },
     "rules": {
@@ -112,20 +133,32 @@
       "properties": {
         "analysis": {
           "type": "string",
-          "enum": ["claude-haiku-4-5-20250929", "claude-sonnet-4-5-20250929", "claude-opus-4-5-20251101"],
-          "default": "claude-haiku-4-5-20250929",
+          "enum": [
+            "claude-haiku-4-20250424",
+            "claude-sonnet-4-20250514",
+            "claude-opus-4-20250514"
+          ],
+          "default": "claude-sonnet-4-20250514",
           "description": "Model to use for analysis/reconnaissance tasks (pre-recon, recon, vulnerability analysis)"
         },
         "exploitation": {
           "type": "string",
-          "enum": ["claude-haiku-4-5-20250929", "claude-sonnet-4-5-20250929", "claude-opus-4-5-20251101"],
-          "default": "claude-sonnet-4-5-20250929",
+          "enum": [
+            "claude-haiku-4-20250424",
+            "claude-sonnet-4-20250514",
+            "claude-opus-4-20250514"
+          ],
+          "default": "claude-opus-4-20250514",
           "description": "Model to use for exploitation tasks (requires complex reasoning)"
         },
         "reporting": {
           "type": "string",
-          "enum": ["claude-haiku-4-5-20250929", "claude-sonnet-4-5-20250929", "claude-opus-4-5-20251101"],
-          "default": "claude-sonnet-4-5-20250929",
+          "enum": [
+            "claude-haiku-4-20250424",
+            "claude-sonnet-4-20250514",
+            "claude-opus-4-20250514"
+          ],
+          "default": "claude-sonnet-4-20250514",
           "description": "Model to use for final report generation and synthesis"
         }
       },
@@ -142,7 +175,11 @@
         },
         "deduplication_strategy": {
           "type": "string",
-          "enum": ["strict", "loose", "both"],
+          "enum": [
+            "strict",
+            "loose",
+            "both"
+          ],
           "default": "strict",
           "description": "Deduplication strategy: strict (exact match), loose (path-only), both (check both)"
         },
@@ -163,21 +200,98 @@
     }
   },
   "anyOf": [
-    {"required": ["authentication"]},
-    {"required": ["rules"]},
-    {"required": ["models"]},
-    {"required": ["exploit_memory"]},
-    {"required": ["authentication", "rules"]},
-    {"required": ["authentication", "models"]},
-    {"required": ["authentication", "exploit_memory"]},
-    {"required": ["rules", "models"]},
-    {"required": ["rules", "exploit_memory"]},
-    {"required": ["models", "exploit_memory"]},
-    {"required": ["authentication", "rules", "models"]},
-    {"required": ["authentication", "rules", "exploit_memory"]},
-    {"required": ["authentication", "models", "exploit_memory"]},
-    {"required": ["rules", "models", "exploit_memory"]},
-    {"required": ["authentication", "rules", "models", "exploit_memory"]}
+    {
+      "required": [
+        "authentication"
+      ]
+    },
+    {
+      "required": [
+        "rules"
+      ]
+    },
+    {
+      "required": [
+        "models"
+      ]
+    },
+    {
+      "required": [
+        "exploit_memory"
+      ]
+    },
+    {
+      "required": [
+        "authentication",
+        "rules"
+      ]
+    },
+    {
+      "required": [
+        "authentication",
+        "models"
+      ]
+    },
+    {
+      "required": [
+        "authentication",
+        "exploit_memory"
+      ]
+    },
+    {
+      "required": [
+        "rules",
+        "models"
+      ]
+    },
+    {
+      "required": [
+        "rules",
+        "exploit_memory"
+      ]
+    },
+    {
+      "required": [
+        "models",
+        "exploit_memory"
+      ]
+    },
+    {
+      "required": [
+        "authentication",
+        "rules",
+        "models"
+      ]
+    },
+    {
+      "required": [
+        "authentication",
+        "rules",
+        "exploit_memory"
+      ]
+    },
+    {
+      "required": [
+        "authentication",
+        "models",
+        "exploit_memory"
+      ]
+    },
+    {
+      "required": [
+        "rules",
+        "models",
+        "exploit_memory"
+      ]
+    },
+    {
+      "required": [
+        "authentication",
+        "rules",
+        "models",
+        "exploit_memory"
+      ]
+    }
   ],
   "additionalProperties": false,
   "$defs": {
@@ -193,7 +307,14 @@
         },
         "type": {
           "type": "string",
-          "enum": ["path", "subdomain", "domain", "method", "header", "parameter"],
+          "enum": [
+            "path",
+            "subdomain",
+            "domain",
+            "method",
+            "header",
+            "parameter"
+          ],
           "description": "Type of rule (what aspect of requests to match against)"
         },
         "url_path": {
@@ -203,7 +324,11 @@
           "description": "URL path pattern or value to match"
         }
       },
-      "required": ["description", "type", "url_path"],
+      "required": [
+        "description",
+        "type",
+        "url_path"
+      ],
       "additionalProperties": false
     }
   }
